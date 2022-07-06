@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
+using System.Collections.Immutable;
+using System.Linq;
 using Libplanet;
 using Libplanet.Store;
 
@@ -10,14 +12,16 @@ namespace Flawless.States
     /// </summary>
     public class PlayerState : DataModel
     {
+        public static readonly Address Unequipped = default;
         public const long InitialGold = 0;
 
         public string Name { get; private set; }
         public Address Address { get; private set; }
         public StatsState StatsState { get; private set; }
-        public WeaponState WeaponState { get; private set; }
         public long Gold { get; private set; }
         public BestRecordState BestRecordState { get; private set; }
+        public ImmutableList<Address> Inventory { get; private set;}
+        public Address EquippedWeapon { get; private set; }
 
         /// <summary>
         /// Creates a new <see cref="PlayerState"/> instance.
@@ -28,25 +32,28 @@ namespace Flawless.States
             Name = name;
             Address = address;
             StatsState = new StatsState();
-            WeaponState = new WeaponState();
             Gold = InitialGold;
             BestRecordState = new BestRecordState();
+            Inventory = ImmutableList<Address>.Empty;
+            EquippedWeapon = Unequipped;
         }
 
         private PlayerState(
             string name,
             Address address,
             StatsState statsState,
-            WeaponState weaponState,
             long gold,
-            BestRecordState bestRecordState)
+            BestRecordState bestRecordState,
+            ImmutableList<Address> inventory,
+            Address equippedWeapon)
         {
             Name = name;
             Address = address;
             StatsState = statsState;
-            WeaponState = weaponState;
             Gold = gold;
             BestRecordState = bestRecordState;
+            Inventory = inventory;
+            EquippedWeapon = equippedWeapon;
         }
 
         /// <summary>
@@ -66,33 +73,11 @@ namespace Flawless.States
                 name: Name,
                 address: Address,
                 statsState: statsState,
-                weaponState: WeaponState,
                 gold: Gold,
-                bestRecordState: BestRecordState);
-        }
-
-        [Pure]
-        public PlayerState UpgradeWeapon(WeaponState weaponState)
-        {
-            return new PlayerState(
-                name: Name,
-                address: Address,
-                statsState: StatsState,
-                weaponState: weaponState,
-                gold: Gold,
-                bestRecordState: BestRecordState);
-        }
-
-        [Pure]
-        public PlayerState SellWeapon()
-        {
-            return new PlayerState(
-                name: Name,
-                address: Address,
-                statsState: StatsState,
-                weaponState: new WeaponState(),
-                gold: Gold + WeaponState.GetPrice(),
-                bestRecordState: BestRecordState);
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon
+            );
         }
 
         [Pure]
@@ -109,9 +94,11 @@ namespace Flawless.States
                     name: Name,
                     address: Address,
                     statsState: StatsState,
-                    weaponState: WeaponState,
                     gold: Gold + gold,
-                    bestRecordState: BestRecordState);
+                    bestRecordState: BestRecordState,
+                    inventory: Inventory,
+                    equippedWeapon: EquippedWeapon
+                );
             }
         }
 
@@ -129,9 +116,11 @@ namespace Flawless.States
                     name: Name,
                     address: Address,
                     statsState: StatsState,
-                    weaponState: WeaponState,
-                    gold: Gold + gold,
-                    bestRecordState: BestRecordState);
+                    gold: Gold - gold,
+                    bestRecordState: BestRecordState,
+                    inventory: Inventory,
+                    equippedWeapon: EquippedWeapon
+                );
             }
         }
 
@@ -142,9 +131,11 @@ namespace Flawless.States
                 name: Name,
                 address: Address,
                 statsState: StatsState,
-                weaponState: WeaponState,
                 gold: Gold,
-                bestRecordState: bestRecordState);
+                bestRecordState: bestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon
+            );
         }
 
         [Pure]
@@ -154,9 +145,103 @@ namespace Flawless.States
                 name: Name,
                 address: Address,
                 statsState: new StatsState(),
-                weaponState: new WeaponState(),
                 gold: InitialGold,
-                bestRecordState: BestRecordState);
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon
+            );
+        }
+
+        [Pure]
+        public PlayerState AddWeapon(WeaponState weapon)
+        {
+            CheckOwnership(weapon);
+
+            if (HasWeapon(weapon.Address))
+            {
+                throw new ArgumentException(
+                    $"The given weapon({weapon.Address}) already is in the " +
+                    $"player({Address})'s inventory."
+                );
+            }
+
+            return new PlayerState(
+                name: Name,
+                address: Address,
+                statsState: new StatsState(),
+                gold: InitialGold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory.Add(weapon.Address),
+                equippedWeapon: EquippedWeapon
+            );
+        }
+
+        [Pure]
+        public PlayerState RemoveWeapon(WeaponState weapon)
+        {
+            CheckOwnership(weapon);
+
+            if (!HasWeapon(weapon.Address))
+            {
+                throw new ArgumentException(
+                    $"The player({Address}) doesn't have the given " +
+                    $"weapon({weapon.Address})."
+                );
+            }
+
+            ImmutableList<Address> nextInventory =
+                Inventory.Where(a => a != weapon.Address).ToImmutableList();
+
+            return new PlayerState(
+                name: Name,
+                address: Address,
+                statsState: new StatsState(),
+                gold: InitialGold,
+                bestRecordState: BestRecordState,
+                inventory: nextInventory,
+                equippedWeapon: (EquippedWeapon == weapon.Address) 
+                    ? Unequipped
+                    : EquippedWeapon
+            );
+        }
+
+        [Pure]
+        public PlayerState Equip(WeaponState weapon)
+        {
+            CheckOwnership(weapon);
+
+            if (!HasWeapon(weapon.Address))
+            {
+                throw new ArgumentException(
+                    $"The player({Address}) doesn't have the given " +
+                    $"weapon({weapon.Address})."
+                );
+            }
+
+            return new PlayerState(
+                name: Name,
+                address: Address,
+                statsState: new StatsState(),
+                gold: InitialGold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: weapon.Address
+            );
+        }
+
+        [Pure]
+        private bool HasWeapon(Address weaponAddress) => 
+            Inventory.FirstOrDefault(a => a == weaponAddress) != default;
+
+        private void CheckOwnership(WeaponState weapon)
+        {
+            if (weapon.Owner != Address)
+            {
+                throw new ArgumentException(
+                    $"Given weapon({weapon.Address}) wasn't owned by " +
+                    $"{Address}; `WeaponState.Own()` first."
+                );
+            }
         }
     }
 }
