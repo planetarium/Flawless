@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.Contracts;
 using Libplanet.Store;
 
@@ -10,11 +9,9 @@ namespace Flawless.States
     public class BestRecordState : DataModel
     {
         public const long InitialStage = 0;
-
         public const long InitialTurns = 0;
 
         public long Stage { get; private set; }
-
         public long Turns { get; private set; }
 
         /// <summary>

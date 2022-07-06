@@ -8,7 +8,7 @@ namespace Flawless.States
     public class PlayerState : DataModel
     {
         public StatsState StatsState { get; private set; }
-
+        public WeaponState WeaponState { get; private set; }
         public BestRecordState BestRecordState { get; private set; }
 
         /// <summary>
@@ -18,6 +18,7 @@ namespace Flawless.States
             : base()
         {
             StatsState = new StatsState();
+            WeaponState = new WeaponState();
             BestRecordState = new BestRecordState();
         }
 
