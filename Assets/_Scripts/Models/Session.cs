@@ -5,7 +5,7 @@ namespace Flawless.Models
 {
     public struct Session
     {
-        public Section(IEnumerable<Stage> stages) => Stages = stages.ToList();
+        public Session(IEnumerable<Stage> stages) => Stages = stages.ToList();
 
         public List<Stage> Stages { get; private set; }
     }
