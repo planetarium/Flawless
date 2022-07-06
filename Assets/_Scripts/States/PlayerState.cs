@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.Contracts;
 using Libplanet;
 using Libplanet.Store;
@@ -97,13 +98,41 @@ namespace Flawless.States
         [Pure]
         public PlayerState AddGold(long gold)
         {
-            return new PlayerState(
-                name: Name,
-                address: Address,
-                statsState: StatsState,
-                weaponState: WeaponState,
-                gold: Gold + gold,
-                bestRecordState: BestRecordState);
+            if (gold < 0)
+            {
+                throw new ArgumentException(
+                    $"Cannot add negative amount of gold.");
+            }
+            else
+            {
+                return new PlayerState(
+                    name: Name,
+                    address: Address,
+                    statsState: StatsState,
+                    weaponState: WeaponState,
+                    gold: Gold + gold,
+                    bestRecordState: BestRecordState);
+            }
+        }
+
+        [Pure]
+        public PlayerState SubtractGold(long gold)
+        {
+            if (gold < 0)
+            {
+                throw new ArgumentException(
+                    $"Cannot subtract negative amount of gold.");
+            }
+            else
+            {
+                return new PlayerState(
+                    name: Name,
+                    address: Address,
+                    statsState: StatsState,
+                    weaponState: WeaponState,
+                    gold: Gold + gold,
+                    bestRecordState: BestRecordState);
+            }
         }
 
         [Pure]

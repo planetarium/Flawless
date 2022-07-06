@@ -63,6 +63,11 @@ namespace Flawless.States
                 throw new ArgumentException(
                     $"Cannot spend {points} points from {Points} points.");
             }
+            else if (strength < 0 || dexterity < 0 || intelligence < 0)
+            {
+                throw new ArgumentException(
+                    $"Cannot lower stats with a negative value.");
+            }
             else
             {
                 return new StatsState(

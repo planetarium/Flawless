@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.Contracts;
 using Libplanet.Store;
 
@@ -71,13 +72,21 @@ namespace Flawless.States
             long speed,
             long lifeSteal)
         {
-            return new WeaponState(
-                name: Name,
-                health: Health + health,
-                attack: Attack + attack,
-                defense: Defense + defense,
-                speed: Speed + speed,
-                lifeSteal: LifeSteal + lifeSteal);
+            if (health < 0 || attack < 0 || defense < 0 || speed < 0 || lifeSteal < 0)
+            {
+                throw new ArgumentException(
+                    $"Cannot lower weapon stats.");
+            }
+            else
+            {
+                return new WeaponState(
+                    name: Name,
+                    health: Health + health,
+                    attack: Attack + attack,
+                    defense: Defense + defense,
+                    speed: Speed + speed,
+                    lifeSteal: LifeSteal + lifeSteal);
+            }
         }
 
         [Pure]
