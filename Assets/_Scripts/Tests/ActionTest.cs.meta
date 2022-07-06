@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: 4e34b40e55efdc64b848c1ac73d4593f
-=======
-guid: bf64514362fc9e74bb90336e884604da
->>>>>>> cc1b549 (Add unittest for actions)
+guid: c2c2765dbfd2113499d8d5ace5192b4e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
