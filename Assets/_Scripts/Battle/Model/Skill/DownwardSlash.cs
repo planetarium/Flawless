@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 
 namespace Flawless.Battle.Skill
 {
@@ -11,7 +12,7 @@ namespace Flawless.Battle.Skill
             double dexCoefficient,
             double intCoefficient,
             PoseType finishPose,
-            params PoseType[] availablePoses) :
+            List<PoseType> availablePoses) :
             base(speed, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
 
@@ -19,7 +20,7 @@ namespace Flawless.Battle.Skill
 
         public override double GetDamageMultiplier(ICharacter caster, ICharacter target)
         {
-            return target.Pose == PoseType.Low ? 1.5 : 1.0;
+            return target.Pose == PoseType.Low ? 2.0 : 1.0;
         }
     }
 }
