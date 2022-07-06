@@ -10,29 +10,32 @@ using Flawless.Models;
 public class ModelTest
 {
     [Test]
-    public void Stage_GenerateStage()
+    public void Stage_NextEvent()
     {
-        int randomSeed = 52;
+        var stage = new Stage(
+            specialEventsInterval: 3,
+            specialEventSkips: 1
+        );
+
         Type[] expected = new[]
         {
             typeof(BattleEvent),
             typeof(BattleEvent),
-            typeof(WorkshopEvent),
-            typeof(BattleEvent),
-            typeof(BattleEvent),
-            typeof(WorkshopEvent),
-            typeof(BattleEvent),
-            typeof(BattleEvent),
             typeof(ShopEvent),
+            typeof(BattleEvent),
+            typeof(BattleEvent),
+            typeof(WorkshopEvent),
+            typeof(BattleEvent),
+            typeof(BattleEvent),
+            typeof(BattleEvent),
             typeof(BattleEvent),
         };
         
-        List<IEvent> actual = Stage.GenerateStage(
-            randomSeed: randomSeed,
-            events: 10,
-            specialEventsInterval: 3,
-            specialEventsSkips: 1
-        ).Events;
+        var randomSeed = 52;
+        var rng = new System.Random(randomSeed);
+        var actual = Enumerable.Range(0, 10)
+            .Select(_ => stage.NextEvent(rng.Next(0, 100)))
+            .ToList();
 
         Assert.AreEqual(
             expected,

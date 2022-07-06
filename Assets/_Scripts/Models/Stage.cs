@@ -13,52 +13,60 @@ namespace Flawless.Models
             Workshop = 2,
         }
 
-        public static Stage GenerateStage(
-            int randomSeed,
-            int events = 30,
-            int specialEventsInterval = 3,
-            int specialEventsSkips = 1
+        private int _steps;
+        private readonly int _specialEventsInterval;
+        private readonly int _specialEventSkips;
+
+        public Stage(
+            int specialEventsInterval,
+            int specialEventSkips
         )
         {
-            var random = new Random(randomSeed);
-            int nonBattleEvents = events / specialEventsInterval;
-
-            IEvent CreateEvent(int i)
-            {
-                if ((i + 1) % specialEventsInterval == 0)
-                {
-                    if (i / specialEventsInterval < specialEventsSkips)
-                    {
-                        return new WorkshopEvent();
-                    }
-
-                    var choosen = (SpecialEvents) Enum.GetValues(typeof(SpecialEvents)).GetValue(
-                        random.Next(Enum.GetNames(typeof(SpecialEvents)).Length)
-                    );
-                    
-                    return choosen switch 
-                    {
-                        SpecialEvents.HardBattle => new BattleEvent(hard: true, randomSeed: random.Next()),
-                        SpecialEvents.Shop => new ShopEvent(),
-                        SpecialEvents.Workshop => new WorkshopEvent(),
-                        _ => throw new Exception("TBD")
-                    };
-                }
-                else
-                {
-                    return new BattleEvent(
-                        hard: false,
-                        randomSeed: random.Next()
-                    );
-                }
-            }
-
-            return new Stage()
-            {
-                Events = Enumerable.Range(0, events).Select(CreateEvent).ToList(),
-            };
+            _specialEventsInterval = specialEventsInterval;
+            _specialEventSkips = specialEventSkips;
+            _steps = 0;
         }
 
-        public List<IEvent> Events { get; private set; }
+        public IEvent NextEvent(int randomSeed)
+        {
+            _steps += 1;
+            return CreateEvent(_steps, randomSeed);
+        }
+
+        private IEvent CreateEvent(int i, int randomSeed)
+        {
+            var random = new Random(randomSeed);
+
+            if (i % _specialEventsInterval == 0)
+            {
+                if (i / _specialEventsInterval < _specialEventSkips)
+                {
+                    return new WorkshopEvent();
+                }
+
+                var choosen = (SpecialEvents) Enum.GetValues(typeof(SpecialEvents)).GetValue(
+                    random.Next(Enum.GetNames(typeof(SpecialEvents)).Length)
+                );
+                
+                return choosen switch 
+                {
+                    SpecialEvents.HardBattle => new BattleEvent(
+                        hard: true, 
+                        randomSeed: random.Next()
+                    ),
+                    SpecialEvents.Shop => new ShopEvent(),
+                    SpecialEvents.Workshop => new WorkshopEvent(),
+                    _ => throw new Exception("TBD")
+                };
+            }
+            else
+            {
+                return new BattleEvent(
+                    hard: false,
+                    randomSeed: random.Next()
+                );
+            }
+        }
+
     }
 }
