@@ -50,3 +50,6 @@ Assets/Plugins/Editor/JetBrains*
 
 !/.github/**/*
 .github/bin/.pack-venv/
+
+# Unity test runner generated files
+Assets/InitTestScene*
