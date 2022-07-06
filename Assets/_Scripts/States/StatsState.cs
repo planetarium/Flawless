@@ -9,13 +9,13 @@ namespace Flawless.States
     /// </summary>
     public class StatsState : DataModel
     {
-        public const long DefaultInitialStrength = 5;
+        public const long InitialStrength = 5;
 
-        public const long DefaultInitialDexterity = 4;
+        public const long InitialDexterity = 4;
 
-        public const long DefaultInitialIntelligence = 0;
+        public const long InitialIntelligence = 0;
 
-        public const long DefaultInitialPoints = 0;
+        public const long InitialPoints = 0;
 
         public long Strength { get; private set; }
 
@@ -31,10 +31,10 @@ namespace Flawless.States
         public StatsState()
             : base()
         {
-            Strength = DefaultInitialStrength;
-            Dexterity = DefaultInitialDexterity;
-            Intelligence = DefaultInitialIntelligence;
-            Points = DefaultInitialPoints;
+            Strength = InitialStrength;
+            Dexterity = InitialDexterity;
+            Intelligence = InitialIntelligence;
+            Points = InitialPoints;
         }
 
         private StatsState(long strength, long dexterity, long intelligence, long points)
