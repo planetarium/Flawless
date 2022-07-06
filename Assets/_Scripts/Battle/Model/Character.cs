@@ -6,14 +6,14 @@ namespace Flawless.Battle
 {
     public class Character : ICharacter
     {
-        public List<SkillBase> Skills { get; private set; }
+        public List<string> Skills { get; private set; }
         public CharacterStat Stat { get; private set; }
         public PoseType Pose { get; set; }
 
 
         public Character(int str, int dex, int @int)
         {
-            Skills = new List<SkillBase>();
+            Skills = new List<string>();
             Stat = new CharacterStat(str, dex, @int);
         }
 

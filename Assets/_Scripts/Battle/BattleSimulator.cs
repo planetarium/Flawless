@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEngine;
+using Flawless.Data;
 
 namespace Flawless.Battle
 {
@@ -16,26 +17,33 @@ namespace Flawless.Battle
         public bool Simulate(
             Character player,
             Character enemy,
-            List<SkillBase> playerSkills,
-            List<SkillBase> enemySkills)
+            List<string> playerSkills,
+            List<string> enemySkills,
+            SkillSheet skillSheet)
         {
             var turn = 0;
             while (turn < TurnLimit)
             {
-                var playerSkill = turn < playerSkills.Count ? playerSkills[turn] : null;
-                var enemySkill = turn < enemySkills.Count ? enemySkills[turn] : null;
+                var playerSkillName = turn < playerSkills.Count ? playerSkills[turn] : null;
+                var enemySkillName = turn < enemySkills.Count ? enemySkills[turn] : null;
 
-                if (player.Skills.FirstOrDefault(x => x.Equals(playerSkill)) == default)
+                SkillBase playerSkill = null;
+                SkillBase enemySkill = null;
+
+                if (player.Skills.Exists(x => x.Equals(playerSkillName)))
                 {
-                    throw new ArgumentException($"Player skill {playerSkill.GetType().Name} not found.");
-                }
-                if (enemy.Skills.FirstOrDefault(x => x.Equals(enemySkill)) == default)
-                {
-                    throw new ArgumentException($"Enemy skill {enemySkill.GetType().Name} not found.");
+                    playerSkill = skillSheet.TryGetValue(playerSkillName, out var playerRow) ?
+                        SkillFactory.Instance.CreateSkill(playerRow) : null;
                 }
 
-                var playerSpeed = playerSkill.Speed + player.Stat.SPD;
-                var enemySpeed = enemySkill.Speed + enemy.Stat.SPD;
+                if (enemy.Skills.Exists(x => x.Equals(enemySkillName)))
+                {
+                    enemySkill = skillSheet.TryGetValue(enemySkillName, out var enemyRow) ?
+                        SkillFactory.Instance.CreateSkill(enemyRow) : null;
+                }
+
+                var playerSpeed = playerSkill?.Speed ?? 0 + player.Stat.SPD;
+                var enemySpeed = enemySkill?.Speed ?? 0 + enemy.Stat.SPD;
 
                 if (playerSpeed >= enemySpeed)
                 {

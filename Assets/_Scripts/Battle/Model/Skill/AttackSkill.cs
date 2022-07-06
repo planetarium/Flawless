@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Flawless.Battle.Skill
 {
@@ -10,7 +11,7 @@ namespace Flawless.Battle.Skill
             double dexCoefficient,
             double intCoefficient,
             PoseType finishPose,
-            params PoseType[] availablePoses) :
+            List<PoseType> availablePoses) :
             base(speed, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
 

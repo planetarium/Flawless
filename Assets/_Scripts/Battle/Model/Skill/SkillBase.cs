@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace Flawless.Battle.Skill
 {
     public abstract class SkillBase
@@ -8,7 +10,7 @@ namespace Flawless.Battle.Skill
         public double DEXCoefficient { get; private set; }
         public double INTCoefficient { get; private set; }
         public PoseType FinishPose { get; private set; }
-        public PoseType[] AvailablePoses { get; private set; }
+        public List<PoseType> AvailablePoses { get; private set; }
 
         public SkillBase(
             int speed,
@@ -16,7 +18,7 @@ namespace Flawless.Battle.Skill
             double dexCoefficient,
             double intCoefficient,
             PoseType finishPose,
-            params PoseType[] availablePoses)
+            List<PoseType> availablePoses)
         {
             Speed = speed;
             ATKCoefficient = atkCoefficient;
