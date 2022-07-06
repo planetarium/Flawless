@@ -5,12 +5,19 @@ namespace Flawless.Battle.Skill
     {
         public UpwardSlash(
             int speed,
-            int atkCoefficient,
-            int dexCoefficient,
-            int intCoefficient) :
-            base(speed, atkCoefficient, dexCoefficient, intCoefficient)
+            double atkCoefficient,
+            double dexCoefficient,
+            double intCoefficient,
+            PoseType finishPose,
+            params PoseType[] availablePoses) :
+            base(speed, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
 
+        }
+
+        public override int Use(ICharacter caster, ICharacter target)
+        {
+            return base.Use(caster, target);
         }
     }
 }

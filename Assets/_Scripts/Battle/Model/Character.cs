@@ -6,12 +6,10 @@ namespace Flawless.Battle
 {
     public class Character : ICharacter
     {
-        #region Base Stat
-
         public List<SkillBase> Skills { get; private set; }
         public CharacterStat Stat { get; private set; }
+        public PoseType Pose { get; set; }
 
-        #endregion
 
         public Character(int str, int dex, int @int)
         {
@@ -21,12 +19,18 @@ namespace Flawless.Battle
 
         public int UseSkill(SkillBase skill, ICharacter target)
         {
+            if (skill == null)
+            {
+                return default;
+            }
+
             return skill.Use(this, target);
         }
 
-        public int GetDamage(int damage)
+        public int GetDamage(int damage, double multiplier)
         {
-            var actualDamage = Math.Clamp(damage - Stat.DEF, 0, int.MaxValue);
+            var reducedDamage = Math.Round((damage - Stat.DEF) * multiplier, MidpointRounding.AwayFromZero);
+            var actualDamage = (int) Math.Clamp(reducedDamage, 0, damage * multiplier);
             Stat.HP -= actualDamage;
             return actualDamage;
         }

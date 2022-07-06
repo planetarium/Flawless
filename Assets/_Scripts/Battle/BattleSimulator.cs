@@ -22,8 +22,8 @@ namespace Flawless.Battle
             var turn = 0;
             while (turn < TurnLimit)
             {
-                var playerSkill = playerSkills[turn];
-                var enemySkill = enemySkills[turn];
+                var playerSkill = turn < playerSkills.Count ? playerSkills[turn] : null;
+                var enemySkill = turn < enemySkills.Count ? enemySkills[turn] : null;
 
                 if (player.Skills.FirstOrDefault(x => x.Equals(playerSkill)) == default)
                 {
