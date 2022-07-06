@@ -1,15 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Flawless.Models;
 
-public class SampleTest
+public class ModelTest
 {
-    // A Test behaves as an ordinary method
     [Test]
-    public void ModelTestSimplePasses()
+    public void Stage_GenerateStage()
     {
-        Assert.AreEqual(1, Flawless.Model.Test.x);
+        int randomSeed = 52;
+        Type[] expected = new[]
+        {
+            typeof(BattleEvent),
+            typeof(BattleEvent),
+            typeof(WorkshopEvent),
+            typeof(BattleEvent),
+            typeof(BattleEvent),
+            typeof(WorkshopEvent),
+            typeof(BattleEvent),
+            typeof(BattleEvent),
+            typeof(ShopEvent),
+            typeof(BattleEvent),
+        };
+        
+        List<IEvent> actual = Stage.GenerateStage(
+            randomSeed: randomSeed,
+            events: 10,
+            specialEventsInterval: 3,
+            specialEventsSkips: 1
+        ).Events;
+
+        Assert.AreEqual(
+            expected,
+            actual.Select(e => e.GetType()).ToList()
+        );
     }
 }
