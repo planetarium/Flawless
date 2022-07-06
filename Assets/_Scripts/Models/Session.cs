@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Flawless.Models
 {
-    public struct Section
+    public struct Session
     {
         public Section(IEnumerable<Stage> stages) => Stages = stages.ToList();
 
