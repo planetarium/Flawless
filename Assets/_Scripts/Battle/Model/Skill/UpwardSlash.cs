@@ -14,10 +14,5 @@ namespace Flawless.Battle.Skill
         {
 
         }
-
-        public override int Use(ICharacter caster, ICharacter target)
-        {
-            return base.Use(caster, target);
-        }
     }
 }
