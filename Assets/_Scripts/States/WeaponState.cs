@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.Contracts;
+using Libplanet;
 using Libplanet.Store;
 
 namespace Flawless.States
@@ -15,7 +16,9 @@ namespace Flawless.States
         public const long InitialDefense = 0;
         public const long InitialSpeed = 0;
         public const long InitialLifeSteal = 0;
+        public static readonly Address InitialAddress = default;
 
+        public Address Address { get; private set; }
         public string Name { get; private set; }
         public long Health { get; private set; }
         public long Attack { get; private set; }
@@ -29,6 +32,7 @@ namespace Flawless.States
         public WeaponState()
             : base()
         {
+            Address = InitialAddress;
             Name = InitialName;
             Health = InitialHealth;
             Attack = InitialAttack;
@@ -37,15 +41,17 @@ namespace Flawless.States
             LifeSteal = InitialLifeSteal;
         }
 
-        private WeaponState(
-            string name,
-            long health,
-            long attack,
-            long defense,
-            long speed,
-            long lifeSteal)
-            : base()
+        public WeaponState(
+            Address address = default,
+            string name = InitialName,
+            long health = InitialHealth,
+            long attack = InitialAttack,
+            long defense = InitialDefense,
+            long speed = InitialSpeed,
+            long lifeSteal = InitialLifeSteal
+        ) : base()
         {
+            Address = address;
             Name = name;
             Health = health;
             Attack = attack;
@@ -80,12 +86,14 @@ namespace Flawless.States
             else
             {
                 return new WeaponState(
+                    address: Address,
                     name: Name,
                     health: Health + health,
                     attack: Attack + attack,
                     defense: Defense + defense,
                     speed: Speed + speed,
-                    lifeSteal: LifeSteal + lifeSteal);
+                    lifeSteal: LifeSteal + lifeSteal
+                );
             }
         }
 

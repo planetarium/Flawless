@@ -18,30 +18,28 @@ public class ActionTest
     public void SellWeaponAction_Execute()
     {
         var playerKey = new PrivateKey();
+        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        var weaponState = new WeaponState().UpgradeWeapon(
-            health: 10,
-            attack: 15,
-            defense: 20,
-            speed: 30,
-            lifeSteal: 40
+        WeaponState weaponState = new WeaponState(
+            address: weaponAddress
         );
 
         var playerState = new PlayerState(
             name: "ssg",
             address: playerAddress
-        ).UpgradeWeapon(
-            weaponState
-        );
+        ).AddWeapon(weaponState);
+
         long initialGold = playerState.Gold;
-        
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
                 [playerAddress] = playerState.Encode(),
+                [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
         );
-        var action = new SellWeaponAction();
+        var action = new SellWeaponAction(
+            weaponAddress: weaponState.Address
+        );
         
         IAccountStateDelta nextState = action.Execute(new ActionContext
         {
@@ -53,11 +51,17 @@ public class ActionTest
         var playerStateAfterSell = new PlayerState(
             (Dictionary)nextState.GetState(playerAddress)
         );
+        var weaponStateAfterSell = new WeaponState(
+            (Dictionary)nextState.GetState(weaponState.Address)
+        );
 
-        Assert.AreEqual(0, playerStateAfterSell.WeaponState.GetPrice());
         Assert.AreEqual(
             initialGold + weaponState.GetPrice(),
             playerStateAfterSell.Gold
+        );
+        CollectionAssert.DoesNotContain(
+            playerStateAfterSell.Inventory,
+            weaponState.Address
         );
     }
 }
