@@ -1,7 +1,8 @@
 skill_name,speed,atk_coeff,dex_coeff,int_coeff,finish_pose,available_poses
 DownwardSlash,10,1.0,0.25,0,Low,High
-UpwardSlash,10,1.0,0.25,High,Low
+UpwardSlash,10,1.0,0.25,0,High,Low
 DownwardThrust,20,1.5,0.5,0,Special,High
 UpwardThrust,20,1.5,0.5,0,Special,Low
 Heal,0,0,0,0.4,Low,High,Low,Special
 SideStep,999,0,0,0,Low,High,Low,Special
+QuickTransition,999,0,0,0,None,High,Low,Special
