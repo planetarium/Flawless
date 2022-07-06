@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace Flawless.Battle.Skill
 {
@@ -8,22 +6,37 @@ namespace Flawless.Battle.Skill
     {
         public AttackSkill(
             int speed,
-            int atkCoefficient,
-            int dexCoefficient,
-            int intCoefficient) :
-            base(speed, atkCoefficient, dexCoefficient, intCoefficient)
+            double atkCoefficient,
+            double dexCoefficient,
+            double intCoefficient,
+            PoseType finishPose,
+            params PoseType[] availablePoses) :
+            base(speed, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
 
         }
 
         public override int Use(ICharacter caster, ICharacter target)
         {
-            var damage =
+            var damage = CalculateDamage(caster, target);
+            var multiplier = GetDamageMultiplier(caster, target);
+            var actualDamage = target.GetDamage(damage, multiplier);
+            caster.Pose = FinishPose;
+            return actualDamage;
+        }
+
+        public virtual int CalculateDamage(ICharacter caster, ICharacter target)
+        {
+            return (int) Math.Round(
                 caster.Stat.ATK * ATKCoefficient +
                 caster.Stat.DEX * DEXCoefficient +
-                caster.Stat.INT * INTCoefficient;
+                caster.Stat.INT * INTCoefficient,
+                MidpointRounding.AwayFromZero);
+        }
 
-            return target.GetDamage(damage);
+        public virtual double GetDamageMultiplier(ICharacter caster, ICharacter target)
+        {
+            return 1.0;
         }
     }
 }

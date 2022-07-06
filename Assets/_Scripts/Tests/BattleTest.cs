@@ -12,9 +12,9 @@ namespace Flawless.Test
         [Test]
         public void Test()
         {
-            var testSkill = new UpwardSlash(2, 1, 0, 0);
+            var testSkill = new DownwardSlash(2, 1, 0, 0, PoseType.Low);
 
-            var player = new Character(10, 4, 0);
+            var player = new Character(5, 4, 0);
             player.Skills.Add(testSkill);
             var enemy = new Character(5, 4, 0);
             enemy.Skills.Add(testSkill);
@@ -45,6 +45,9 @@ namespace Flawless.Test
                 testSkill,
                 testSkill,
             };
+
+            player.Pose = PoseType.High;
+            enemy.Pose = PoseType.Low;
 
             var simulator = new BattleSimulator();
             var result = simulator.Simulate(player, enemy, playerSkills, enemySkills);
