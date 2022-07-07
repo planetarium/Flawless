@@ -48,6 +48,9 @@ namespace Flawless.Actions
                 states.GetState(context.Signer) is null
                     ? new PlayerState(_plainValue.Address, _plainValue.Name, context.Random.Seed)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
+            WeaponState weaponState = new WeaponState();
+            long maxHealth = playerState.GetMaxHealth(weaponState);
+            playerState = playerState.EditHealth(maxHealth);
 
             return states.SetState(context.Signer, playerState.Encode());
         }

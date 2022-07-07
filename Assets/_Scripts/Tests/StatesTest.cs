@@ -19,6 +19,7 @@ public class StatesTest
         {
             new WeaponState(
                 address: WeaponStateFactory.DeriveAddress(1),
+                id: 1,
                 grade: 1,
                 price: 5,
                 health: 1,
@@ -29,6 +30,7 @@ public class StatesTest
             ),
             new WeaponState(
                 address: WeaponStateFactory.DeriveAddress(2),
+                id: 2,
                 grade: 2,
                 price: 8,
                 health: 2,
@@ -39,6 +41,7 @@ public class StatesTest
             ),
             new WeaponState(
                 address: WeaponStateFactory.DeriveAddress(3),
+                id: 3,
                 grade: 3,
                 price: 10,
                 health: 3,
