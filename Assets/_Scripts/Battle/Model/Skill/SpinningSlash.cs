@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Flawless.Battle.Skill
 {
-    public class AnkleCut : CounterSkill
+    public class SpinningSlash : CounterSkill
     {
-        public AnkleCut(
+        public SpinningSlash(
             int speed,
             int cooldown,
             double atkCoefficient,
@@ -37,9 +37,12 @@ namespace Flawless.Battle.Skill
         public override Result Counter(ICharacter caster, ICharacter target, SkillBase targetSkill)
         {
             var result = new Result();
-            if (target.Pose == PoseType.High)
+            if (targetSkill is AttackSkill)
             {
                 result.BlockSkill = true;
+                result.DealtDamage = (int) Math.Round(
+                    CalculatePower(caster) * 0.5,
+                    MidpointRounding.AwayFromZero);
             }
 
             return result;
