@@ -14,8 +14,13 @@ namespace Flawless.Battle
         private readonly Dictionary<string, int> _skillCooldownMap;
 
         public Character(int str, int dex, int @int)
+            : this(str, dex, @int, new List<string>())
         {
-            Skills = new List<string>();
+        }
+
+        public Character(int str, int dex, int @int, List<string> skills)
+        {
+            Skills = skills;
             Stat = new CharacterStat(str, dex, @int);
             _skillCooldownMap = new();
         }
