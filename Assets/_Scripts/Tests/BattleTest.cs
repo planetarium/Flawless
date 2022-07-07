@@ -12,9 +12,13 @@ namespace Flawless.Test
         [Test]
         public void Test()
         {
-            var table = Resources.Load<TextAsset>("TableSheets/SkillSheet");
+            var skillTable = Resources.Load<TextAsset>("TableSheets/SkillSheet");
             var skillSheet = new SkillSheet();
-            skillSheet.Set(table.text);
+            skillSheet.Set(skillTable.text);
+
+            var weaponTable = Resources.Load<TextAsset>("TableSheets/WeaponSheet");
+            var weaponSheet = new WeaponSheet();
+            weaponSheet.Set(weaponTable.text);
 
             var player = new Character(5, 4, 0);
             player.Skills.Add("UpwardSlash");
