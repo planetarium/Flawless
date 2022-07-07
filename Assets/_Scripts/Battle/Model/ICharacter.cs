@@ -9,7 +9,7 @@ namespace Flawless.Battle
         public List<string> Skills { get; }
         public PoseType Pose { get; set; }
 
-        public int UseSkill(SkillBase skill, ICharacter target);
-        public int GetDamage(int damage, double multiplier);
+        public SkillLog UseSkill(int turnCount, SkillBase skill, ICharacter target, CounterSkill counter);
+        public int DealDamage(int damage, double multiplier = 1.0);
     }
 }

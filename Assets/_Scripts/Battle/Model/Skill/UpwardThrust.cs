@@ -1,12 +1,10 @@
-
-using System;
 using System.Collections.Generic;
 
 namespace Flawless.Battle.Skill
 {
-    public class DownwardSlash : AttackSkill
+    public class UpwardThrust : AttackSkill
     {
-        public DownwardSlash(
+        public UpwardThrust(
             int speed,
             double atkCoefficient,
             double dexCoefficient,
@@ -20,7 +18,7 @@ namespace Flawless.Battle.Skill
 
         public override double GetPowerMultiplier(ICharacter caster, ICharacter target)
         {
-            return target.Pose == PoseType.Low ? 1.5 : 1.0;
+            return target.Pose == PoseType.High ? 1.4 : 1.0;
         }
     }
 }
