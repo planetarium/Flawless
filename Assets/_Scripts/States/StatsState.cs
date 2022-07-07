@@ -129,7 +129,7 @@ namespace Flawless.States
                 strength: InitialStrength,
                 dexterity: InitialDexterity,
                 intelligence: InitialIntelligence,
-                points: points,
+                points: Points + points,
                 health: Health,
                 experience: Experience);
         }

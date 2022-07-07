@@ -81,7 +81,7 @@ public class PlayerStateTest
         Assert.AreEqual(initialStrength, playerState.StatsState.Strength);
 
         // Check dexterity
-        playerState = playerState.DistributePoints(1, 0, 0);
+        playerState = playerState.DistributePoints(0, 1, 0);
         Assert.AreEqual(points - 1, playerState.StatsState.Points);
         Assert.AreEqual(initialDexterity + 1, playerState.StatsState.Dexterity);
 
@@ -90,7 +90,7 @@ public class PlayerStateTest
         Assert.AreEqual(initialDexterity, playerState.StatsState.Dexterity);
 
         // Check intelligence
-        playerState = playerState.DistributePoints(1, 0, 0);
+        playerState = playerState.DistributePoints(0, 0, 1);
         Assert.AreEqual(points - 1, playerState.StatsState.Points);
         Assert.AreEqual(initialIntelligence + 1, playerState.StatsState.Intelligence);
 
