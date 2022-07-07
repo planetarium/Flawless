@@ -74,6 +74,33 @@ namespace Flawless.Battle.Skill
                         row.INTCoefficient,
                         row.FinishPose,
                         row.AvailablePoses);
+                case "CounterAttack":
+                    return new CounterAttack(
+                        row.Speed,
+                        row.Cooldown,
+                        row.ATKCoefficient,
+                        row.DEXCoefficient,
+                        row.INTCoefficient,
+                        row.FinishPose,
+                        row.AvailablePoses);
+                case "SpinningSlash":
+                    return new SpinningSlash(
+                        row.Speed,
+                        row.Cooldown,
+                        row.ATKCoefficient,
+                        row.DEXCoefficient,
+                        row.INTCoefficient,
+                        row.FinishPose,
+                        row.AvailablePoses);
+                case "ColossusSmash":
+                    return new ColossusSmash(
+                        row.Speed,
+                        row.Cooldown,
+                        row.ATKCoefficient,
+                        row.DEXCoefficient,
+                        row.INTCoefficient,
+                        row.FinishPose,
+                        row.AvailablePoses);
                 case "Heal":
                     return new Heal(
                         row.Speed,

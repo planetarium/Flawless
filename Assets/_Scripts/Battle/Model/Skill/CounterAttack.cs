@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace Flawless.Battle.Skill
 {
-    public class SideStep : CounterSkill
+    public class CounterAttack : CounterSkill
     {
-        public SideStep(
+        public CounterAttack(
             int speed,
             int cooldown,
             double atkCoefficient,
@@ -22,7 +23,7 @@ namespace Flawless.Battle.Skill
             var result = new Result();
             if (targetSkill is AttackSkill)
             {
-                result.DamageMultiplier = 0;
+                result.BlockSkill = true;
                 result.DealtDamage = CalculatePower(caster);
             }
 
