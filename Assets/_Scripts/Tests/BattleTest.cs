@@ -28,6 +28,10 @@ namespace Flawless.Test
             enemy.Skills.Add("Heal");
             enemy.Skills.Add("SideStep");
 
+            var presetTable = Resources.Load<TextAsset>("TableSheets/SkillPresetSheet");
+            var presetSheet = new SkillPresetSheet();
+            presetSheet.Set(presetTable.text);
+
             var playerSkills = new List<string>()
             {
                 "DownwardSlash",
@@ -41,19 +45,8 @@ namespace Flawless.Test
                 "UpwardSlash",
                 "DownwardThrust",
             };
-            var enemySkills = new List<string>()
-            {
-                "DownwardSlash",
-                "UpwardThrust",
-                "SideStep",
-                "UpwardThrust",
-                "UpwardSlash",
-                "DownwardSlash",
-                "UpwardSlash",
-                "DownwardSlash",
-                "UpwardSlash",
-                "DownwardSlash",
-            };
+            var rnd = Random.Range(1, 4);
+            var enemySkills = presetSheet[rnd].Skills;
 
             player.Pose = PoseType.High;
             enemy.Pose = PoseType.High;
