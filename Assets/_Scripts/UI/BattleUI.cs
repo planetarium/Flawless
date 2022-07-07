@@ -13,6 +13,9 @@ namespace Flawless.UI
     public class BattleUI : MonoBehaviour
     {
         [SerializeField]
+        private SkillSelection skillSelection = null;
+
+        [SerializeField]
         private Text battleLogText = null;
         
         [SerializeField]
@@ -63,6 +66,7 @@ namespace Flawless.UI
             };
             var rnd = Random.Range(1, 4);
             var enemySkills = presetSheet[rnd].Skills;
+            skillSelection.Show(enemy.Stat, enemySkills);
 
             player.Pose = PoseType.High;
             enemy.Pose = PoseType.High;

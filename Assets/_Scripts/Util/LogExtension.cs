@@ -12,7 +12,7 @@ namespace Flawless.Util
 
             if (actionLog.Skill == null)
             {
-                sb.AppendLine("스킬 사용이 차단되었다.");
+                sb.AppendLine("아무 행동도 하지 않았다.");
                 return sb.ToString();
             }
 

@@ -1,0 +1,7 @@
+skill_name,skill_description
+DownwardSlash,{0}의 피해를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다.
+UpwardSlash,{0}의 피해를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]발동 후 높은 자세가 된다.
+DownwardThrust,{0}의 피해를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 찌르기 자세가 된다.
+UpwardThrust,{0}의 피해를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]발동 후 찌르기 자세가 된다.
+Heal,{0}의 피해를 회복한다.[newline]발동 후 낮은 자세가 된다.
+SideStep,이번 턴 공격의 피해를 받지 않는다.[newline]찌르기 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다.
