@@ -1,5 +1,6 @@
 using System;
 using Flawless.States;
+using Libplanet;
 using Libplanet.Action;
 using Libplanet.Unity;
 using UnityEngine;
@@ -10,28 +11,34 @@ namespace Flawless.Actions
     [ActionType("sell_weapon_action")]
     public class SellWeaponAction : ActionBase
     {
-        private Bencodex.Types.IValue _plainValue;
+        private Address _weaponAddress;
 
         // Used for reflection when deserializing a stored action.
         public SellWeaponAction()
         {
-            _plainValue = Bencodex.Types.Null.Value;
+        }
+
+        public SellWeaponAction(Address weaponAddress) 
+        {
+            _weaponAddress = weaponAddress;
         }
 
         // Used for serialzing an action.
-        public override Bencodex.Types.IValue PlainValue => Bencodex.Types.Null.Value;
+        public override Bencodex.Types.IValue PlainValue =>
+            (Bencodex.Types.Binary) _weaponAddress.ToByteArray();
 
         // Used for deserializing a stored action.
         public override void LoadPlainValue(Bencodex.Types.IValue plainValue)
         {
-            if (plainValue is Bencodex.Types.Null bnull)
+            if (plainValue is Bencodex.Types.Binary asBinary)
             {
-                _plainValue = bnull;
+                _weaponAddress = new Address(asBinary);
             }
             else
             {
                 throw new ArgumentException(
-                    $"Invalid {nameof(plainValue)} type: {plainValue.GetType()}");
+                    $"Invalid {nameof(plainValue)} type: {plainValue.GetType()}"
+                );
             }
         }
 
@@ -46,20 +53,17 @@ namespace Flawless.Actions
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
-
-            // Mutates the loaded state, logs the result, and stores the resulting state.
-            Debug.Log($"Trying to sell player {playerState.Name} {playerState.Address}'s weapon...");
-            Debug.Log(
-                $"Player gold: {playerState.Gold}, " +
-                $"weapon: {playerState.WeaponState.Encode()}, " +
-                $"weapon price: {playerState.WeaponState.GetPrice()}");
-            playerState = playerState.SellWeapon();
-            Debug.Log(
-                $"Player gold: {playerState.Gold}, " +
-                $"weapon: {playerState.WeaponState.Encode()}");
+            WeaponState weaponState =
+                states.GetState(_weaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                    ? new WeaponState(weaponStateEncoded)
+                    : throw new ArgumentException($"Can't find weapon state at {_weaponAddress}");
+            playerState = playerState
+                    .RemoveWeapon(weaponState)
+                    .AddGold(weaponState.GetPrice());
 
             return states
-                .SetState(context.Signer, playerState.Encode());
+                .SetState(context.Signer, playerState.Encode())
+                .SetState(weaponState.Address, weaponState.Encode());
         }
     }
 }
