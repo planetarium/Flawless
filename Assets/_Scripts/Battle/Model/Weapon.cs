@@ -3,10 +3,23 @@ namespace Flawless.Battle
 {
     public class Weapon
     {
-        public int HP { get; set; }
-        public int ATK { get; set; }
-        public int DEF { get; set; }
-        public int SPD { get; set; }
-        public int LifestealPercentage { get; set; }
+        public int ID { get; private set; }
+        public int Grade { get; private set; }
+        public int HP { get; private set; }
+        public int ATK { get; private set; }
+        public int DEF { get; private set; }
+        public int SPD { get; private set; }
+        public int LifestealPercentage { get; private set; }
+
+        public Weapon(int id, int grade, int hp, int atk, int def, int spd, int lifestealPercentage)
+        {
+            ID = id;
+            Grade = grade;
+            HP = hp;
+            ATK = atk;
+            DEF = def;
+            SPD = spd;
+            LifestealPercentage = lifestealPercentage;
+        }
     }
 }

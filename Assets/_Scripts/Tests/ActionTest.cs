@@ -1,4 +1,4 @@
-using System;   
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -84,8 +84,8 @@ public class ActionTest
             address: playerAddress,
             seed: 13
         ).AddWeapon(weaponState).AddGold(100).Encode();
-        
-        Bencodex.Types.Dictionary sceneDict = 
+
+        Bencodex.Types.Dictionary sceneDict =
             (Dictionary) playerDict["SceneState"];
 
         var playerState = new PlayerState(
@@ -161,8 +161,8 @@ public class ActionTest
             upgradedWeaponState.Speed
         );
         Assert.AreEqual(
-            weaponState.LifeSteal,
-            upgradedWeaponState.LifeSteal
+            weaponState.Lifesteal,
+            upgradedWeaponState.Lifesteal
         );
         Assert.AreEqual(
             weaponState.Price,
@@ -186,8 +186,8 @@ public class ActionTest
             address: playerAddress,
             seed: 13
         ).AddWeapon(weaponState).Encode();
-        
-        Bencodex.Types.Dictionary sceneDict = 
+
+        Bencodex.Types.Dictionary sceneDict =
             (Dictionary) playerDict["SceneState"];
 
         var playerState = new PlayerState(
@@ -259,8 +259,8 @@ public class ActionTest
             address: playerAddress,
             seed: 13
         ).AddWeapon(weaponState).Encode();
-        
-        Bencodex.Types.Dictionary sceneDict = 
+
+        Bencodex.Types.Dictionary sceneDict =
             (Dictionary) playerDict["SceneState"];
 
         var playerState = new PlayerState(
@@ -316,8 +316,8 @@ public class ActionTest
             address: playerAddress,
             seed: 13
         ).AddWeapon(weaponState).Encode();
-        
-        Bencodex.Types.Dictionary sceneDict = 
+
+        Bencodex.Types.Dictionary sceneDict =
             (Dictionary) playerDict["SceneState"];
 
         var playerState = new PlayerState(
@@ -373,8 +373,8 @@ public class ActionTest
             address: playerAddress,
             seed: 13
         ).AddWeapon(weaponState).Encode();
-        
-        Bencodex.Types.Dictionary sceneDict = 
+
+        Bencodex.Types.Dictionary sceneDict =
             (Dictionary) playerDict["SceneState"];
 
         var playerState = new PlayerState(
@@ -430,8 +430,8 @@ public class ActionTest
             address: playerAddress,
             seed: 13
         ).AddWeapon(weaponState).Encode();
-        
-        Bencodex.Types.Dictionary sceneDict = 
+
+        Bencodex.Types.Dictionary sceneDict =
             (Dictionary) playerDict["SceneState"];
 
         var playerState = new PlayerState(

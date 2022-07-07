@@ -76,7 +76,7 @@ namespace Flawless.Battle
                     {
                         break;
                     }
-                    
+
                     var enemyLog = enemy.UseSkill(turn, enemySkill, player, playerSkill as CounterSkill);
                     enemyLog.CasterName = "Enemy";
                     enemyLog.Speed = enemySpeed;

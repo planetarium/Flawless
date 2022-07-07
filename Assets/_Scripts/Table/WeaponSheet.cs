@@ -15,7 +15,7 @@ namespace Flawless.Data
             public int Attack { get; set; }
             public int Defense { get; set; }
             public int Speed { get; set; }
-            public int LifeStealPercentage { get; set; }
+            public int LifestealPercentage { get; set; }
         }
 
         protected override Row CreateRow(string[] fields)
@@ -29,7 +29,7 @@ namespace Flawless.Data
                 Attack = int.Parse(fields[4]),
                 Defense = int.Parse(fields[5]),
                 Speed = int.Parse(fields[6]),
-                LifeStealPercentage = int.Parse(fields[7]),
+                LifestealPercentage = int.Parse(fields[7]),
             };
 
             return row;
