@@ -255,14 +255,16 @@ namespace Flawless.States
             );
         }
 
-        /// <summary>
-        /// Deterministically generate the next <see cref="Encounter"/> using
-        /// <see cref="Seed"/>.
-        /// </summary>
         [Pure]
-        public Encounter GetNextEncounter()
+        public Encounter GetEncounter(EnvironmentState environmentState)
         {
-            return Encounter.GenerateEncounter(StageCleared + 1, EncounterCleared + 1, Seed);
+            return Encounter.GenerateEncounter(
+                StageCleared + 1,
+                EncounterCleared + 1,
+                Seed,
+                environmentState.AvailableWeapons,
+                environmentState.SkillPresets
+            );
         }
     }
 }

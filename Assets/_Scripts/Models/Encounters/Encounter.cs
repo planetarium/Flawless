@@ -1,4 +1,7 @@
+using System.Collections.Immutable;
 using Flawless;
+using Flawless.Battle;
+using Libplanet;
 
 namespace Flawless.Models.Encounters
 {
@@ -23,7 +26,13 @@ namespace Flawless.Models.Encounters
             Seed = seed;
         }
 
-        public static Encounter GenerateEncounter(long stageNumber, long encounterNumber, long seed)
+        public static Encounter GenerateEncounter(
+            long stageNumber,
+            long encounterNumber,
+            long seed,
+            ImmutableList<Address> availableWeaponAddresses,
+            string skillPresets
+        )
         {
             long randomValue = Utils.Random(100, seed, Salt);
 
@@ -45,7 +54,12 @@ namespace Flawless.Models.Encounters
                     }
                     else if (randomValue < PubChance + SmithChance)
                     {
-                        return new SmithEncounter(stageNumber, encounterNumber, seed);
+                        return new SmithEncounter(
+                            stageNumber,
+                            encounterNumber,
+                            seed,
+                            availableWeaponAddresses
+                        );
                     }
                     else
                     {

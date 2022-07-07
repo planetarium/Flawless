@@ -15,6 +15,7 @@ using Libplanet.Crypto;
 
 public class ActionTest
 {
+    private readonly EnvironmentState _environmentState = new EnvironmentState();
     [Test]
     public void SellWeaponAction_Execute()
     {
@@ -36,6 +37,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -109,6 +111,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -212,6 +215,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -286,6 +290,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -344,6 +349,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -402,6 +408,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -460,6 +467,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
