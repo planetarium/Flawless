@@ -263,14 +263,67 @@ namespace Flawless.States
                 equippedWeapon: EquippedWeapon);
         }
 
+        /// <summary>
+        /// Adds expeirence to character.  This does not actually add skill points to
+        /// <see cref="StatsState"/> automatically.  Manually add skill points using
+        /// <see cref="AddPoints"/>.
+        /// </summary>
         [Pure]
-        public PlayerState ResetStats()
+        public PlayerState AddExperience(long experience)
         {
             return new PlayerState(
                 address: Address,
                 name: Name,
                 sceneState: SceneState,
-                statsState: new StatsState(),
+                statsState: StatsState.AddExperience(experience),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        /// <summary>
+        /// Adds skill points to character.
+        /// </summary>
+        [Pure]
+        public PlayerState AddPoints(long points)
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: StatsState.AddPoints(points),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        /// <summary>
+        /// Resets spent skill points.
+        /// </summary>
+        [Pure]
+        public PlayerState ResetPoints()
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: StatsState.ResetPoints(),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        [Pure]
+        public PlayerState DistributePoints(long strength, long dexterity, long intelligence)
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: StatsState.DistributePoints(strength, dexterity, intelligence),
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
