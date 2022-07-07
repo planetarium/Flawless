@@ -15,11 +15,13 @@ namespace Flawless.States
         public const bool InitialOnRoad = false;
         public const bool InitialInEncounter = false;
         public const long InitialStageCleared = 0;
+        public const bool InitialSmithEntered = false;
         public const long InitialEncounterCleared = 0;
         public const long StagesPerSession = 4;
         public const long EncountersPerStage = 6;
         public const bool InitialFreeHealUsed = false;
         public const bool InitialFreeStatsResetUsed = false;
+        public const bool InitialFreeUpgradeWeaponUsed = false;
 
         public bool InMenu { get; private set; }
         public bool OnWorldMap { get; private set; }
@@ -27,9 +29,11 @@ namespace Flawless.States
         public bool InEncounter { get; private set; }
         public long StageCleared { get; private set; }
         public long EncounterCleared { get; private set; }
+        public bool SmithEntered { get; private set; }
         public long Seed { get; private set; }
         public bool FreeHealUsed { get; private set; }
         public bool FreeResetStatsUsed { get; private set; }
+        public bool FreeUpgradeWeaponUsed { get; private set; }
 
         /// <summary>
         /// Creates a new <see cref="SceneState"/> instance.
@@ -43,9 +47,11 @@ namespace Flawless.States
             InEncounter = InitialInEncounter;
             StageCleared = InitialStageCleared;
             EncounterCleared = InitialEncounterCleared;
+            SmithEntered = InitialSmithEntered;
             Seed = seed;
             FreeHealUsed = InitialFreeHealUsed;
             FreeResetStatsUsed = InitialFreeStatsResetUsed;
+            FreeUpgradeWeaponUsed = InitialFreeUpgradeWeaponUsed;
         }
 
         private SceneState(
@@ -55,9 +61,11 @@ namespace Flawless.States
             bool inEncounter,
             long stageCleared,
             long encounterCleared,
+            bool smithEntered,
             long seed,
             bool freeHealUsed,
-            bool freeResetStatsUsed)
+            bool freeResetStatsUsed,
+            bool freeUpgradeWeaponUsed)
         {
             if (Convert.ToInt32(inMenu) + Convert.ToInt32(onWorldMap) +
                 Convert.ToInt32(onRoad) + Convert.ToInt32(inEncounter) != 1)
@@ -73,9 +81,11 @@ namespace Flawless.States
             InEncounter = inEncounter;
             StageCleared = stageCleared;
             EncounterCleared = encounterCleared;
+            SmithEntered = smithEntered;
             Seed = seed;
             FreeHealUsed = freeHealUsed;
             FreeResetStatsUsed = freeResetStatsUsed;
+            FreeUpgradeWeaponUsed = freeUpgradeWeaponUsed;
         }
 
         /// <summary>
@@ -103,6 +113,7 @@ namespace Flawless.States
             long stageCleared = StageCleared;
             long encounterCleared = EncounterCleared;
             long nextSeed = seed;
+            bool smithEntered = GetNextEncounter() is SmithEncounter;
 
             if (inMenu)
             {
@@ -164,9 +175,11 @@ namespace Flawless.States
                 inEncounter: inEncounter,
                 stageCleared: stageCleared,
                 encounterCleared: encounterCleared,
+                smithEntered: smithEntered,
                 seed: seed,
                 freeHealUsed: FreeHealUsed,
-                freeResetStatsUsed: FreeResetStatsUsed);
+                freeResetStatsUsed: FreeResetStatsUsed,
+                freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
         }
 
         /// <summary>
@@ -189,9 +202,11 @@ namespace Flawless.States
                 inEncounter: InEncounter,
                 stageCleared: StageCleared,
                 encounterCleared: EncounterCleared,
+                smithEntered: SmithEntered,
                 seed: Seed,
                 freeHealUsed: true,
-                freeResetStatsUsed: FreeResetStatsUsed);
+                freeResetStatsUsed: FreeResetStatsUsed,
+                freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
         }
 
         /// <summary>
@@ -215,8 +230,34 @@ namespace Flawless.States
                 stageCleared: StageCleared,
                 encounterCleared: EncounterCleared,
                 seed: Seed,
+                smithEntered: SmithEntered,
                 freeHealUsed: FreeHealUsed,
-                freeResetStatsUsed: true);
+                freeResetStatsUsed: true,
+                freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed
+            );
+        }
+
+        [Pure]
+        public SceneState UpgradeWeapon()
+        {
+            if (!SmithEntered)
+            {
+                throw new Exception("Not in smith now.");
+            }
+
+            return new SceneState(
+                inMenu: InMenu,
+                onWorldMap: OnWorldMap,
+                onRoad: OnRoad,
+                inEncounter: InEncounter,
+                stageCleared: StageCleared,
+                encounterCleared: EncounterCleared,
+                seed: Seed,
+                smithEntered: SmithEntered,
+                freeHealUsed: FreeHealUsed,
+                freeResetStatsUsed: FreeResetStatsUsed,
+                freeUpgradeWeaponUsed: true
+            );
         }
 
         [Pure]

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.Contracts;
+using System.Security.Cryptography;
 using Libplanet;
 using Libplanet.Store;
 
@@ -85,24 +86,42 @@ namespace Flawless.States
             long health,
             long attack,
             long defense,
-            long speed,
-            long lifeSteal)
+            long speed)
         {
-            if (health < 0 || attack < 0 || defense < 0 || speed < 0 || lifeSteal < 0)
+            if (health <= 0 && attack <= 0 && defense <= 0 && speed <= 0)
             {
                 throw new ArgumentException(
-                    $"Cannot lower weapon stats.");
+                    $"Can't set 0 points for upgrade."
+                );
+            }
+            else if (health + attack + defense + speed > 3)
+            {
+                throw new ArgumentException(
+                    "Can't applied upgrade points greater than 3; " +
+                    $"health: {health}, " +
+                    $"attack: {attack}, " +
+                    $"defense: {defense}, " +
+                    $"speed: {speed}." 
+                );
             }
             else
             {
+                byte[] hashed;
+                byte[] addressBytes = Address.ToByteArray();
+                using (var hmac = new HMACSHA1(addressBytes))
+                {
+                    hashed = hmac.ComputeHash(addressBytes);
+                }
+
                 return new WeaponState(
-                    address: Address,
+                    address: new Address(hashed),
                     name: Name,
-                    health: Health + health,
-                    attack: Attack + attack,
-                    defense: Defense + defense,
-                    speed: Speed + speed,
-                    lifeSteal: LifeSteal + lifeSteal
+                    health: Health + (health * 10 * Grade),
+                    attack: Attack + (attack * 2 * Grade),
+                    defense: Defense + (defense * 1 * Grade),
+                    speed: Speed + (speed * 1 * Grade),
+                    lifeSteal: LifeSteal,
+                    price: Price
                 );
             }
         }
