@@ -20,7 +20,7 @@ namespace Flawless.States
         public const long StagesPerSession = 4;
         public const long EncountersPerStage = 6;
         public const bool InitialFreeHealUsed = false;
-        public const bool InitialFreeStatsResetUsed = false;
+        public const bool InitialFreeResetPointsUsed = false;
         public const bool InitialFreeUpgradeWeaponUsed = false;
 
         public bool InMenu { get; private set; }
@@ -38,7 +38,7 @@ namespace Flawless.States
         public long Seed { get; private set; }
 
         public bool FreeHealUsed { get; private set; }
-        public bool FreeResetStatsUsed { get; private set; }
+        public bool FreeResetPointsUsed { get; private set; }
         public bool FreeUpgradeWeaponUsed { get; private set; }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Flawless.States
             SmithEntered = InitialSmithEntered;
             Seed = seed;
             FreeHealUsed = InitialFreeHealUsed;
-            FreeResetStatsUsed = InitialFreeStatsResetUsed;
+            FreeResetPointsUsed = InitialFreeResetPointsUsed;
             FreeUpgradeWeaponUsed = InitialFreeUpgradeWeaponUsed;
         }
 
@@ -70,7 +70,7 @@ namespace Flawless.States
             bool smithEntered,
             long seed,
             bool freeHealUsed,
-            bool freeResetStatsUsed,
+            bool freeResetPointsUsed,
             bool freeUpgradeWeaponUsed)
         {
             if (Convert.ToInt32(inMenu) + Convert.ToInt32(onWorldMap) +
@@ -90,7 +90,7 @@ namespace Flawless.States
             SmithEntered = smithEntered;
             Seed = seed;
             FreeHealUsed = freeHealUsed;
-            FreeResetStatsUsed = freeResetStatsUsed;
+            FreeResetPointsUsed = freeResetPointsUsed;
             FreeUpgradeWeaponUsed = freeUpgradeWeaponUsed;
         }
 
@@ -188,7 +188,7 @@ namespace Flawless.States
                 smithEntered: smithEntered,
                 seed: nextSeed,
                 freeHealUsed: FreeHealUsed,
-                freeResetStatsUsed: FreeResetStatsUsed,
+                freeResetPointsUsed: FreeResetPointsUsed,
                 freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
         }
 
@@ -215,18 +215,18 @@ namespace Flawless.States
                 smithEntered: SmithEntered,
                 seed: Seed,
                 freeHealUsed: true,
-                freeResetStatsUsed: FreeResetStatsUsed,
+                freeResetPointsUsed: FreeResetPointsUsed,
                 freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
         }
 
         /// <summary>
-        /// Changes <see cref="FreeResetStatsUsed"/> flag to <see langword="true"/>.
+        /// Changes <see cref="FreeResetPointsUsed"/> flag to <see langword="true"/>.
         /// This does not actually reset stats.  Use <see cref="PlayerState.ResetStats"/>
         /// to actually reset stats.
         /// </summary>
-        public SceneState UseFreeResetStats()
+        public SceneState UseFreeResetPoints()
         {
-            if (FreeResetStatsUsed)
+            if (FreeResetPointsUsed)
             {
                 throw new ArgumentException(
                     $"Free reset stats already used.");
@@ -242,7 +242,7 @@ namespace Flawless.States
                 seed: Seed,
                 smithEntered: SmithEntered,
                 freeHealUsed: FreeHealUsed,
-                freeResetStatsUsed: true,
+                freeResetPointsUsed: true,
                 freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed
             );
         }
@@ -265,7 +265,7 @@ namespace Flawless.States
                 seed: Seed,
                 smithEntered: SmithEntered,
                 freeHealUsed: FreeHealUsed,
-                freeResetStatsUsed: FreeResetStatsUsed,
+                freeResetPointsUsed: FreeResetPointsUsed,
                 freeUpgradeWeaponUsed: true
             );
         }

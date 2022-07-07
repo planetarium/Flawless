@@ -14,18 +14,18 @@ public class PlayerStateTest
         string name = "foo";
         PlayerState playerState = new PlayerState(address, name, 0);
         Assert.False(playerState.SceneState.FreeHealUsed);
-        Assert.False(playerState.SceneState.FreeResetStatsUsed);
+        Assert.False(playerState.SceneState.FreeResetPointsUsed);
 
         playerState = playerState.UseFreeHeal();
         Assert.True(playerState.SceneState.FreeHealUsed);
-        Assert.False(playerState.SceneState.FreeResetStatsUsed);
+        Assert.False(playerState.SceneState.FreeResetPointsUsed);
 
-        playerState = playerState.UseFreeResetStats();
+        playerState = playerState.UseFreeResetPoints();
         Assert.True(playerState.SceneState.FreeHealUsed);
-        Assert.True(playerState.SceneState.FreeResetStatsUsed);
+        Assert.True(playerState.SceneState.FreeResetPointsUsed);
 
         Assert.Throws<ArgumentException>(() => playerState.UseFreeHeal());
-        Assert.Throws<ArgumentException>(() => playerState.UseFreeResetStats());
+        Assert.Throws<ArgumentException>(() => playerState.UseFreeResetPoints());
     }
 
     [Test]

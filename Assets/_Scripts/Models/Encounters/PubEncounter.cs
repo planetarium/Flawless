@@ -4,8 +4,11 @@ namespace Flawless.Models.Encounters
     {
         private const long Salt = 2;
 
-        public PubEncounter(long stage, long encounter, long seed)
-            : base(stage, encounter, seed)
+        public long HealPrice => StageNumber * 10;
+        public long ResetPointsPrice => StageNumber * 10;
+
+        public PubEncounter(long stageNumber, long encounterNumber, long seed)
+            : base(stageNumber, encounterNumber, seed)
         {
         }
     }
