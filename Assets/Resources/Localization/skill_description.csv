@@ -1,7 +1,9 @@
 skill_name,skill_description
-DownwardSlash,{0}의 피해를 입힌다. 낮은 자세의 적에게 추가 데미지를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다.
-UpwardSlash,{0}의 피해를 입힌다. 높은 자세의 적에게 추가 데미지를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]발동 후 높은 자세가 된다.
-DownwardThrust,{0}의 피해를 입힌다. 낮은 자세의 적에게 추가 데미지를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 찌르기 자세가 된다.
-UpwardThrust,{0}의 피해를 입힌다. 높은 자세의 적에게 추가 데미지를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]발동 후 찌르기 자세가 된다.
-Heal,{0}의 피해를 회복한다.[newline]발동 후 낮은 자세가 된다.
-SideStep,이번 턴 공격의 피해를 받지 않는다.[newline]찌르기 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다.
+DownwardSlash,준수한 피해를 입힌다. 낮은 자세의 적에게 추가 데미지를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다.
+UpwardSlash,준수한 피해를 입힌다. 높은 자세의 적에게 추가 데미지를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]발동 후 높은 자세가 된다.
+DownwardThrust,높은 피해를 입힌다. 낮은 자세의 적에게 추가 데미지를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 찌르기 자세가 된다. (쿨타임 2턴)
+UpwardThrust,높은 피해를 입힌다. 높은 자세의 적에게 추가 데미지를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]발동 후 찌르기 자세가 된다. (쿨타임 2턴)
+HorizontalSlash,준수한 피해를 입힌다.[newline]높은 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다.
+AnkleCut,소량의 피해를 입힌다.[newline]낮은 자세에서만 사용 가능하다.[newline]상대방이 "높은 자세"일 경우 기술 발동을 차단한다.
+Heal,피해를 HP와 INT 스탯에 비례해 회복한다.[newline]발동 후 낮은 자세가 된다. (쿨타임 2턴)
+SideStep,이번 턴 공격의 피해를 받지 않는다.[newline]찌르기 자세에서만 사용 가능하다.[newline]발동 후 낮은 자세가 된다. (쿨타임 2턴)

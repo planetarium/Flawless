@@ -48,13 +48,6 @@ namespace Flawless.UI
             var clonedEnemy = enemy.Clone();
 
             _onClose = onClose;
-            var skillTable = Resources.Load<TextAsset>("TableSheets/SkillSheet");
-            var skillSheet = new SkillSheet();
-            skillSheet.Set(skillTable.text);
-
-            var weaponTable = Resources.Load<TextAsset>("TableSheets/WeaponSheet");
-            var weaponSheet = new WeaponSheet();
-            weaponSheet.Set(weaponTable.text);
 
             var simulator = new BattleSimulator();
             var (victory, skillLogs) = simulator.Simulate(
@@ -62,7 +55,7 @@ namespace Flawless.UI
                 clonedEnemy,
                 playerSkills,
                 enemySkills,
-                skillSheet);
+                TableManager.Instance.SkillSheet);
             WriteLogs(skillLogs);
         }
 
@@ -73,8 +66,8 @@ namespace Flawless.UI
 
         public IEnumerator CoWriteLogs(IEnumerable<SkillLog> logs)
         {
-            playerStatView.UpdateView(_player);
-            enemyStatView.UpdateView(_enemy);
+            battleLogText.text = string.Empty;
+            SetStatView(_player, _enemy);
 
             var sb = new StringBuilder();
             var turnCount = -1;
@@ -125,8 +118,13 @@ namespace Flawless.UI
                 yield return null;
             }
             _onClose?.Invoke();
-            playerStatView.UpdateView(_player);
-            enemyStatView.UpdateView(_enemy);
+            SetStatView(_player, _enemy);
+        }
+
+        public void SetStatView(Character player, Character enemy)
+        {
+            playerStatView.UpdateView(player);
+            enemyStatView.UpdateView(enemy);
         }
     }
 }

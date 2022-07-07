@@ -39,21 +39,25 @@ namespace Flawless.Battle
             Player.Pose = PoseType.High;
             Enemy.Pose = PoseType.High;
 
-            var presetTable = Resources.Load<TextAsset>("TableSheets/SkillPresetSheet");
-            var presetSheet = new SkillPresetSheet();
-            presetSheet.Set(presetTable.text);
             var rnd = Random.Range(1, 4);
-            _enemySkills = presetSheet[rnd].Skills;
+            _enemySkills = TableManager.Instance.SkillPresetSheet[rnd].Skills;
+            battleUI.SetStatView(Player, Enemy);
             StartBattleEncounter();
         }
 
         public void StartBattleEncounter()
         {
-            skillSelection.Show(Enemy.Stat, _enemySkills, Preview);
+            skillSelection.Show(_enemySkills, Preview, Confirm);
         }
 
         public void Preview(List<string> playerSkills)
         {
+            battleUI.PreviewBattle(Player, Enemy, playerSkills, _enemySkills, skillSelection.Show);
+        }
+
+        public void Confirm(List<string> playerSkills)
+        {
+            // TODO : Do Action
             battleUI.PreviewBattle(Player, Enemy, playerSkills, _enemySkills, skillSelection.Show);
         }
     }

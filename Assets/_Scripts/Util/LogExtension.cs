@@ -5,6 +5,13 @@ namespace Flawless.Util
 {
     public static class LogExtension
     {
+        public static string GetSkillDescription(string skillName)
+        {
+            var name = LocalizationManager.Instance.GetSkillName(skillName);
+            var desc = LocalizationManager.Instance.GetSkillDescription(skillName);
+            return $"{name} : {desc}";
+        }
+
         public static string PoseToString(this PoseType type)
         {
             switch (type)
