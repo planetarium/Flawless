@@ -13,6 +13,8 @@ namespace Flawless.States
         public const long InitialDexterity = 4;
         public const long InitialIntelligence = 0;
         public const long InitialPoints = 0;
+        public const long InitialHealth = 0;
+        public const long InitialExperience = 0;
 
         public long Strength { get; private set; }
         public long Dexterity { get; private set; }
@@ -20,9 +22,12 @@ namespace Flawless.States
         public long Points { get; private set; }
 
         public long Health { get; private set; }
+        public long Experience { get; private set; }
 
         /// <summary>
         /// Creates a new <see cref="StatsState"/> instance.
+        /// This creates a character with zero <see cref="Health"/>.
+        /// Manullay raise its health using <see cref="EditHealth"/>.
         /// </summary>
         public StatsState()
             : base()
@@ -31,9 +36,17 @@ namespace Flawless.States
             Dexterity = InitialDexterity;
             Intelligence = InitialIntelligence;
             Points = InitialPoints;
+            Health = InitialHealth;
+            Experience = InitialExperience;
         }
 
-        private StatsState(long strength, long dexterity, long intelligence, long points, long health)
+        private StatsState(
+            long strength,
+            long dexterity,
+            long intelligence,
+            long points,
+            long health,
+            long experience)
             : base()
         {
             Strength = strength;
@@ -41,6 +54,7 @@ namespace Flawless.States
             Intelligence = intelligence;
             Points = points;
             Health = health;
+            Experience = experience;
         }
 
         /// <summary>
@@ -53,6 +67,10 @@ namespace Flawless.States
         {
         }
 
+        /// <summary>
+        /// Directly edits character's <see cref="Health"/>.  There is no
+        /// safety guard.  Please use responsively.
+        /// </summary>
         [Pure]
         public StatsState EditHealth(long health)
         {
@@ -61,9 +79,48 @@ namespace Flawless.States
                 dexterity: Dexterity,
                 intelligence: Intelligence,
                 points: Points,
-                health: health);
+                health: health,
+                experience: Experience);
         }
 
+        /// <summary>
+        /// Adds expeirence to character.  This does not actually add skill points automatically.
+        /// Manually add skill points using <see cref="AddPoints"/>.
+        /// </summary>
+        [Pure]
+        public StatsState AddExperience(long experience)
+        {
+            return experience < 0
+                ? throw new ArgumentException("Cannot lose experience with a negative value.")
+                : new StatsState(
+                    strength: Strength,
+                    dexterity: Dexterity,
+                    intelligence: Intelligence,
+                    points: Points,
+                    health: Health,
+                    experience: Experience + experience);
+        }
+
+        /// <summary>
+        /// Adds skill points to character.
+        /// </summary>
+        [Pure]
+        public StatsState AddPoints(long points)
+        {
+            return points < 0
+                ? throw new ArgumentException("Cannot lose points with a negative value.")
+                : new StatsState(
+                    strength: Strength,
+                    dexterity: Dexterity,
+                    intelligence: Intelligence,
+                    points: Points + points,
+                    health: Health,
+                    experience: Experience);
+        }
+
+        /// <summary>
+        /// Resets spent skill points.
+        /// </summary>
         [Pure]
         public StatsState ResetPoints()
         {
@@ -72,15 +129,13 @@ namespace Flawless.States
                 strength: InitialStrength,
                 dexterity: InitialDexterity,
                 intelligence: InitialIntelligence,
-                points: points,
-                health: Health);
+                points: Points + points,
+                health: Health,
+                experience: Experience);
         }
 
         [Pure]
-        public StatsState DistributePoints(
-            long strength,
-            long dexterity,
-            long intelligence)
+        public StatsState DistributePoints(long strength, long dexterity, long intelligence)
         {
             long points = strength + dexterity + intelligence;
 
@@ -101,7 +156,8 @@ namespace Flawless.States
                     dexterity: Dexterity + dexterity,
                     intelligence: Intelligence + intelligence,
                     points: Points - points,
-                    health: Health);
+                    health: Health,
+                    experience: Experience);
             }
         }
     }
