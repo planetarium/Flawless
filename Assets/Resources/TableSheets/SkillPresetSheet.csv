@@ -1,0 +1,13 @@
+id,stage,skills
+1,1,DownwardSlash,DownwardSlash,UpwardSlash,DownwardThrust,SideStep,UpwardSlash,DownwardSlash,UpwardThrust,SideStep,UpwardSlash
+2,1,DownwardSlash,DownwardSlash,DownwardSlash,UpwardSlash,DownwardThrust,Heal,UpwardSlash,DownwardSlash,UpwardThrust,SideStep
+3,1,DownwardSlash,Heal,UpwardSlash,Heal,Heal,UpwardThrust,Heal,Heal,UpwardSlash,DownwardThrust
+4,2,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+5,2,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+6,2,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+7,3,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+8,3,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+9,3,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+10,4,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+11,4,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
+12,4,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal,Heal
