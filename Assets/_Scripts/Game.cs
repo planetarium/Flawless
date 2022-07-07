@@ -6,6 +6,8 @@ using Libplanet.Unity;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using Serilog;
+using Serilog.Sinks;
 
 namespace Flawless
 {
@@ -29,6 +31,10 @@ namespace Flawless
             // General application settings.
             Screen.SetResolution(800, 600, FullScreenMode.Windowed);
             Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.ScriptOnly);
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
 
             // Register a listener.
             _blockUpdatedEvent = new BlockUpdatedEvent();
@@ -49,7 +55,7 @@ namespace Flawless
                         // NullReferenceException getting thrown.
                         if (newTip.Index > 0)
                         {
-                            _blockUpdatedEvent.Invoke(newTip);
+                            _agent.RunOnMainThread(() => _blockUpdatedEvent.Invoke(newTip));
                         }
                     }
                 }
@@ -69,7 +75,7 @@ namespace Flawless
         // Updates block texts.
         private void UpdateBlockTexts(Block<PolymorphicAction<ActionBase>> tip)
         {
-            var text = string.Format("Block Hash : {0} / Index : #{1}", 
+            var text = string.Format("Block Hash : {0} / Index : #{1}",
                 tip.Hash.ToString()[..4],
                 tip.Index);
             BlockInformationText.text = text;
