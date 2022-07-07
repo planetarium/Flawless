@@ -121,6 +121,7 @@ namespace Flawless.States
 
                 return new WeaponState(
                     address: new Address(hashed),
+                    id: Id,
                     name: Name,
                     health: Health + (health * 10 * Grade),
                     attack: Attack + (attack * 2 * Grade),
