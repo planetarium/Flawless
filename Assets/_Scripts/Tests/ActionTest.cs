@@ -21,7 +21,8 @@ public class ActionTest
         Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
         WeaponState weaponState = new WeaponState(
-            address: weaponAddress
+            address: weaponAddress,
+            price: 10000L
         );
 
         var playerState = new PlayerState(
@@ -56,7 +57,7 @@ public class ActionTest
         );
 
         Assert.AreEqual(
-            initialGold + weaponState.GetPrice(),
+            initialGold + weaponState.Price,
             playerStateAfterSell.Gold
         );
         CollectionAssert.DoesNotContain(

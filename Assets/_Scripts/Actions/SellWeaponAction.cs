@@ -59,7 +59,7 @@ namespace Flawless.Actions
                     : throw new ArgumentException($"Can't find weapon state at {_weaponAddress}");
             playerState = playerState
                     .RemoveWeapon(weaponState)
-                    .AddGold(weaponState.GetPrice());
+                    .AddGold(weaponState.Price);
 
             return states
                 .SetState(context.Signer, playerState.Encode())

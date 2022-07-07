@@ -14,6 +14,8 @@ namespace Flawless.States
         public const long InitialHealth = 0;
         public const long InitialAttack = 0;
         public const long InitialDefense = 0;
+        public const int InitialGrade = 0;
+        public const long InitialPrice = 0;
         public const long InitialSpeed = 0;
         public const long InitialLifeSteal = 0;
         public static readonly Address InitialAddress = default;
@@ -25,6 +27,8 @@ namespace Flawless.States
         public long Defense { get; private set; }
         public long Speed { get; private set; }
         public long LifeSteal { get; private set; }
+        public int Grade { get; private set; }
+        public long Price { get; private set; }
 
         /// <summary>
         /// Creates a new <see cref="WeaponState"/> instance.
@@ -39,6 +43,8 @@ namespace Flawless.States
             Defense = InitialDefense;
             Speed = InitialSpeed;
             LifeSteal = InitialLifeSteal;
+            Grade = InitialGrade;
+            Price = InitialPrice;
         }
 
         public WeaponState(
@@ -48,7 +54,9 @@ namespace Flawless.States
             long attack = InitialAttack,
             long defense = InitialDefense,
             long speed = InitialSpeed,
-            long lifeSteal = InitialLifeSteal
+            long lifeSteal = InitialLifeSteal,
+            int grade = InitialGrade,
+            long price = InitialPrice
         ) : base()
         {
             Address = address;
@@ -58,6 +66,8 @@ namespace Flawless.States
             Defense = defense;
             Speed = speed;
             LifeSteal = lifeSteal;
+            Grade = grade;
+            Price = price;
         }
 
         /// <summary>
@@ -95,12 +105,6 @@ namespace Flawless.States
                     lifeSteal: LifeSteal + lifeSteal
                 );
             }
-        }
-
-        [Pure]
-        public long GetPrice()
-        {
-            return Health + Attack + Defense + Speed + LifeSteal;
         }
     }
 }
