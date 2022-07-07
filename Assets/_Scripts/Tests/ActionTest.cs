@@ -476,4 +476,43 @@ public class ActionTest
             );
         });
     }
+
+    
+    [Test]
+    public void InitializeStatesAction_Execute()
+    {
+        var weaponSheetCsv = "id,grade,price,hp,atk,def,spd,lifesteal\r\n1,1,5,1,4,7,10,0\r\n2,2,8,2,6,8,11,10\r\n3,3,10,3,5,9,11,15\r\n";
+        var skillPresetSheetCsv = "TBD";
+        var action = new InitalizeStatesAction(
+            weaponSheetCsv,
+            skillPresetSheetCsv
+        );
+        var previousStates = new State();
+        var nextStates = action.Execute(
+            new ActionContext
+            {
+                PreviousStates = previousStates,
+                Signer = default,
+                BlockIndex = 0,
+            }
+        );
+
+        var environmentState = new EnvironmentState(
+            (Bencodex.Types.Dictionary) nextStates.GetState(
+                EnvironmentState.EnvironmentAddress
+            )
+        );
+
+        Assert.AreEqual(
+            skillPresetSheetCsv,
+            environmentState.SkillPresets
+        );
+
+        foreach (var wsAddress in environmentState.AvailableWeapons)
+        {
+            Assert.True(
+                nextStates.GetState(wsAddress) is Bencodex.Types.Dictionary
+            );
+        }
+    }
 }
