@@ -15,8 +15,8 @@ namespace Flawless.States
         public static readonly Address Unequipped = default;
         public const long InitialGold = 0;
 
-        public string Name { get; private set; }
         public Address Address { get; private set; }
+        public string Name { get; private set; }
         public SceneState SceneState { get; private set; }
         public StatsState StatsState { get; private set; }
         public long Gold { get; private set; }
@@ -27,11 +27,11 @@ namespace Flawless.States
         /// <summary>
         /// Creates a new <see cref="PlayerState"/> instance.
         /// </summary>
-        public PlayerState(string name, Address address, long seed)
+        public PlayerState(Address address, string name, long seed)
             : base()
         {
-            Name = name;
             Address = address;
+            Name = name;
             SceneState = new SceneState(seed);
             StatsState = new StatsState();
             Gold = InitialGold;
@@ -41,8 +41,8 @@ namespace Flawless.States
         }
 
         private PlayerState(
-            string name,
             Address address,
+            string name,
             SceneState sceneState,
             StatsState statsState,
             long gold,
@@ -50,8 +50,8 @@ namespace Flawless.States
             ImmutableList<Address> inventory,
             Address equippedWeapon)
         {
-            Name = name;
             Address = address;
+            Name = name;
             SceneState = sceneState;
             StatsState = statsState;
             Gold = gold;
@@ -74,8 +74,8 @@ namespace Flawless.States
         public PlayerState UpdateStats(StatsState statsState)
         {
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: SceneState,
                 statsState: statsState,
                 gold: Gold,
@@ -96,8 +96,8 @@ namespace Flawless.States
             else
             {
                 return new PlayerState(
-                    name: Name,
                     address: Address,
+                    name: Name,
                     sceneState: SceneState,
                     statsState: StatsState,
                     gold: Gold + gold,
@@ -119,8 +119,8 @@ namespace Flawless.States
             else
             {
                 return new PlayerState(
-                    name: Name,
                     address: Address,
+                    name: Name,
                     sceneState: SceneState,
                     statsState: StatsState,
                     gold: Gold - gold,
@@ -135,8 +135,8 @@ namespace Flawless.States
         public PlayerState UpdateBestRecord(BestRecordState bestRecordState)
         {
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: SceneState,
                 statsState: StatsState,
                 gold: Gold,
@@ -150,8 +150,8 @@ namespace Flawless.States
         public PlayerState ResetPlayer(long seed)
         {
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: new SceneState(seed),
                 statsState: new StatsState(),
                 gold: InitialGold,
@@ -173,8 +173,8 @@ namespace Flawless.States
             }
 
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: SceneState,
                 statsState: new StatsState(),
                 gold: InitialGold,
@@ -199,8 +199,8 @@ namespace Flawless.States
                 Inventory.Where(a => a != weapon.Address).ToImmutableList();
 
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: SceneState,
                 statsState: new StatsState(),
                 gold: InitialGold,
@@ -224,8 +224,8 @@ namespace Flawless.States
             }
 
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: SceneState,
                 statsState: new StatsState(),
                 gold: InitialGold,
@@ -239,8 +239,8 @@ namespace Flawless.States
         public PlayerState Proceed(long seed)
         {
             return new PlayerState(
-                name: Name,
                 address: Address,
+                name: Name,
                 sceneState: SceneState.Proceed(seed),
                 statsState: new StatsState(),
                 gold: Gold,
