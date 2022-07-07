@@ -16,7 +16,7 @@ namespace Flawless.Util
                 return sb.ToString();
             }
 
-            var skillName = LocalizationManager.instance.GetSkillName(actionLog.Skill.GetType().Name);
+            var skillName = LocalizationManager.Instance.GetSkillName(actionLog.Skill.GetType().Name);
             sb.AppendLine($"{skillName} 스킬을 사용하였다. (스피드 : {actionLog.Speed})");
             if (actionLog.Blocked)
             {
