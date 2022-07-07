@@ -63,5 +63,19 @@ namespace Flawless.Battle
             Stat.HP -= actualDamage;
             return actualDamage;
         }
+
+        public static Character GenerateEnemy(long stage, long encounter, long seed, bool hard = false)
+        {
+            // FIXME: Dummy implementation.
+            int statBonus = hard ? 1 : 0;
+            Character enemy = new Character(3 + statBonus, 2 + statBonus, 0 + statBonus);
+            enemy.Skills.Add("UpwardSlash");
+            enemy.Skills.Add("DownwardSlash");
+            enemy.Skills.Add("UpwardThrust");
+            enemy.Skills.Add("DownwardThrust");
+            enemy.Skills.Add("Heal");
+            enemy.Skills.Add("SideStep");
+            return enemy;
+        }
     }
 }
