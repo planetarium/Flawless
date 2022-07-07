@@ -1,5 +1,4 @@
 using System;
-using Flawless.Models.Encounters;
 using Flawless.States;
 using Libplanet.Action;
 using Libplanet.Unity;
