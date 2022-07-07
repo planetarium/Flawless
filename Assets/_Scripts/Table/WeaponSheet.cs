@@ -13,7 +13,7 @@ namespace Flawless.Data
             public int Price { get; set; }
             public int HP { get; set; }
             public int Attack { get; set; }
-            public int Defence { get; set; }
+            public int Defense { get; set; }
             public int Speed { get; set; }
             public int LifeStealPercentage { get; set; }
         }
@@ -27,7 +27,7 @@ namespace Flawless.Data
                 Price = int.Parse(fields[2]),
                 HP = int.Parse(fields[3]),
                 Attack = int.Parse(fields[4]),
-                Defence = int.Parse(fields[5]),
+                Defense = int.Parse(fields[5]),
                 Speed = int.Parse(fields[6]),
                 LifeStealPercentage = int.Parse(fields[7]),
             };
