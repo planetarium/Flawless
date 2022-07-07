@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using Libplanet.Store;
+using Flawless.Models.Encounters;
 
 namespace Flawless.States
 {
@@ -15,8 +16,8 @@ namespace Flawless.States
         public const bool InitialInEncounter = false;
         public const long InitialStageCleared = 0;
         public const long InitialEncounterCleared = 0;
-        public const long StagesPerSession = 10;
-        public const long EncountersPerStage = 10;
+        public const long StagesPerSession = 4;
+        public const long EncountersPerStage = 6;
 
         public bool InMenu { get; private set; }
         public bool OnWorldMap { get; private set; }
@@ -152,6 +153,11 @@ namespace Flawless.States
                 stageCleared: stageCleared,
                 encounterCleared: encounterCleared,
                 seed: seed);
+        }
+
+        public Encounter GetNextEncounter()
+        {
+            return Encounter.GenerateEncounter(StageCleared + 1, EncounterCleared + 1, Seed);
         }
     }
 }
