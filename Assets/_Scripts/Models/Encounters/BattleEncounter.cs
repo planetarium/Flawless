@@ -13,7 +13,7 @@ namespace Flawless.Models.Encounters
             : base(stage, encounter, seed)
         {
             Hard = hard;
-            Enemy = null;
+            Enemy = Character.GenerateEnemy(stage, encounter, seed, hard);
         }
     }
 }
