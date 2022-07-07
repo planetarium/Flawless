@@ -27,6 +27,11 @@ namespace Flawless.Util
                 foreach (var rowString in rows)
                 {
                     var fields = rowString.Split('\u002C');
+                    if (fields.Length < 2)
+                    {
+                        continue;
+                    }
+
                     _skillNameMap[fields[0]] = fields[1];
                 }
             }

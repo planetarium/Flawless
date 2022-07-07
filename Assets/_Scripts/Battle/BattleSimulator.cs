@@ -46,13 +46,31 @@ namespace Flawless.Battle
                         SkillFactory.Instance.CreateSkill(enemyRow) : null;
                 }
 
-                var playerSpeed = playerSkill?.Speed ?? 0 + player.Stat.SPD;
-                var enemySpeed = enemySkill?.Speed ?? 0 + enemy.Stat.SPD;
+                var playerSpeed = (playerSkill?.Speed ?? 0) + player.Stat.SPD;
+                var enemySpeed = (enemySkill?.Speed ?? 0) + enemy.Stat.SPD;
 
                 if (playerSpeed >= enemySpeed)
                 {
                     var playerLog = player.UseSkill(turn, playerSkill, enemy);
-                    playerLog.Caster = "Player";
+                    playerLog.CasterName = "Player";
+                    playerLog.Speed = playerSpeed;
+
+                    playerLog.CasterStatus = new SkillLog.CharacterStatus(
+                        player.Stat.HP,
+                        player.Stat.BaseHP,
+                        player.Stat.ATK,
+                        player.Stat.DEF,
+                        player.Stat.SPD,
+                        player.Stat.LifestealPercentage);
+                    playerLog.TargetStatus = new SkillLog.CharacterStatus(
+                        enemy.Stat.HP,
+                        enemy.Stat.BaseHP,
+                        enemy.Stat.ATK,
+                        enemy.Stat.DEF,
+                        enemy.Stat.SPD,
+                        enemy.Stat.LifestealPercentage);
+
+
                     actionLogs.Add(playerLog);
                     if (enemy.Stat.HP <= 0)
                     {
@@ -60,7 +78,24 @@ namespace Flawless.Battle
                     }
                     
                     var enemyLog = enemy.UseSkill(turn, enemySkill, player, playerSkill as CounterSkill);
-                    enemyLog.Caster = "Enemy";
+                    enemyLog.CasterName = "Enemy";
+                    enemyLog.Speed = enemySpeed;
+
+                    enemyLog.TargetStatus = new SkillLog.CharacterStatus(
+                        player.Stat.HP,
+                        player.Stat.BaseHP,
+                        player.Stat.ATK,
+                        player.Stat.DEF,
+                        player.Stat.SPD,
+                        player.Stat.LifestealPercentage);
+                    enemyLog.CasterStatus = new SkillLog.CharacterStatus(
+                        enemy.Stat.HP,
+                        enemy.Stat.BaseHP,
+                        enemy.Stat.ATK,
+                        enemy.Stat.DEF,
+                        enemy.Stat.SPD,
+                        enemy.Stat.LifestealPercentage);
+
                     actionLogs.Add(enemyLog);
                     if (player.Stat.HP <= 0)
                     {
@@ -70,7 +105,24 @@ namespace Flawless.Battle
                 else
                 {
                     var enemyLog = enemy.UseSkill(turn, enemySkill, player);
-                    enemyLog.Caster = "Enemy";
+                    enemyLog.CasterName = "Enemy";
+                    enemyLog.Speed = enemySpeed;
+
+                    enemyLog.TargetStatus = new SkillLog.CharacterStatus(
+                        player.Stat.HP,
+                        player.Stat.BaseHP,
+                        player.Stat.ATK,
+                        player.Stat.DEF,
+                        player.Stat.SPD,
+                        player.Stat.LifestealPercentage);
+                    enemyLog.CasterStatus = new SkillLog.CharacterStatus(
+                        enemy.Stat.HP,
+                        enemy.Stat.BaseHP,
+                        enemy.Stat.ATK,
+                        enemy.Stat.DEF,
+                        enemy.Stat.SPD,
+                        enemy.Stat.LifestealPercentage);
+
                     actionLogs.Add(enemyLog);
                     if (player.Stat.HP <= 0)
                     {
@@ -78,7 +130,24 @@ namespace Flawless.Battle
                     }
 
                     var playerLog = player.UseSkill(turn, playerSkill, enemy, enemySkill as CounterSkill);
-                    playerLog.Caster = "Player";
+                    playerLog.CasterName = "Player";
+                    playerLog.Speed = playerSpeed;
+
+                    playerLog.CasterStatus = new SkillLog.CharacterStatus(
+                        player.Stat.HP,
+                        player.Stat.BaseHP,
+                        player.Stat.ATK,
+                        player.Stat.DEF,
+                        player.Stat.SPD,
+                        player.Stat.LifestealPercentage);
+                    playerLog.TargetStatus = new SkillLog.CharacterStatus(
+                        enemy.Stat.HP,
+                        enemy.Stat.BaseHP,
+                        enemy.Stat.ATK,
+                        enemy.Stat.DEF,
+                        enemy.Stat.SPD,
+                        enemy.Stat.LifestealPercentage);
+
                     actionLogs.Add(playerLog);
                     if (enemy.Stat.HP <= 0)
                     {

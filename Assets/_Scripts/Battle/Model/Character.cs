@@ -24,28 +24,29 @@ namespace Flawless.Battle
         {
             if (skill == null)
             {
-                var skillLog = new SkillLog()
+                var log = new SkillLog()
                 {
                     TurnCount = turnCount,
                     Blocked = true,
                 };
-                return skillLog;
+                return log;
             }
 
             var skillName = skill.GetType().Name;
             if (_skillCooldownMap.TryGetValue(skillName, out var cooldown) && cooldown > 0)
             {
-                var skillLog = new SkillLog()
+                var log = new SkillLog()
                 {
                     Skill = skill,
                     TurnCount = turnCount,
                     BlockedByCooldown = true,
                 };
-                return skillLog;
+                return log;
             }
 
             _skillCooldownMap[skillName] = skill.Cooldown + 1;
-            return skill.Use(turnCount, this, target, counter);
+            var skillLog = skill.Use(turnCount, this, target, counter);
+            return skillLog;
         }
 
         public void ReduceCooldowns()

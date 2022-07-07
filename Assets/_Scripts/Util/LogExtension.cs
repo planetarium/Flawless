@@ -8,7 +8,7 @@ namespace Flawless.Util
         public static string SkillLogToString(this SkillLog actionLog)
         {
             var sb = new StringBuilder();
-            sb.Append($"[Turn {actionLog.TurnCount + 1}] {actionLog.Caster} : ");
+            sb.Append($"[Turn {actionLog.TurnCount + 1}] {actionLog.CasterName} : ");
 
             if (actionLog.Skill == null)
             {
@@ -16,7 +16,8 @@ namespace Flawless.Util
                 return sb.ToString();
             }
 
-            sb.AppendLine($"{actionLog.Skill.GetType().Name} 스킬을 사용하였다.");
+            var skillName = LocalizationManager.instance.GetSkillName(actionLog.Skill.GetType().Name);
+            sb.AppendLine($"{skillName} 스킬을 사용하였다. (스피드 : {actionLog.Speed})");
             if (actionLog.Blocked)
             {
                 sb.AppendLine("스킬 사용이 차단되었다.");
