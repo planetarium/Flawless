@@ -17,6 +17,7 @@ namespace Flawless.States
 
         public string Name { get; private set; }
         public Address Address { get; private set; }
+        public SceneState SceneState { get; private set; }
         public StatsState StatsState { get; private set; }
         public long Gold { get; private set; }
         public BestRecordState BestRecordState { get; private set; }
@@ -26,11 +27,12 @@ namespace Flawless.States
         /// <summary>
         /// Creates a new <see cref="PlayerState"/> instance.
         /// </summary>
-        public PlayerState(string name, Address address)
+        public PlayerState(string name, Address address, long seed)
             : base()
         {
             Name = name;
             Address = address;
+            SceneState = new SceneState(seed);
             StatsState = new StatsState();
             Gold = InitialGold;
             BestRecordState = new BestRecordState();
@@ -41,6 +43,7 @@ namespace Flawless.States
         private PlayerState(
             string name,
             Address address,
+            SceneState sceneState,
             StatsState statsState,
             long gold,
             BestRecordState bestRecordState,
@@ -49,6 +52,7 @@ namespace Flawless.States
         {
             Name = name;
             Address = address;
+            SceneState = sceneState;
             StatsState = statsState;
             Gold = gold;
             BestRecordState = bestRecordState;
@@ -72,6 +76,7 @@ namespace Flawless.States
             return new PlayerState(
                 name: Name,
                 address: Address,
+                sceneState: SceneState,
                 statsState: statsState,
                 gold: Gold,
                 bestRecordState: BestRecordState,
@@ -93,6 +98,7 @@ namespace Flawless.States
                 return new PlayerState(
                     name: Name,
                     address: Address,
+                    sceneState: SceneState,
                     statsState: StatsState,
                     gold: Gold + gold,
                     bestRecordState: BestRecordState,
@@ -115,6 +121,7 @@ namespace Flawless.States
                 return new PlayerState(
                     name: Name,
                     address: Address,
+                    sceneState: SceneState,
                     statsState: StatsState,
                     gold: Gold - gold,
                     bestRecordState: BestRecordState,
@@ -130,6 +137,7 @@ namespace Flawless.States
             return new PlayerState(
                 name: Name,
                 address: Address,
+                sceneState: SceneState,
                 statsState: StatsState,
                 gold: Gold,
                 bestRecordState: bestRecordState,
@@ -139,11 +147,12 @@ namespace Flawless.States
         }
 
         [Pure]
-        public PlayerState ResetPlayer()
+        public PlayerState ResetPlayer(long seed)
         {
             return new PlayerState(
                 name: Name,
                 address: Address,
+                sceneState: new SceneState(seed),
                 statsState: new StatsState(),
                 gold: InitialGold,
                 bestRecordState: BestRecordState,
@@ -166,6 +175,7 @@ namespace Flawless.States
             return new PlayerState(
                 name: Name,
                 address: Address,
+                sceneState: SceneState,
                 statsState: new StatsState(),
                 gold: InitialGold,
                 bestRecordState: BestRecordState,
@@ -191,11 +201,12 @@ namespace Flawless.States
             return new PlayerState(
                 name: Name,
                 address: Address,
+                sceneState: SceneState,
                 statsState: new StatsState(),
                 gold: InitialGold,
                 bestRecordState: BestRecordState,
                 inventory: nextInventory,
-                equippedWeapon: (EquippedWeapon == weapon.Address) 
+                equippedWeapon: (EquippedWeapon == weapon.Address)
                     ? Unequipped
                     : EquippedWeapon
             );
@@ -215,6 +226,7 @@ namespace Flawless.States
             return new PlayerState(
                 name: Name,
                 address: Address,
+                sceneState: SceneState,
                 statsState: new StatsState(),
                 gold: InitialGold,
                 bestRecordState: BestRecordState,
@@ -224,7 +236,21 @@ namespace Flawless.States
         }
 
         [Pure]
-        private bool HasWeapon(Address weaponAddress) => 
+        public PlayerState Proceed(long seed)
+        {
+            return new PlayerState(
+                name: Name,
+                address: Address,
+                sceneState: SceneState.Proceed(seed),
+                statsState: new StatsState(),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        [Pure]
+        private bool HasWeapon(Address weaponAddress) =>
             Inventory.FirstOrDefault(a => a == weaponAddress) != default;
     }
 }
