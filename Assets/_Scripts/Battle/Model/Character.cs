@@ -23,6 +23,7 @@ namespace Flawless.Battle
 
         public Character(int str, int dex, int @int, List<string> skills)
         {
+            Pose = PoseType.High;
             Skills = skills;
             Stat = new CharacterStat(str, dex, @int);
             _skillCooldownMap = new();
