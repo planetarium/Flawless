@@ -631,7 +631,6 @@ public class ActionTest
         });
     }
 
-
     [Test]
     public void InitializeStatesAction_Execute()
     {
@@ -668,5 +667,144 @@ public class ActionTest
                 nextStates.GetState(wsAddress) is Bencodex.Types.Dictionary
             );
         }
+    }
+
+    [Test]
+    public void BattleAction_Execute_Win()
+    {
+        var playerKey = new PrivateKey();
+        Address playerAddress = playerKey.ToAddress();
+        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+            name: "ssg",
+            address: playerAddress,
+            seed: 13
+        ).Encode();
+
+        Bencodex.Types.Dictionary sceneDict =
+            (Dictionary) playerDict["SceneState"];
+        Bencodex.Types.Dictionary statsDict =
+            (Dictionary) playerDict["StatsState"];
+
+        var playerSkills = new[] 
+        {
+            "DownwardSlash",
+            "DownwardSlash",
+            "UpwardSlash",
+            "DownwardThrust",
+            "SideStep",
+            "UpwardSlash",
+            "DownwardSlash",
+            "UpwardThrust",
+            "SideStep",
+            "UpwardSlash",
+        }.ToImmutableList();
+
+        var playerState = new PlayerState(
+            playerDict
+                .SetItem(
+                    "SceneState",
+                    sceneDict
+                        .SetItem("InMenu", false)
+                        .SetItem("InEncounter", true)
+                        .SetItem("EncounterCleared", 1)
+                        .SetItem("Seed", 10)
+                )
+                .SetItem(
+                    "StatsState",
+                    statsDict
+                        .SetItem("Strength", 10000)
+                )
+        ).SetOwnedSkills(playerSkills);
+
+        var action = new BattleAction(playerSkills);
+
+        var previousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+                [playerAddress] = playerState.Encode(),
+            }.ToImmutableDictionary()
+        );
+
+        var nextState = action.Execute(
+            new ActionContext
+            {
+                PreviousStates = previousStates,
+                Signer = playerAddress,
+                BlockIndex = 0,
+                Random = new TestRandom(),
+            }
+        );
+        
+        var playerStateAfterBattle = new PlayerState(
+            (Dictionary)nextState.GetState(playerAddress)
+        );
+
+        Assert.AreEqual(2, playerStateAfterBattle.SceneState.EncounterCleared);
+    }
+
+    [Test]
+    public void BattleAction_Execute_Loss()
+    {
+        var playerKey = new PrivateKey();
+        Address playerAddress = playerKey.ToAddress();
+        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+            name: "ssg",
+            address: playerAddress,
+            seed: 13
+        ).Encode();
+
+        Bencodex.Types.Dictionary sceneDict =
+            (Dictionary) playerDict["SceneState"];
+
+        var playerState = new PlayerState(
+            playerDict.SetItem(
+                "SceneState",
+                sceneDict
+                    .SetItem("EncounterCleared", 1)
+                    .SetItem("Seed", 10)
+            )
+        );
+
+        var action = new BattleAction(
+            new[] 
+            {
+                "DownwardSlash",
+                "DownwardSlash",
+                "UpwardSlash",
+                "DownwardThrust",
+                "SideStep",
+                "UpwardSlash",
+                "DownwardSlash",
+                "UpwardThrust",
+                "SideStep",
+                "UpwardSlash",
+            }.ToImmutableList()
+        );
+
+        var previousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+                [playerAddress] = playerState.Encode(),
+            }.ToImmutableDictionary()
+        );
+
+        var nextState = action.Execute(
+            new ActionContext
+            {
+                PreviousStates = previousStates,
+                Signer = playerAddress,
+                BlockIndex = 0,
+                Random = new TestRandom(),
+            }
+        );
+        
+        var playerStateAfterBattle = new PlayerState(
+            (Dictionary)nextState.GetState(playerAddress)
+        );
+
+        Assert.AreEqual(0, playerStateAfterBattle.SceneState.StageCleared);
+        Assert.AreEqual(0, playerStateAfterBattle.SceneState.EncounterCleared);
     }
 }
