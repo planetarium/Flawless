@@ -8,24 +8,27 @@ public class SceneStateTest
     [Test]
     public void Proceed()
     {
-        long seed = 0;
-        SceneState sceneState = new SceneState(0);
+        long seed = 123;
+        SceneState sceneState = new SceneState(123);
         Assert.IsTrue(sceneState.InMenu);
 
         seed++;
         sceneState = sceneState.Proceed(seed);
         Assert.IsTrue(sceneState.OnWorldMap);
-        Assert.AreEqual(seed, sceneState.Seed);
+        // Seed does not update.
+        Assert.AreNotEqual(seed, sceneState.Seed);
 
         seed++;
         sceneState = sceneState.Proceed(seed);
         Assert.IsTrue(sceneState.OnRoad);
-        Assert.AreEqual(seed, sceneState.Seed);
+        // Seed does not update.
+        Assert.AreNotEqual(seed, sceneState.Seed);
 
         seed++;
         sceneState = sceneState.Proceed(seed);
         Assert.IsTrue(sceneState.InEncounter);
-        Assert.AreEqual(seed, sceneState.Seed);
+        // Still does not update since encounter is not cleared.
+        Assert.AreNotEqual(seed, sceneState.Seed);
         Assert.AreEqual(0, sceneState.EncounterCleared);
 
         // If stage is not cleared, go back to road.
@@ -33,6 +36,7 @@ public class SceneStateTest
         seed++;
         sceneState = sceneState.Proceed(seed);
         Assert.IsTrue(sceneState.OnRoad);
+        // Seed is updated since encounter is cleared.
         Assert.AreEqual(seed, sceneState.Seed);
         Assert.AreEqual(1, sceneState.EncounterCleared);
 
@@ -49,6 +53,7 @@ public class SceneStateTest
         seed++;
         sceneState = sceneState.Proceed(seed);
         Assert.IsTrue(sceneState.OnWorldMap);
+        // Seed is updated since encounter is cleared.
         Assert.AreEqual(seed, sceneState.Seed);
         Assert.AreEqual(1, sceneState.StageCleared);
         Assert.AreEqual(0, sceneState.EncounterCleared);

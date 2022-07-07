@@ -30,7 +30,13 @@ namespace Flawless.States
         public long StageCleared { get; private set; }
         public long EncounterCleared { get; private set; }
         public bool SmithEntered { get; private set; }
+
+        /// <summary>
+        /// A random seed to deterministically generate the next <see cref="Encounter"/>.
+        /// This value is updated only when <see cref="EncounterCleared"/> changes.
+        /// </summary>
         public long Seed { get; private set; }
+
         public bool FreeHealUsed { get; private set; }
         public bool FreeResetStatsUsed { get; private set; }
         public bool FreeUpgradeWeaponUsed { get; private set; }
@@ -99,9 +105,12 @@ namespace Flawless.States
         }
 
         /// <summary>
-        /// Proceeds to next state.
+        /// Proceeds to next state and updated <see cref="Seed"/> with <paramref name="seed"/>.
+        /// The vaue of <see cref="Seed"/> is only updated when an <see cref="Encounter"/>
+        /// is cleared.
         /// </summary>
-        /// <param name="seed">A random seed to newly assign to <see cref="SceneState.Seed"/>.</param>
+        /// <param name="seed">A random seed to newly assign to <see cref="Seed"/>
+        /// only when <see cref="EncounterCleared"/> is changed.</param>
         /// <returns>The next state of current <see cref="SceneState"/>.</returns>
         [Pure]
         public SceneState Proceed(long seed)
@@ -112,7 +121,7 @@ namespace Flawless.States
             bool inEncounter = InEncounter;
             long stageCleared = StageCleared;
             long encounterCleared = EncounterCleared;
-            long nextSeed = seed;
+            long nextSeed = Seed;
             bool smithEntered = GetNextEncounter() is SmithEncounter;
 
             if (inMenu)
@@ -144,6 +153,7 @@ namespace Flawless.States
             {
                 inEncounter = false;
                 encounterCleared += 1;
+                nextSeed = seed;
                 if (encounterCleared == EncountersPerStage)
                 {
                     encounterCleared = 0;
@@ -176,7 +186,7 @@ namespace Flawless.States
                 stageCleared: stageCleared,
                 encounterCleared: encounterCleared,
                 smithEntered: smithEntered,
-                seed: seed,
+                seed: nextSeed,
                 freeHealUsed: FreeHealUsed,
                 freeResetStatsUsed: FreeResetStatsUsed,
                 freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
@@ -260,6 +270,10 @@ namespace Flawless.States
             );
         }
 
+        /// <summary>
+        /// Deterministically generate the next <see cref="Encounter"/> using
+        /// <see cref="Seed"/>.
+        /// </summary>
         [Pure]
         public Encounter GetNextEncounter()
         {
