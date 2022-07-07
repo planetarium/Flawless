@@ -19,6 +19,8 @@ namespace Flawless.States
         public long Intelligence { get; private set; }
         public long Points { get; private set; }
 
+        public long Health { get; private set; }
+
         /// <summary>
         /// Creates a new <see cref="StatsState"/> instance.
         /// </summary>
@@ -31,13 +33,14 @@ namespace Flawless.States
             Points = InitialPoints;
         }
 
-        private StatsState(long strength, long dexterity, long intelligence, long points)
+        private StatsState(long strength, long dexterity, long intelligence, long points, long health)
             : base()
         {
             Strength = strength;
             Dexterity = dexterity;
             Intelligence = intelligence;
             Points = points;
+            Health = health;
         }
 
         /// <summary>
@@ -48,6 +51,29 @@ namespace Flawless.States
         public StatsState(Bencodex.Types.Dictionary encoded)
             : base(encoded)
         {
+        }
+
+        [Pure]
+        public StatsState EditHealth(long health)
+        {
+            return new StatsState(
+                strength: Strength,
+                dexterity: Dexterity,
+                intelligence: Intelligence,
+                points: Points,
+                health: health);
+        }
+
+        [Pure]
+        public StatsState ResetPoints()
+        {
+            long points = (Strength - InitialStrength) + (Dexterity - InitialDexterity) + (Intelligence - InitialIntelligence);
+            return new StatsState(
+                strength: InitialStrength,
+                dexterity: InitialDexterity,
+                intelligence: InitialIntelligence,
+                points: points,
+                health: Health);
         }
 
         [Pure]
@@ -74,7 +100,8 @@ namespace Flawless.States
                     strength: Strength + strength,
                     dexterity: Dexterity + dexterity,
                     intelligence: Intelligence + intelligence,
-                    points: Points - points);
+                    points: Points - points,
+                    health: Health);
             }
         }
     }

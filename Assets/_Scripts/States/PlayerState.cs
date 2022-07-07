@@ -250,6 +250,72 @@ namespace Flawless.States
         }
 
         [Pure]
+        public PlayerState EditHealth(long health)
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: StatsState.EditHealth(health),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        [Pure]
+        public PlayerState ResetStats()
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: new StatsState(),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        /// <summary>
+        /// Changes <see cref="SceneState.FreeHealUsed"/> flag to <see langword="true"/>.
+        /// This does not actually heal the character.  Use <see cref="EditHealth"/>
+        /// to actually adjust health.
+        /// </summary>
+        [Pure]
+        public PlayerState UseFreeHeal()
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState.UseFreeHeal(),
+                statsState: StatsState,
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        /// <summary>
+        /// Changes <see cref="SceneState.FreeResetStatsUsed"/> flag to <see langword="true"/>.
+        /// This does not actually reset stats.  Use <see cref="ResetStats"/>
+        /// to actually reset stats.
+        /// </summary>
+        [Pure]
+        public PlayerState UseFreeResetStats()
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState.UseFreeResetStats(),
+                statsState: StatsState,
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon);
+        }
+
+        [Pure]
         private bool HasWeapon(Address weaponAddress) =>
             Inventory.FirstOrDefault(a => a == weaponAddress) != default;
     }

@@ -18,6 +18,8 @@ namespace Flawless.States
         public const long InitialEncounterCleared = 0;
         public const long StagesPerSession = 4;
         public const long EncountersPerStage = 6;
+        public const bool InitialFreeHealUsed = false;
+        public const bool InitialFreeStatsResetUsed = false;
 
         public bool InMenu { get; private set; }
         public bool OnWorldMap { get; private set; }
@@ -26,6 +28,8 @@ namespace Flawless.States
         public long StageCleared { get; private set; }
         public long EncounterCleared { get; private set; }
         public long Seed { get; private set; }
+        public bool FreeHealUsed { get; private set; }
+        public bool FreeResetStatsUsed { get; private set; }
 
         /// <summary>
         /// Creates a new <see cref="SceneState"/> instance.
@@ -40,6 +44,8 @@ namespace Flawless.States
             StageCleared = InitialStageCleared;
             EncounterCleared = InitialEncounterCleared;
             Seed = seed;
+            FreeHealUsed = InitialFreeHealUsed;
+            FreeResetStatsUsed = InitialFreeStatsResetUsed;
         }
 
         private SceneState(
@@ -49,7 +55,9 @@ namespace Flawless.States
             bool inEncounter,
             long stageCleared,
             long encounterCleared,
-            long seed)
+            long seed,
+            bool freeHealUsed,
+            bool freeResetStatsUsed)
         {
             if (Convert.ToInt32(inMenu) + Convert.ToInt32(onWorldMap) +
                 Convert.ToInt32(onRoad) + Convert.ToInt32(inEncounter) != 1)
@@ -66,6 +74,8 @@ namespace Flawless.States
             StageCleared = stageCleared;
             EncounterCleared = encounterCleared;
             Seed = seed;
+            FreeHealUsed = freeHealUsed;
+            FreeResetStatsUsed = freeResetStatsUsed;
         }
 
         /// <summary>
@@ -154,7 +164,59 @@ namespace Flawless.States
                 inEncounter: inEncounter,
                 stageCleared: stageCleared,
                 encounterCleared: encounterCleared,
-                seed: seed);
+                seed: seed,
+                freeHealUsed: FreeHealUsed,
+                freeResetStatsUsed: FreeResetStatsUsed);
+        }
+
+        /// <summary>
+        /// Changes <see cref="FreeHealUsed"/> flag to <see langword="true"/>.
+        /// This does not actually heal the character.  Use <see cref="PlayerState.EditHealth"/>
+        /// to actually adjust health.
+        /// </summary>
+        public SceneState UseFreeHeal()
+        {
+            if (FreeHealUsed)
+            {
+                throw new ArgumentException(
+                    $"Free heal already used.");
+            }
+
+            return new SceneState(
+                inMenu: InMenu,
+                onWorldMap: OnWorldMap,
+                onRoad: OnRoad,
+                inEncounter: InEncounter,
+                stageCleared: StageCleared,
+                encounterCleared: EncounterCleared,
+                seed: Seed,
+                freeHealUsed: true,
+                freeResetStatsUsed: FreeResetStatsUsed);
+        }
+
+        /// <summary>
+        /// Changes <see cref="FreeResetStatsUsed"/> flag to <see langword="true"/>.
+        /// This does not actually reset stats.  Use <see cref="PlayerState.ResetStats"/>
+        /// to actually reset stats.
+        /// </summary>
+        public SceneState UseFreeResetStats()
+        {
+            if (FreeResetStatsUsed)
+            {
+                throw new ArgumentException(
+                    $"Free reset stats already used.");
+            }
+
+            return new SceneState(
+                inMenu: InMenu,
+                onWorldMap: OnWorldMap,
+                onRoad: OnRoad,
+                inEncounter: InEncounter,
+                stageCleared: StageCleared,
+                encounterCleared: EncounterCleared,
+                seed: Seed,
+                freeHealUsed: FreeHealUsed,
+                freeResetStatsUsed: true);
         }
 
         [Pure]
