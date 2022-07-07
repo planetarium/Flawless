@@ -177,7 +177,7 @@ namespace Flawless.States
                 name: Name,
                 sceneState: SceneState,
                 statsState: new StatsState(),
-                gold: InitialGold,
+                gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory.Add(weapon.Address),
                 equippedWeapon: EquippedWeapon
@@ -203,7 +203,7 @@ namespace Flawless.States
                 name: Name,
                 sceneState: SceneState,
                 statsState: new StatsState(),
-                gold: InitialGold,
+                gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: nextInventory,
                 equippedWeapon: (EquippedWeapon == weapon.Address)
@@ -246,7 +246,8 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeapon: EquippedWeapon);
+                equippedWeapon: EquippedWeapon
+            );
         }
 
         [Pure]
@@ -366,6 +367,21 @@ namespace Flawless.States
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
                 equippedWeapon: EquippedWeapon);
+        }
+
+        [Pure]
+        public PlayerState UseUpgradeWeapon()
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState.UpgradeWeapon(),
+                statsState: StatsState,
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeapon: EquippedWeapon
+            );
         }
 
         [Pure]
