@@ -6,11 +6,11 @@ using Libplanet.Unity;
 namespace Flawless.Actions
 {
     // Used for reflection when deserializing a stored action.
-    [ActionType("reset_session_action")]
-    public class ResetSessionAction : ActionBase
+    [ActionType("start_session_action")]
+    public class StartSessionAction : ActionBase
     {
         // Used for reflection when deserializing a stored action.
-        public ResetSessionAction()
+        public StartSessionAction()
         {
         }
 
@@ -37,13 +37,17 @@ namespace Flawless.Actions
             PlayerState playerState =
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
-                    : throw new ArgumentException($"Invalid player state at {context.Signer}");
+                    : throw new ArgumentException($"Invalid player state at {context.Signer}.");
             if (!playerState.SceneState.InMenu)
             {
-                throw new ArgumentException($"Invalid player state at {context.Signer}; cannot reset session when not in menu");
+                throw new ArgumentException($"Invalid player state at {context.Signer}; cannot start session when not in menu");
+            }
+            else if(playerState.SceneState.StageCleared != 0 || playerState.SceneState.EncounterCleared != 0)
+            {
+                throw new ArgumentException($"Invalid player state at {context.Signer}; cannot start session when not in initial state");
             }
 
-            playerState = playerState.ResetPlayer(context.Random.Seed);
+            playerState = playerState.Proceed(context.Random.Seed);
             return states.SetState(context.Signer, playerState.Encode());
         }
     }

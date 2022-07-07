@@ -49,6 +49,121 @@ public class ActionTest
     }
 
     [Test]
+    public void ResetSessionAction()
+    {
+        var playerName = "ssg";
+        var playerKey = new PrivateKey();
+        var playerAddress = playerKey.ToAddress();
+        var weaponAddress = new PrivateKey().ToAddress();
+        var weaponState = new WeaponState(
+            address: weaponAddress,
+            price: 10000L);
+        var seed = 123;
+        var playerState = new PlayerState(playerAddress, playerName, seed);
+        var random = new System.Random();
+        playerState = playerState.Proceed(random.Next());
+
+        var action = new ResetSessionAction();
+        var invalidPreviousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+                [playerAddress] = playerState.Encode(),
+                [weaponAddress] = weaponState.Encode(),
+            }.ToImmutableDictionary()
+        );
+        Assert.Throws<ArgumentException>(() => action.Execute(new ActionContext
+        {
+            PreviousStates = invalidPreviousStates,
+            Signer = playerAddress,
+            BlockIndex = 23,
+            Random = new TestRandom(seed),
+        }));
+
+        while (!playerState.SceneState.InMenu)
+        {
+            playerState = playerState.Proceed(random.Next());
+        }
+        Assert.AreEqual(SceneState.StagesPerSession, playerState.SceneState.StageCleared);
+        Assert.AreEqual(0, playerState.SceneState.EncounterCleared);
+        Assert.AreNotEqual(seed, playerState.SceneState.Seed);
+
+        var previousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+                [playerAddress] = playerState.Encode(),
+                [weaponAddress] = weaponState.Encode(),
+            }.ToImmutableDictionary()
+        );
+        var newSeed = 12345;
+        IAccountStateDelta nextState = action.Execute(new ActionContext
+        {
+            PreviousStates = previousStates,
+            Signer = playerAddress,
+            BlockIndex = 23,
+            Random = new TestRandom(newSeed),
+        });
+        var nextPlayerState = new PlayerState((Dictionary)nextState.GetState(playerAddress));
+
+        Assert.AreEqual(playerAddress, nextPlayerState.Address);
+        Assert.AreEqual(playerName, nextPlayerState.Name);
+        Assert.AreEqual(default(Address), nextPlayerState.EquippedWeaponAddress);
+        Assert.AreEqual(40, nextPlayerState.GetMaxHealth(new WeaponState()));
+        Assert.AreEqual(newSeed, nextPlayerState.SceneState.Seed);
+        Assert.AreEqual(0, nextPlayerState.SceneState.StageCleared);
+        Assert.AreEqual(0, nextPlayerState.SceneState.EncounterCleared);
+    }
+
+    [Test]
+    public void StartSessionAction()
+    {
+        var playerName = "ssg";
+        var playerKey = new PrivateKey();
+        var playerAddress = playerKey.ToAddress();
+        var seed = 123;
+        var playerState = new PlayerState(playerAddress, playerName, seed);
+        var random = new System.Random();
+        var previousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+                [playerAddress] = playerState.Encode(),
+            }.ToImmutableDictionary()
+        );
+        var action = new StartSessionAction();
+        var newSeed = 456;
+        IAccountStateDelta nextState = action.Execute(new ActionContext
+        {
+            PreviousStates = previousStates,
+            Signer = playerAddress,
+            BlockIndex = 23,
+            Random = new TestRandom(newSeed),
+        });
+        var nextPlayerState = new PlayerState((Dictionary)nextState.GetState(playerAddress));
+
+        // Seed should change.
+        Assert.AreEqual(seed, nextPlayerState.SceneState.Seed);
+        Assert.False(nextPlayerState.SceneState.InMenu);
+        Assert.True(nextPlayerState.SceneState.OnWorldMap);
+
+        previousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+                [playerAddress] = nextPlayerState.Encode(),
+            }.ToImmutableDictionary()
+        );
+        Assert.Throws<ArgumentException>(() => action.Execute(new ActionContext
+        {
+            PreviousStates = previousStates,
+            Signer = playerAddress,
+            BlockIndex = 37,
+            Random = new TestRandom(seed),
+        }));
+    }
+
+    [Test]
     public void SellWeaponAction_Execute()
     {
         var playerKey = new PrivateKey();
@@ -56,8 +171,7 @@ public class ActionTest
         Address playerAddress = playerKey.ToAddress();
         WeaponState weaponState = new WeaponState(
             address: weaponAddress,
-            price: 10000L
-        );
+            price: 10000L);
 
         var playerState = new PlayerState(
             name: "ssg",
