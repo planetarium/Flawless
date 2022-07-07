@@ -83,6 +83,7 @@ namespace Flawless.States
         /// </summary>
         /// <param name="seed">A random seed to newly assign to <see cref="SceneState.Seed"/>.</param>
         /// <returns>The next state of current <see cref="SceneState"/>.</returns>
+        [Pure]
         public SceneState Proceed(long seed)
         {
             bool inMenu = InMenu;
@@ -91,6 +92,7 @@ namespace Flawless.States
             bool inEncounter = InEncounter;
             long stageCleared = StageCleared;
             long encounterCleared = EncounterCleared;
+            long nextSeed = seed;
 
             if (inMenu)
             {
@@ -155,6 +157,7 @@ namespace Flawless.States
                 seed: seed);
         }
 
+        [Pure]
         public Encounter GetNextEncounter()
         {
             return Encounter.GenerateEncounter(StageCleared + 1, EncounterCleared + 1, Seed);

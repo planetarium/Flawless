@@ -1,3 +1,5 @@
+using Flawless;
+
 namespace Flawless.Models.Encounters
 {
     public abstract class Encounter : IEncounter
@@ -5,6 +7,7 @@ namespace Flawless.Models.Encounters
         // These should add up to less than 100
         public const long PubChance = 33;
         public const long SmithChance = 33;
+        private const long Salt = 1;
 
         public long StageNumber { get; private set; }
         public long EncounterNumber { get; private set; }
@@ -22,6 +25,8 @@ namespace Flawless.Models.Encounters
 
         public static Encounter GenerateEncounter(long stageNumber, long encounterNumber, long seed)
         {
+            long randomValue = Utils.Random(100, seed, Salt);
+
             if (encounterNumber % 3 != 0)
             {
                 return new BattleEncounter(stageNumber, encounterNumber, seed);
@@ -34,11 +39,11 @@ namespace Flawless.Models.Encounters
                 }
                 else
                 {
-                    if (seed % 100 < PubChance)
+                    if (randomValue < PubChance)
                     {
                         return new BarEncounter(stageNumber, encounterNumber, seed);
                     }
-                    else if (seed % 100 < PubChance + SmithChance)
+                    else if (randomValue < PubChance + SmithChance)
                     {
                         return new SmithEncounter(stageNumber, encounterNumber, seed);
                     }
