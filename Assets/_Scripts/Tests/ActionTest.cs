@@ -27,7 +27,8 @@ public class ActionTest
 
         var playerState = new PlayerState(
             name: "ssg",
-            address: playerAddress
+            address: playerAddress,
+            seed: 13
         ).AddWeapon(weaponState);
 
         long initialGold = playerState.Gold;
@@ -41,7 +42,7 @@ public class ActionTest
         var action = new SellWeaponAction(
             weaponAddress: weaponState.Address
         );
-        
+
         IAccountStateDelta nextState = action.Execute(new ActionContext
         {
             PreviousStates = previousStates,
