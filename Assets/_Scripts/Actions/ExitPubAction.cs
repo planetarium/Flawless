@@ -7,11 +7,11 @@ using Libplanet.Unity;
 namespace Flawless.Actions
 {
     // Used for reflection when deserializing a stored action.
-    [ActionType("exit_bar_action")]
-    public class ExitBarAction : ActionBase
+    [ActionType("exit_pub_action")]
+    public class ExitPubAction : ActionBase
     {
         // Used for reflection when deserializing a stored action.
-        public ExitBarAction()
+        public ExitPubAction()
         {
         }
 
@@ -40,7 +40,7 @@ namespace Flawless.Actions
                     ? new PlayerState(playerStateEncoded)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
 
-            if (!playerState.SceneState.InEncounter || !(playerState.SceneState.GetNextEncounter() is BarEncounter))
+            if (!playerState.SceneState.InEncounter || !(playerState.SceneState.GetNextEncounter() is PubEncounter))
             {
                 throw new ArgumentException($"Invalid scene state at {context.Signer}.");
             }
