@@ -370,17 +370,17 @@ namespace Flawless.States
         }
 
         /// <summary>
-        /// Changes <see cref="SceneState.FreeResetStatsUsed"/> flag to <see langword="true"/>.
-        /// This does not actually reset stats.  Use <see cref="ResetStats"/>
+        /// Changes <see cref="SceneState.FreeResetPointsUsed"/> flag to <see langword="true"/>.
+        /// This does not actually reset stats.  Use <see cref="ResetPoints"/>
         /// to actually reset stats.
         /// </summary>
         [Pure]
-        public PlayerState UseFreeResetStats()
+        public PlayerState UseFreeResetPoints()
         {
             return new PlayerState(
                 address: Address,
                 name: Name,
-                sceneState: SceneState.UseFreeResetStats(),
+                sceneState: SceneState.UseFreeResetPoints(),
                 statsState: StatsState,
                 gold: Gold,
                 bestRecordState: BestRecordState,
