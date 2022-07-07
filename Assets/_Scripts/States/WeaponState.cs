@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
+using Flawless.Battle;
 using Libplanet;
 using Libplanet.Store;
 
@@ -12,23 +13,25 @@ namespace Flawless.States
     public class WeaponState : DataModel
     {
         public const string InitialName = "Wooden Stick";
+        public const long InitialId = 0;
         public const long InitialHealth = 0;
         public const long InitialAttack = 0;
         public const long InitialDefense = 0;
-        public const int InitialGrade = 0;
+        public const long InitialGrade = 0;
         public const long InitialPrice = 0;
         public const long InitialSpeed = 0;
-        public const long InitialLifeSteal = 0;
+        public const long InitialLifesteal = 0;
         public static readonly Address InitialAddress = default;
 
         public Address Address { get; private set; }
         public string Name { get; private set; }
+        public long Id { get; private set; }
         public long Health { get; private set; }
         public long Attack { get; private set; }
         public long Defense { get; private set; }
         public long Speed { get; private set; }
-        public long LifeSteal { get; private set; }
-        public int Grade { get; private set; }
+        public long Lifesteal { get; private set; }
+        public long Grade { get; private set; }
         public long Price { get; private set; }
 
         /// <summary>
@@ -39,11 +42,12 @@ namespace Flawless.States
         {
             Address = InitialAddress;
             Name = InitialName;
+            Id = InitialId;
             Health = InitialHealth;
             Attack = InitialAttack;
             Defense = InitialDefense;
             Speed = InitialSpeed;
-            LifeSteal = InitialLifeSteal;
+            Lifesteal = InitialLifesteal;
             Grade = InitialGrade;
             Price = InitialPrice;
         }
@@ -51,22 +55,24 @@ namespace Flawless.States
         public WeaponState(
             Address address = default,
             string name = InitialName,
+            long id = InitialId,
             long health = InitialHealth,
             long attack = InitialAttack,
             long defense = InitialDefense,
             long speed = InitialSpeed,
-            long lifeSteal = InitialLifeSteal,
-            int grade = InitialGrade,
+            long lifesteal = InitialLifesteal,
+            long grade = InitialGrade,
             long price = InitialPrice
         ) : base()
         {
             Address = address;
+            Id = id;
             Name = name;
             Health = health;
             Attack = attack;
             Defense = defense;
             Speed = speed;
-            LifeSteal = lifeSteal;
+            Lifesteal = lifesteal;
             Grade = grade;
             Price = price;
         }
@@ -101,7 +107,7 @@ namespace Flawless.States
                     $"health: {health}, " +
                     $"attack: {attack}, " +
                     $"defense: {defense}, " +
-                    $"speed: {speed}." 
+                    $"speed: {speed}."
                 );
             }
             else
@@ -120,10 +126,23 @@ namespace Flawless.States
                     attack: Attack + (attack * 2 * Grade),
                     defense: Defense + (defense * 1 * Grade),
                     speed: Speed + (speed * 1 * Grade),
-                    lifeSteal: LifeSteal,
+                    lifesteal: Lifesteal,
                     price: Price
                 );
             }
+        }
+
+        [Pure]
+        public Weapon GetWeapon()
+        {
+            return new Weapon(
+                id: (int)Id,
+                grade: (int)Grade,
+                hp: (int)Health,
+                atk: (int)Attack,
+                def: (int)Defense,
+                spd: (int)Speed,
+                lifestealPercentage: (int)Lifesteal);
         }
     }
 }

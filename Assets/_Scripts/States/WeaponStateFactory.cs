@@ -9,7 +9,7 @@ namespace Flawless.States
 {
     public static class WeaponStateFactory
     {
-        private static readonly byte[] AddressKey = 
+        private static readonly byte[] AddressKey =
             new byte[] { 0x00, 0x01, 0x02, 0x03 };
         public static IEnumerable<WeaponState> CreateWeaponStates(
             WeaponSheet sheet
@@ -19,14 +19,14 @@ namespace Flawless.States
             {
                 yield return new WeaponState(
                     address: DeriveAddress(kv.Key),
+                    id: kv.Value.Id,
                     attack: kv.Value.Attack,
                     defense: kv.Value.Defense,
                     grade: kv.Value.Grade,
                     health: kv.Value.HP,
-                    lifeSteal: kv.Value.LifeStealPercentage,
+                    lifesteal: kv.Value.LifestealPercentage,
                     price: kv.Value.Price,
-                    speed: kv.Value.Speed
-                );
+                    speed: kv.Value.Speed);
             }
         }
 

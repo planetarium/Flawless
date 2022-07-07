@@ -25,7 +25,7 @@ public class StatesTest
                 attack: 4,
                 defense: 7,
                 speed: 10,
-                lifeSteal: 0
+                lifesteal: 0
             ),
             new WeaponState(
                 address: WeaponStateFactory.DeriveAddress(2),
@@ -35,7 +35,7 @@ public class StatesTest
                 attack: 6,
                 defense: 8,
                 speed: 11,
-                lifeSteal: 10
+                lifesteal: 10
             ),
             new WeaponState(
                 address: WeaponStateFactory.DeriveAddress(3),
@@ -45,11 +45,11 @@ public class StatesTest
                 attack: 5,
                 defense: 9,
                 speed: 11,
-                lifeSteal: 15
+                lifesteal: 15
             ),
         };
-        
-        WeaponState[] actual = 
+
+        WeaponState[] actual =
             WeaponStateFactory.CreateWeaponStates(sheet).ToArray();
 
         Assert.AreEqual(
