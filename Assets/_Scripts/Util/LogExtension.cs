@@ -5,6 +5,28 @@ namespace Flawless.Util
 {
     public static class LogExtension
     {
+        public static string GetSkillDescription(string skillName)
+        {
+            var name = LocalizationManager.Instance.GetSkillName(skillName);
+            var desc = LocalizationManager.Instance.GetSkillDescription(skillName);
+            return $"{name} : {desc}";
+        }
+
+        public static string PoseToString(this PoseType type)
+        {
+            switch (type)
+            {
+                case PoseType.High:
+                    return "높은 자세";
+                case PoseType.Low:
+                    return "낮은 자세";
+                case PoseType.Special:
+                    return "찌르기 자세";
+            }
+
+            return null;
+        }
+
         public static string SkillLogToString(this SkillLog actionLog)
         {
             var sb = new StringBuilder();
@@ -12,7 +34,7 @@ namespace Flawless.Util
 
             if (actionLog.Skill == null)
             {
-                sb.AppendLine("스킬 사용이 차단되었다.");
+                sb.AppendLine("아무 행동도 하지 않았다.");
                 return sb.ToString();
             }
 

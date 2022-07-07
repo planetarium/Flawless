@@ -1,10 +1,13 @@
 using Flawless.Battle.Skill;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Flawless.Battle
 {
+    [Serializable]
     public class Character : ICharacter
     {
         public List<string> Skills { get; private set; }
@@ -23,6 +26,18 @@ namespace Flawless.Battle
             Skills = skills;
             Stat = new CharacterStat(str, dex, @int);
             _skillCooldownMap = new();
+        }
+
+        public Character Clone()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, this);
+                ms.Position = 0;
+
+                return (Character) formatter.Deserialize(ms);
+            }
         }
 
         public SkillLog UseSkill(int turnCount, SkillBase skill, ICharacter target, CounterSkill counter = null)

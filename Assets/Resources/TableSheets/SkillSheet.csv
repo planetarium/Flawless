@@ -3,7 +3,7 @@ DownwardSlash,10,0,1.0,0.25,0,Low,High
 UpwardSlash,10,0,1.0,0.25,0,High,Low
 DownwardThrust,20,2,1.25,0.5,0,Special,High
 UpwardThrust,20,2,1.25,0.5,0,Special,Low
-HorizontalSlash,25,2,1.0,0.25,0,High,Low
-AnkleCut,25,2,0.75,0.5,0,Low,Low
-Heal,0,2,0,0,0.4,Low,High,Low,Low,High,Special
+HorizontalSlash,25,0,1.0,0.25,0,High,High
+AnkleCut,25,3,0.75,0.5,0,Low,Low
+Heal,0,2,0,0,2,Low,High,Low,Low,High,Special
 SideStep,999,2,0,0,0,Low,High,Low,Special

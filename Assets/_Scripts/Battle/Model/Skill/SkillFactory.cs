@@ -56,6 +56,24 @@ namespace Flawless.Battle.Skill
                         row.INTCoefficient,
                         row.FinishPose,
                         row.AvailablePoses);
+                case "HorizontalSlash":
+                    return new HorizontalSlash(
+                        row.Speed,
+                        row.Cooldown,
+                        row.ATKCoefficient,
+                        row.DEXCoefficient,
+                        row.INTCoefficient,
+                        row.FinishPose,
+                        row.AvailablePoses);
+                case "AnkleCut":
+                    return new AnkleCut(
+                        row.Speed,
+                        row.Cooldown,
+                        row.ATKCoefficient,
+                        row.DEXCoefficient,
+                        row.INTCoefficient,
+                        row.FinishPose,
+                        row.AvailablePoses);
                 case "Heal":
                     return new Heal(
                         row.Speed,
