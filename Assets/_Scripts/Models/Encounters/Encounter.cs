@@ -35,13 +35,13 @@ namespace Flawless.Models.Encounters
             {
                 if (stageNumber == 1 && encounterNumber == 3)
                 {
-                    return new BarEncounter(stageNumber, encounterNumber, seed);
+                    return new PubEncounter(stageNumber, encounterNumber, seed);
                 }
                 else
                 {
                     if (randomValue < PubChance)
                     {
-                        return new BarEncounter(stageNumber, encounterNumber, seed);
+                        return new PubEncounter(stageNumber, encounterNumber, seed);
                     }
                     else if (randomValue < PubChance + SmithChance)
                     {
