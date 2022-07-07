@@ -264,6 +264,19 @@ namespace Flawless.States
         }
 
         [Pure]
+        public long GetMaxHealth(WeaponState weaponState)
+        {
+            if (weaponState.Address != default && !HasWeapon(weaponState.Address))
+            {
+                throw new ArgumentException(
+                    $"The player({Address}) doesn't have the given " +
+                    $"weapon({weaponState.Address}).");
+            }
+
+            return (StatsState.Strength * 8) + weaponState.Health;
+        }
+
+        [Pure]
         public PlayerState EditHealth(long health)
         {
             return new PlayerState(

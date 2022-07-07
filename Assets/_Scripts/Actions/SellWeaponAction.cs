@@ -18,7 +18,7 @@ namespace Flawless.Actions
         {
         }
 
-        public SellWeaponAction(Address weaponAddress) 
+        public SellWeaponAction(Address weaponAddress)
         {
             _weaponAddress = weaponAddress;
         }
@@ -61,9 +61,20 @@ namespace Flawless.Actions
                     .RemoveWeapon(weaponState)
                     .AddGold(weaponState.Price);
 
+            // Adjust health.
+            Address weaponAddress = playerState.EquippedWeaponAddress;
+            WeaponState equippedWeaponState =
+                weaponAddress == default
+                    ? new WeaponState()
+                    : states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary equippedWeaponStateEncoded
+                        ? new WeaponState(equippedWeaponStateEncoded)
+                        : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
+            long health = playerState.StatsState.Health;
+            long maxHealth = playerState.GetMaxHealth(equippedWeaponState);
+            playerState = playerState.EditHealth(Math.Min(health, maxHealth));
+
             return states
-                .SetState(context.Signer, playerState.Encode())
-                .SetState(weaponState.Address, weaponState.Encode());
+                .SetState(context.Signer, playerState.Encode());
         }
     }
 }
