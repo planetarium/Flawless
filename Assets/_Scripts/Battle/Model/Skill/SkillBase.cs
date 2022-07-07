@@ -7,6 +7,7 @@ namespace Flawless.Battle.Skill
     public abstract class SkillBase
     {
         public int Speed { get; private set; }
+        public int Cooldown { get; private set; }
         public double ATKCoefficient { get; private set; }
         public double DEXCoefficient { get; private set; }
         public double INTCoefficient { get; private set; }
@@ -15,6 +16,7 @@ namespace Flawless.Battle.Skill
 
         public SkillBase(
             int speed,
+            int cooldown,
             double atkCoefficient,
             double dexCoefficient,
             double intCoefficient,
@@ -22,6 +24,7 @@ namespace Flawless.Battle.Skill
             List<PoseType> availablePoses)
         {
             Speed = speed;
+            Cooldown = cooldown;
             ATKCoefficient = atkCoefficient;
             DEXCoefficient = dexCoefficient;
             INTCoefficient = intCoefficient;

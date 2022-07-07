@@ -44,15 +44,15 @@ namespace Flawless.Test
             var enemySkills = new List<string>()
             {
                 "DownwardSlash",
+                "UpwardThrust",
+                "SideStep",
+                "UpwardThrust",
                 "UpwardSlash",
                 "DownwardSlash",
                 "UpwardSlash",
                 "DownwardSlash",
                 "UpwardSlash",
                 "DownwardSlash",
-                "UpwardSlash",
-                "DownwardSlash",
-                "UpwardSlash",
             };
 
             player.Pose = PoseType.High;

@@ -23,6 +23,7 @@ namespace Flawless.Battle.Skill
                 case "DownwardSlash":
                     return new DownwardSlash(
                         row.Speed,
+                        row.Cooldown,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
                         row.INTCoefficient,
@@ -31,6 +32,7 @@ namespace Flawless.Battle.Skill
                 case "UpwardSlash":
                     return new UpwardSlash(
                         row.Speed,
+                        row.Cooldown,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
                         row.INTCoefficient,
@@ -39,6 +41,7 @@ namespace Flawless.Battle.Skill
                 case "DownwardThrust":
                     return new DownwardThrust(
                         row.Speed,
+                        row.Cooldown,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
                         row.INTCoefficient,
@@ -47,6 +50,7 @@ namespace Flawless.Battle.Skill
                 case "UpwardThrust":
                     return new UpwardThrust(
                         row.Speed,
+                        row.Cooldown,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
                         row.INTCoefficient,
@@ -55,6 +59,7 @@ namespace Flawless.Battle.Skill
                 case "Heal":
                     return new Heal(
                         row.Speed,
+                        row.Cooldown,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
                         row.INTCoefficient,
@@ -63,6 +68,7 @@ namespace Flawless.Battle.Skill
                 case "SideStep":
                     return new SideStep(
                         row.Speed,
+                        row.Cooldown,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
                         row.INTCoefficient,
