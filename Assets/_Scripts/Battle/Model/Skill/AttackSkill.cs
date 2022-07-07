@@ -17,27 +17,25 @@ namespace Flawless.Battle.Skill
 
         }
 
-        public override int Use(ICharacter caster, ICharacter target)
+        public override void ProcessEffect(SkillLog skillLog, ICharacter caster, ICharacter target, double counterMultiplier = 1.0)
         {
-            var damage = CalculateDamage(caster, target);
-            var multiplier = GetDamageMultiplier(caster, target);
-            var actualDamage = target.GetDamage(damage, multiplier);
-            caster.Pose = FinishPose;
-            return actualDamage;
-        }
+            if (counterMultiplier == 0.0)
+            {
+                skillLog.DamageMultiplier = counterMultiplier;
+                skillLog.DealtDamage = 0;
+                skillLog.DamageBlocked = true;
+                return;
+            }
 
-        public virtual int CalculateDamage(ICharacter caster, ICharacter target)
-        {
-            return (int) Math.Round(
-                caster.Stat.ATK * ATKCoefficient +
-                caster.Stat.DEX * DEXCoefficient +
-                caster.Stat.INT * INTCoefficient,
+            var damage = CalculatePower(caster);
+            var multiplier = GetPowerMultiplier(caster, target) * counterMultiplier;
+            var actualDamage = target.DealDamage(damage, multiplier);
+            var lifestealAmount = (int)Math.Round(actualDamage * (caster.Stat.LifestealPercentage / 100.0),
                 MidpointRounding.AwayFromZero);
-        }
 
-        public virtual double GetDamageMultiplier(ICharacter caster, ICharacter target)
-        {
-            return 1.0;
+            skillLog.DealtDamage = actualDamage;
+            skillLog.LifestealAmount = lifestealAmount;
+            skillLog.DamageMultiplier = multiplier;
         }
     }
 }

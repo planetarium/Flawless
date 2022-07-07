@@ -7,6 +7,6 @@ namespace Flawless.Battle
         public int ATK { get; set; }
         public int DEF { get; set; }
         public int SPD { get; set; }
-        public int LifeStealPercentage { get; set; }
+        public int LifestealPercentage { get; set; }
     }
 }

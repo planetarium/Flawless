@@ -37,7 +37,7 @@ namespace Flawless.Battle.Skill
                         row.FinishPose,
                         row.AvailablePoses);
                 case "DownwardThrust":
-                    return new DownwardSlash(
+                    return new DownwardThrust(
                         row.Speed,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
@@ -45,7 +45,7 @@ namespace Flawless.Battle.Skill
                         row.FinishPose,
                         row.AvailablePoses);
                 case "UpwardThrust":
-                    return new DownwardSlash(
+                    return new UpwardThrust(
                         row.Speed,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
@@ -53,7 +53,7 @@ namespace Flawless.Battle.Skill
                         row.FinishPose,
                         row.AvailablePoses);
                 case "Heal":
-                    return new DownwardSlash(
+                    return new Heal(
                         row.Speed,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
@@ -61,15 +61,7 @@ namespace Flawless.Battle.Skill
                         row.FinishPose,
                         row.AvailablePoses);
                 case "SideStep":
-                    return new DownwardSlash(
-                        row.Speed,
-                        row.ATKCoefficient,
-                        row.DEXCoefficient,
-                        row.INTCoefficient,
-                        row.FinishPose,
-                        row.AvailablePoses);
-                case "QuickTransition":
-                    return new DownwardSlash(
+                    return new SideStep(
                         row.Speed,
                         row.ATKCoefficient,
                         row.DEXCoefficient,
@@ -79,8 +71,6 @@ namespace Flawless.Battle.Skill
                 default:
                     return null;
             }
-
-            return null;
         }
     }
 }

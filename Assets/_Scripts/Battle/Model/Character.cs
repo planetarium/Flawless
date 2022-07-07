@@ -17,17 +17,22 @@ namespace Flawless.Battle
             Stat = new CharacterStat(str, dex, @int);
         }
 
-        public int UseSkill(SkillBase skill, ICharacter target)
+        public SkillLog UseSkill(int turnCount, SkillBase skill, ICharacter target, CounterSkill counter = null)
         {
             if (skill == null)
             {
-                return default;
+                var skillLog = new SkillLog()
+                {
+                    TurnCount = turnCount,
+                    Blocked = true,
+                };
+                return skillLog;
             }
 
-            return skill.Use(this, target);
+            return skill.Use(turnCount, this, target, counter);
         }
 
-        public int GetDamage(int damage, double multiplier)
+        public int DealDamage(int damage, double multiplier = 1.0)
         {
             var reducedDamage = Math.Round((damage - Stat.DEF) * multiplier, MidpointRounding.AwayFromZero);
             var actualDamage = (int) Math.Clamp(reducedDamage, 0, damage * multiplier);

@@ -17,7 +17,7 @@ namespace Flawless.Battle
         public int BaseATK => STR * 1 + (Weapon?.ATK ?? 0);
         public int BaseDEF => DEX / 2 + (Weapon?.DEF ?? 0);
         public int BaseSPD => DEX / 2 + (Weapon?.SPD ?? 0);
-        public int LifeStealPercentage => Weapon?.LifeStealPercentage ?? 0;
+        public int LifestealPercentage => Weapon?.LifestealPercentage ?? 0;
 
         public CharacterStat(int str, int dex, int @int)
         {

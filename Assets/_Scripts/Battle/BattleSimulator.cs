@@ -1,8 +1,5 @@
 using Flawless.Battle.Skill;
 using System.Collections.Generic;
-using System.Linq;
-using System;
-using UnityEngine;
 using Flawless.Data;
 
 namespace Flawless.Battle
@@ -14,7 +11,7 @@ namespace Flawless.Battle
 
         public const int TurnLimit = 10;
 
-        public bool Simulate(
+        public (bool victory, List<SkillLog> skillLogs) Simulate(
             Character player,
             Character enemy,
             List<string> playerSkills,
@@ -22,6 +19,7 @@ namespace Flawless.Battle
             SkillSheet skillSheet)
         {
             var turn = 0;
+            var actionLogs = new List<SkillLog>();
             while (turn < TurnLimit)
             {
                 var playerSkillName = turn < playerSkills.Count ? playerSkills[turn] : null;
@@ -47,37 +45,37 @@ namespace Flawless.Battle
 
                 if (playerSpeed >= enemySpeed)
                 {
-                    var playerDamage = player.UseSkill(playerSkill, enemy);
-                    Debug.Log($"[Turn {turn}] Enemy got {playerDamage} damage. Remaining : {enemy.Stat.HP}");
+                    var playerLog = player.UseSkill(turn, playerSkill, enemy);
+                    playerLog.Caster = "Player";
+                    actionLogs.Add(playerLog);
                     if (enemy.Stat.HP <= 0)
                     {
-                        Debug.Log("Enemy defeated.");
                         break;
                     }
-
-                    var enemyDamage = enemy.UseSkill(enemySkill, player);
-                    Debug.Log($"Player got {enemyDamage} damage. Remaining : {player.Stat.HP}");
+                    
+                    var enemyLog = enemy.UseSkill(turn, enemySkill, player, playerSkill as CounterSkill);
+                    enemyLog.Caster = "Enemy";
+                    actionLogs.Add(enemyLog);
                     if (player.Stat.HP <= 0)
                     {
-                        Debug.Log("Player defeated.");
                         break;
                     }
                 }
                 else
                 {
-                    var enemyDamage = enemy.UseSkill(enemySkill, player);
-                    Debug.Log($"[Turn {turn}] Player got {enemyDamage} damage. Remaining : {player.Stat.HP}");
+                    var enemyLog = enemy.UseSkill(turn, enemySkill, player);
+                    enemyLog.Caster = "Enemy";
+                    actionLogs.Add(enemyLog);
                     if (player.Stat.HP <= 0)
                     {
-                        Debug.Log("Player defeated.");
                         break;
                     }
 
-                    var playerDamage = player.UseSkill(playerSkill, enemy);
-                    Debug.Log($"Enemy got {playerDamage} damage. Remaining : {enemy.Stat.HP}");
+                    var playerLog = player.UseSkill(turn, playerSkill, enemy, enemySkill as CounterSkill);
+                    playerLog.Caster = "Player";
+                    actionLogs.Add(playerLog);
                     if (enemy.Stat.HP <= 0)
                     {
-                        Debug.Log("Enemy defeated.");
                         break;
                     }
                 }
@@ -85,7 +83,8 @@ namespace Flawless.Battle
                 ++turn;
             }
 
-            return player.Stat.HP > 0 && turn < TurnLimit;
+            var victory = player.Stat.HP > 0 && turn < TurnLimit;
+            return (victory, actionLogs);
         }
     }
 }

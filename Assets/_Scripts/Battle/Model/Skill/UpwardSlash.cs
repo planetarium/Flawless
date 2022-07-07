@@ -16,5 +16,10 @@ namespace Flawless.Battle.Skill
         {
 
         }
+
+        public override double GetPowerMultiplier(ICharacter caster, ICharacter target)
+        {
+            return target.Pose == PoseType.High ? 1.5 : 1.0;
+        }
     }
 }
