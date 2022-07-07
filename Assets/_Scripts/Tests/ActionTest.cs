@@ -93,7 +93,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", true)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -195,7 +196,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -268,7 +270,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", true)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -325,7 +328,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", false)
+                    .SetItem("EncounterCleared", 1)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -382,7 +386,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -439,7 +444,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
