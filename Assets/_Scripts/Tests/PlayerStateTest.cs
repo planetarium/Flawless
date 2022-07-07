@@ -8,27 +8,6 @@ using Libplanet.Crypto;
 public class PlayerStateTest
 {
     [Test]
-    public void UseFreeHeal()
-    {
-        Address address = new Address(new PrivateKey().PublicKey);
-        string name = "foo";
-        PlayerState playerState = new PlayerState(address, name, 0);
-        Assert.False(playerState.SceneState.FreeHealUsed);
-        Assert.False(playerState.SceneState.FreeResetPointsUsed);
-
-        playerState = playerState.UseFreeHeal();
-        Assert.True(playerState.SceneState.FreeHealUsed);
-        Assert.False(playerState.SceneState.FreeResetPointsUsed);
-
-        playerState = playerState.UseFreeResetPoints();
-        Assert.True(playerState.SceneState.FreeHealUsed);
-        Assert.True(playerState.SceneState.FreeResetPointsUsed);
-
-        Assert.Throws<ArgumentException>(() => playerState.UseFreeHeal());
-        Assert.Throws<ArgumentException>(() => playerState.UseFreeResetPoints());
-    }
-
-    [Test]
     public void PutDamage()
     {
         Address address = new Address(new PrivateKey().PublicKey);

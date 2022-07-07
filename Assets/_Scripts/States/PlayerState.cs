@@ -379,46 +379,6 @@ namespace Flawless.States
                 skillsState: SkillsState);
         }
 
-        /// <summary>
-        /// Changes <see cref="SceneState.FreeHealUsed"/> flag to <see langword="true"/>.
-        /// This does not actually heal the character.  Use <see cref="EditHealth"/>
-        /// to actually adjust health.
-        /// </summary>
-        [Pure]
-        public PlayerState UseFreeHeal()
-        {
-            return new PlayerState(
-                address: Address,
-                name: Name,
-                sceneState: SceneState.UseFreeHeal(),
-                statsState: StatsState,
-                gold: Gold,
-                bestRecordState: BestRecordState,
-                inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
-                skillsState: SkillsState);
-        }
-
-        /// <summary>
-        /// Changes <see cref="SceneState.FreeResetPointsUsed"/> flag to <see langword="true"/>.
-        /// This does not actually reset stats.  Use <see cref="ResetPoints"/>
-        /// to actually reset stats.
-        /// </summary>
-        [Pure]
-        public PlayerState UseFreeResetPoints()
-        {
-            return new PlayerState(
-                address: Address,
-                name: Name,
-                sceneState: SceneState.UseFreeResetPoints(),
-                statsState: StatsState,
-                gold: Gold,
-                bestRecordState: BestRecordState,
-                inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
-                skillsState: SkillsState);
-        }
-
         [Pure]
         public PlayerState SetOwnedSkills(ImmutableList<string> skills)
         {
@@ -450,21 +410,6 @@ namespace Flawless.States
         }
 
         [Pure]
-        public PlayerState UseUpgradeWeapon()
-        {
-            return new PlayerState(
-                address: Address,
-                name: Name,
-                sceneState: SceneState.UpgradeWeapon(),
-                statsState: StatsState,
-                gold: Gold,
-                bestRecordState: BestRecordState,
-                inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
-                skillsState: SkillsState);
-        }
-
-        [Pure]
         public Character GetCharacter()
         {
             var character = new Character(
@@ -473,7 +418,7 @@ namespace Flawless.States
                 (int)StatsState.Intelligence,
                 SkillsState.OwnedSkills.ToList()
             );
-            
+
             character.Stat.HP -= (int)StatsState.Damages;
             return character;
         }

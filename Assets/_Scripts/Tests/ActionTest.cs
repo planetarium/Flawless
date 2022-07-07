@@ -321,81 +321,6 @@ public class ActionTest
     }
 
     [Test]
-    public void UpgradeWeaponAction_Execute_Free()
-    {
-        var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
-        Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: weaponAddress,
-            price: 10000L
-        );
-        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
-            name: "ssg",
-            address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState).Encode();
-
-        Bencodex.Types.Dictionary sceneDict =
-            (Dictionary) playerDict["SceneState"];
-
-        var playerState = new PlayerState(
-            playerDict.SetItem(
-                "SceneState",
-                sceneDict
-                    .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("EncounterCleared", 5)
-                    .SetItem("Seed", 10)
-            )
-        );
-
-        var action = new UpgradeWeaponAction(
-            health: 1,
-            attack: 1,
-            defense: 1,
-            speed: 0,
-            weaponAddress: weaponState.Address
-        );
-
-        var previousStates = new State(
-            new Dictionary<Address, IValue>
-            {
-                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
-                [playerAddress] = playerState.Encode(),
-                [weaponAddress] = weaponState.Encode(),
-            }.ToImmutableDictionary()
-        );
-
-        IAccountStateDelta nextState = action.Execute(
-            new ActionContext
-            {
-                PreviousStates = previousStates,
-                Signer = playerAddress,
-                BlockIndex = 0,
-            }
-        );
-
-        var playerStateAfterUpgrade = new PlayerState(
-            (Dictionary)nextState.GetState(playerAddress)
-        );
-        byte[] hashed;
-        using (var hmac = new HMACSHA1(weaponAddress.ToByteArray()))
-        {
-            hashed = hmac.ComputeHash(weaponAddress.ToByteArray());
-        }
-        var upgradedWeaponAddress = new Address(hashed);
-        var upgradedWeaponState = new WeaponState(
-            (Dictionary)nextState.GetState(upgradedWeaponAddress)
-        );
-
-        CollectionAssert.DoesNotContain(
-            playerStateAfterUpgrade.Inventory,
-            weaponAddress
-        );
-    }
-
-    [Test]
     public void UpgradeWeaponAction_Execute_NotEnoughGold()
     {
         var playerKey = new PrivateKey();
@@ -541,7 +466,7 @@ public class ActionTest
                     .SetItem("EncounterCleared", 5)
                     .SetItem("Seed", 10)
             )
-        );
+        ).AddGold(1000L);
 
         var action = new UpgradeWeaponAction(
             health: 1,
@@ -600,7 +525,7 @@ public class ActionTest
                     .SetItem("EncounterCleared", 5)
                     .SetItem("Seed", 10)
             )
-        );
+        ).AddGold(1000L);
 
         var action = new UpgradeWeaponAction(
             health: 0,
@@ -685,7 +610,7 @@ public class ActionTest
         Bencodex.Types.Dictionary statsDict =
             (Dictionary) playerDict["StatsState"];
 
-        var playerSkills = new[] 
+        var playerSkills = new[]
         {
             "DownwardSlash",
             "DownwardSlash",
@@ -735,7 +660,7 @@ public class ActionTest
                 Random = new TestRandom(),
             }
         );
-        
+
         var playerStateAfterBattle = new PlayerState(
             (Dictionary)nextState.GetState(playerAddress)
         );
@@ -767,7 +692,7 @@ public class ActionTest
         );
 
         var action = new BattleAction(
-            new[] 
+            new[]
             {
                 "DownwardSlash",
                 "DownwardSlash",
@@ -799,7 +724,7 @@ public class ActionTest
                 Random = new TestRandom(),
             }
         );
-        
+
         var playerStateAfterBattle = new PlayerState(
             (Dictionary)nextState.GetState(playerAddress)
         );
