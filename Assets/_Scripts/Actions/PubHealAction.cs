@@ -67,21 +67,14 @@ namespace Flawless.Actions
                 long health = maxHealth - playerState.StatsState.Damages;
                 long healAmount = (maxHealth * pubEncounter.HealPercentage) / 100;
 
-                if (playerState.SceneState.FreeHealUsed)
+                if (playerState.Gold < pubEncounter.HealPrice)
                 {
-                    if (playerState.Gold < pubEncounter.HealPrice)
-                    {
-                        throw new ArgumentException(
-                            $"Character does not have enough gold to reset points.");
-                    }
-                    else
-                    {
-                        playerState = playerState.Heal(healAmount).SubtractGold(pubEncounter.HealPrice);
-                    }
+                    throw new ArgumentException(
+                        $"Character does not have enough gold to reset points.");
                 }
                 else
                 {
-                    playerState = playerState.Heal(healAmount).UseFreeHeal();
+                    playerState = playerState.Heal(healAmount).SubtractGold(pubEncounter.HealPrice);
                 }
             }
 

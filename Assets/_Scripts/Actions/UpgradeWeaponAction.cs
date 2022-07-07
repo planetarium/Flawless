@@ -82,7 +82,7 @@ namespace Flawless.Actions
             _health = (Integer) asDict[nameof(_health)];
             _speed = (Integer) asDict[nameof(_speed)];
         }
-        
+
         // Executes an action.
         // This is what gets called when a block containing an action is mined
         // or appended to a blockchain.
@@ -111,23 +111,19 @@ namespace Flawless.Actions
                 throw new Exception($"Not in smith now. actual: {encounter}");
             }
 
-            if (sceneState.FreeUpgradeWeaponUsed && playerState.Gold < cost)
+            if (playerState.Gold < cost)
             {
                 throw new Exception(
-                    "Not enough gold; " +
-                    $"balance: {playerState.Gold}, cost: {cost}"
-                );
+                    $"Not enough gold; balance: {playerState.Gold}, cost: {cost}");
             }
             WeaponState upgradedWeapon = weaponState.UpgradeWeapon(
                 health: _health,
                 attack: _attack,
                 defense: _defense,
-                speed: _speed
-            );
+                speed: _speed);
             playerState = playerState.RemoveWeapon(weaponState);
             playerState = playerState.AddWeapon(upgradedWeapon);
             playerState = playerState.SubtractGold(weaponState.Grade * 5);
-            sceneState = sceneState.UpgradeWeapon();
 
             return states
                 .SetState(context.Signer, playerState.Encode())

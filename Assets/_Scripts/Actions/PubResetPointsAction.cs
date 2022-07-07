@@ -57,21 +57,14 @@ namespace Flawless.Actions
             }
             else
             {
-                if (playerState.SceneState.FreeResetPointsUsed)
+                if (playerState.Gold < pubEncounter.ResetPointsPrice)
                 {
-                    if (playerState.Gold < pubEncounter.ResetPointsPrice)
-                    {
-                        throw new ArgumentException(
-                            $"Character does not have enough gold to reset points.");
-                    }
-                    else
-                    {
-                        playerState = playerState.ResetPoints().SubtractGold(pubEncounter.ResetPointsPrice);
-                    }
+                    throw new ArgumentException(
+                        $"Character does not have enough gold to reset points.");
                 }
                 else
                 {
-                    playerState = playerState.ResetPoints().UseFreeResetPoints();
+                    playerState = playerState.ResetPoints().SubtractGold(pubEncounter.ResetPointsPrice);
                 }
             }
 
