@@ -29,15 +29,30 @@ public class PlayerStateTest
     }
 
     [Test]
-    public void EditHealth()
+    public void PutDamage()
     {
         Address address = new Address(new PrivateKey().PublicKey);
         string name = "foo";
-        long health = 1_000;
+        long amount = 1_000;
         PlayerState playerState = new PlayerState(address, name, 0);
-        Assert.Zero(playerState.StatsState.Health);
-        playerState = playerState.EditHealth(health);
-        Assert.AreEqual(health, playerState.StatsState.Health);
+        Assert.Zero(playerState.StatsState.Damages);
+        playerState = playerState.PutDamage(amount);
+        Assert.AreEqual(amount, playerState.StatsState.Damages);
+    }
+
+    [Test]
+    public void Heal()
+    {
+        Address address = new Address(new PrivateKey().PublicKey);
+        string name = "foo";
+        long dealAmount = 1_000;
+        long healAmount = 800;
+        PlayerState playerState = new PlayerState(address, name, 0);
+        playerState = playerState.PutDamage(dealAmount);
+        playerState = playerState.Heal(healAmount);
+        Assert.AreEqual(200, playerState.StatsState.Damages);
+        playerState = playerState.Heal(healAmount);
+        Assert.AreEqual(0, playerState.StatsState.Damages);
     }
 
     [Test]

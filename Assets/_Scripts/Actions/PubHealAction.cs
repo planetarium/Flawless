@@ -64,9 +64,8 @@ namespace Flawless.Actions
                             ? new WeaponState(weaponStateEncoded)
                             : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
                 long maxHealth = playerState.GetMaxHealth(weaponState);
-                long health = playerState.StatsState.Health;
+                long health = maxHealth - playerState.StatsState.Damages;
                 long healAmount = (maxHealth * pubEncounter.HealPercentage) / 100;
-                long newHealth = Math.Min(health + healAmount, maxHealth);
 
                 if (playerState.SceneState.FreeHealUsed)
                 {
@@ -77,12 +76,12 @@ namespace Flawless.Actions
                     }
                     else
                     {
-                        playerState = playerState.EditHealth(newHealth).SubtractGold(pubEncounter.HealPrice);
+                        playerState = playerState.Heal(healAmount).SubtractGold(pubEncounter.HealPrice);
                     }
                 }
                 else
                 {
-                    playerState = playerState.EditHealth(newHealth).UseFreeHeal();
+                    playerState = playerState.Heal(healAmount).UseFreeHeal();
                 }
             }
 

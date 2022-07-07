@@ -140,6 +140,38 @@ namespace Flawless.States
         }
 
         [Pure]
+        public PlayerState PutDamage(long amount)
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: StatsState.PutDamage(amount),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeaponAddress: EquippedWeaponAddress,
+                skillsState: SkillsState
+            );
+        }
+
+        [Pure]
+        public PlayerState Heal(long amount)
+        {
+            return new PlayerState(
+                address: Address,
+                name: Name,
+                sceneState: SceneState,
+                statsState: StatsState.Heal(amount),
+                gold: Gold,
+                bestRecordState: BestRecordState,
+                inventory: Inventory,
+                equippedWeaponAddress: EquippedWeaponAddress,
+                skillsState: SkillsState
+            );
+        }
+
+        [Pure]
         public PlayerState UpdateBestRecord(BestRecordState bestRecordState)
         {
             return new PlayerState(
@@ -274,21 +306,6 @@ namespace Flawless.States
             }
 
             return (StatsState.Strength * 8) + weaponState.Health;
-        }
-
-        [Pure]
-        public PlayerState EditHealth(long health)
-        {
-            return new PlayerState(
-                address: Address,
-                name: Name,
-                sceneState: SceneState,
-                statsState: StatsState.EditHealth(health),
-                gold: Gold,
-                bestRecordState: BestRecordState,
-                inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
-                skillsState: SkillsState);
         }
 
         /// <summary>
@@ -450,11 +467,15 @@ namespace Flawless.States
         [Pure]
         public Character GetCharacter()
         {
-            return new Character(
+            var character = new Character(
                 (int)StatsState.Strength,
                 (int)StatsState.Dexterity,
                 (int)StatsState.Intelligence,
-                SkillsState.OwnedSkills.ToList());
+                SkillsState.OwnedSkills.ToList()
+            );
+            
+            character.Stat.HP -= (int)StatsState.Damages;
+            return character;
         }
 
         [Pure]

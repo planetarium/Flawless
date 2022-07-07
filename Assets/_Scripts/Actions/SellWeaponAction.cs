@@ -69,12 +69,14 @@ namespace Flawless.Actions
                     : states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary equippedWeaponStateEncoded
                         ? new WeaponState(equippedWeaponStateEncoded)
                         : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
-            long health = playerState.StatsState.Health;
             long maxHealth = playerState.GetMaxHealth(equippedWeaponState);
-            playerState = playerState.EditHealth(Math.Min(health, maxHealth));
-
-            return states
-                .SetState(context.Signer, playerState.Encode());
+            long diff = playerState.StatsState.Damages - maxHealth;
+            if (diff > 0)
+            {
+                playerState = playerState.Heal(diff + 1);
+            }
+            
+            return states.SetState(context.Signer, playerState.Encode());
         }
     }
 }

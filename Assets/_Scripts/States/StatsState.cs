@@ -13,21 +13,19 @@ namespace Flawless.States
         public const long InitialDexterity = 4;
         public const long InitialIntelligence = 0;
         public const long InitialPoints = 0;
-        public const long InitialHealth = 0;
+        public const long InitialDamages = 0;
         public const long InitialExperience = 0;
 
         public long Strength { get; private set; }
         public long Dexterity { get; private set; }
         public long Intelligence { get; private set; }
         public long Points { get; private set; }
-
-        public long Health { get; private set; }
+        public long Damages { get; private set; }
         public long Experience { get; private set; }
 
         /// <summary>
         /// Creates a new <see cref="StatsState"/> instance.
-        /// This creates a character with zero <see cref="Health"/>.
-        /// Manullay raise its health using <see cref="EditHealth"/>.
+        /// This creates a character with zero <see cref="Damages"/>.
         /// </summary>
         public StatsState()
             : base()
@@ -36,7 +34,7 @@ namespace Flawless.States
             Dexterity = InitialDexterity;
             Intelligence = InitialIntelligence;
             Points = InitialPoints;
-            Health = InitialHealth;
+            Damages = InitialDamages;
             Experience = InitialExperience;
         }
 
@@ -45,7 +43,7 @@ namespace Flawless.States
             long dexterity,
             long intelligence,
             long points,
-            long health,
+            long damages,
             long experience)
             : base()
         {
@@ -53,7 +51,7 @@ namespace Flawless.States
             Dexterity = dexterity;
             Intelligence = intelligence;
             Points = points;
-            Health = health;
+            Damages = damages;
             Experience = experience;
         }
 
@@ -65,22 +63,6 @@ namespace Flawless.States
         public StatsState(Bencodex.Types.Dictionary encoded)
             : base(encoded)
         {
-        }
-
-        /// <summary>
-        /// Directly edits character's <see cref="Health"/>.  There is no
-        /// safety guard.  Please use responsively.
-        /// </summary>
-        [Pure]
-        public StatsState EditHealth(long health)
-        {
-            return new StatsState(
-                strength: Strength,
-                dexterity: Dexterity,
-                intelligence: Intelligence,
-                points: Points,
-                health: health,
-                experience: Experience);
         }
 
         /// <summary>
@@ -97,7 +79,7 @@ namespace Flawless.States
                     dexterity: Dexterity,
                     intelligence: Intelligence,
                     points: Points,
-                    health: Health,
+                    damages: Damages,
                     experience: Experience + experience);
         }
 
@@ -114,7 +96,7 @@ namespace Flawless.States
                     dexterity: Dexterity,
                     intelligence: Intelligence,
                     points: Points + points,
-                    health: Health,
+                    damages: Damages,
                     experience: Experience);
         }
 
@@ -130,7 +112,7 @@ namespace Flawless.States
                 dexterity: InitialDexterity,
                 intelligence: InitialIntelligence,
                 points: Points + points,
-                health: Health,
+                damages: Damages,
                 experience: Experience);
         }
 
@@ -156,9 +138,35 @@ namespace Flawless.States
                     dexterity: Dexterity + dexterity,
                     intelligence: Intelligence + intelligence,
                     points: Points - points,
-                    health: Health,
+                    damages: Damages,
                     experience: Experience);
             }
+        }
+
+        [Pure]
+        public StatsState Heal(long amount)
+        {
+            return new StatsState(
+                strength: Strength,
+                dexterity: Dexterity,
+                intelligence: Intelligence,
+                points: Points,
+                damages: Math.Max(0, Damages - amount),
+                experience: Experience
+            );
+        }
+
+        [Pure]
+        public StatsState PutDamage(long amount)
+        {
+            return new StatsState(
+                strength: Strength,
+                dexterity: Dexterity,
+                intelligence: Intelligence,
+                points: Points,
+                damages: Damages + amount,
+                experience: Experience
+            );
         }
     }
 }
