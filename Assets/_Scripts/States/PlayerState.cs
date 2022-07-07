@@ -2,6 +2,7 @@ using System;
 using System.Collections.Immutable;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Flawless.Battle;
 using Libplanet;
 using Libplanet.Store;
 
@@ -431,6 +432,16 @@ namespace Flawless.States
                 inventory: Inventory,
                 equippedWeapon: EquippedWeapon,
                 skillsState: SkillsState);
+        }
+
+        [Pure]
+        public Character GetCharacter()
+        {
+            return new Character(
+                (int)StatsState.Strength,
+                (int)StatsState.Dexterity,
+                (int)StatsState.Intelligence,
+                SkillsState.OwnedSkills.ToList());
         }
 
         [Pure]
