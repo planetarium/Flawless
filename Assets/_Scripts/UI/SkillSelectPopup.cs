@@ -13,16 +13,13 @@ namespace Flawless.UI
 
         private List<GameObject> _objects = new List<GameObject>();
 
-        private void OnDisable()
+        public void Show(List<string> skills, Action<string> onSelected)
         {
             foreach (var obj in _objects)
             {
                 Destroy(obj);
             }
-        }
 
-        public void Show(List<string> skills, Action<string> onSelected)
-        {
             foreach (var skill in skills)
             {
                 var box = Instantiate(prefab, transform);

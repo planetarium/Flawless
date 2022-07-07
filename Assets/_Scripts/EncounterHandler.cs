@@ -26,6 +26,8 @@ namespace Flawless.Battle
             Player.Skills.Add("DownwardSlash");
             Player.Skills.Add("UpwardThrust");
             Player.Skills.Add("DownwardThrust");
+            Player.Skills.Add("HorizontalSlash");
+            Player.Skills.Add("AnkleCut");
             Player.Skills.Add("Heal");
             Player.Skills.Add("SideStep");
             Enemy = new Character(4, 3, 0);
@@ -33,6 +35,8 @@ namespace Flawless.Battle
             Enemy.Skills.Add("DownwardSlash");
             Enemy.Skills.Add("UpwardThrust");
             Enemy.Skills.Add("DownwardThrust");
+            Enemy.Skills.Add("HorizontalSlash");
+            Enemy.Skills.Add("AnkleCut");
             Enemy.Skills.Add("Heal");
             Enemy.Skills.Add("SideStep");
 
