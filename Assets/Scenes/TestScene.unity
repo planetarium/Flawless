@@ -3092,8 +3092,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 284, y: 0}
+  m_SizeDelta: {x: 548, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1321740137
 MonoBehaviour:
@@ -4500,8 +4500,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 284, y: 0}
+  m_SizeDelta: {x: 548, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1756604576
 MonoBehaviour:
@@ -5438,6 +5438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2041301492}
   - component: {fileID: 2041301493}
+  - component: {fileID: 2041301494}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -5474,6 +5475,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillNameAsset: {fileID: 4900000, guid: 7afcb93e7e9556c48b3307c754972687, type: 3}
   skillDescriptionAsset: {fileID: 4900000, guid: ee708c35f1836fb40b5128037a01207c, type: 3}
+--- !u!114 &2041301494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041301491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f271f9d19de18d14382be073637cdba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BlockInformationText: {fileID: 955522700}
 --- !u!1 &2052781389
 GameObject:
   m_ObjectHideFlags: 0
