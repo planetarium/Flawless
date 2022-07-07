@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Flawless.Models
 {
@@ -47,11 +45,11 @@ namespace Flawless.Models
                 var choosen = (SpecialEvents) Enum.GetValues(typeof(SpecialEvents)).GetValue(
                     random.Next(Enum.GetNames(typeof(SpecialEvents)).Length)
                 );
-                
-                return choosen switch 
+
+                return choosen switch
                 {
                     SpecialEvents.HardBattle => new BattleEvent(
-                        hard: true, 
+                        hard: true,
                         randomSeed: random.Next()
                     ),
                     SpecialEvents.Shop => new ShopEvent(),
@@ -67,6 +65,5 @@ namespace Flawless.Models
                 );
             }
         }
-
     }
 }
