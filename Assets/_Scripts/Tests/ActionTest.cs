@@ -39,11 +39,11 @@ public class ActionTest
             Random = new TestRandom(seed),
         });
         var playerState = new PlayerState((Dictionary)nextState.GetState(playerAddress));
-        var weaponState = new WeaponState();
+        var weaponState = new WeaponState(playerState.WeaponAddress);
 
         Assert.AreEqual(playerAddress, playerState.Address);
         Assert.AreEqual(playerName, playerState.Name);
-        Assert.AreEqual(default(Address), playerState.EquippedWeaponAddress);
+        Assert.AreEqual(default(Address), playerState.WeaponAddress);
         Assert.AreEqual(40, playerState.GetMaxHealth(weaponState));
         Assert.AreEqual(seed, playerState.SceneState.Seed);
     }
@@ -108,8 +108,8 @@ public class ActionTest
 
         Assert.AreEqual(playerAddress, nextPlayerState.Address);
         Assert.AreEqual(playerName, nextPlayerState.Name);
-        Assert.AreEqual(default(Address), nextPlayerState.EquippedWeaponAddress);
-        Assert.AreEqual(40, nextPlayerState.GetMaxHealth(new WeaponState()));
+        Assert.AreEqual(default(Address), nextPlayerState.WeaponAddress);
+        Assert.AreEqual(40, nextPlayerState.GetMaxHealth(new WeaponState(playerState.WeaponAddress)));
         Assert.AreEqual(newSeed, nextPlayerState.SceneState.Seed);
         Assert.AreEqual(0, nextPlayerState.SceneState.StageCleared);
         Assert.AreEqual(0, nextPlayerState.SceneState.EncounterCleared);
@@ -167,17 +167,15 @@ public class ActionTest
     public void SellWeaponAction_Execute()
     {
         var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            address: weaponAddress,
-            price: 10000L);
 
         var playerState = new PlayerState(
             name: "ssg",
             address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState);
+            seed: 13);
+        WeaponState weaponState = new WeaponState(
+            address: playerState.WeaponAddress,
+            price: 10000L);
 
         long initialGold = playerState.Gold;
         var previousStates = new State(
@@ -185,12 +183,10 @@ public class ActionTest
             {
                 [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
-                [weaponAddress] = weaponState.Encode(),
+                [playerState.WeaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
         );
-        var action = new SellWeaponAction(
-            weaponAddress: weaponState.Address
-        );
+        var action = new SellWeaponAction();
 
         IAccountStateDelta nextState = action.Execute(new ActionContext
         {
@@ -220,39 +216,28 @@ public class ActionTest
     public void UpgradeWeaponAction_Execute_Basic()
     {
         var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: weaponAddress,
-            price: 10000L
-        );
-        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+        PlayerState playerState = new PlayerState(
             name: "ssg",
             address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState).AddGold(100).Encode();
-
-        Bencodex.Types.Dictionary sceneDict =
-            (Dictionary) playerDict["SceneState"];
-
-        var playerState = new PlayerState(
-            playerDict.SetItem(
-                "SceneState",
-                sceneDict
-                    .SetItem("FreeUpgradeWeaponUsed", true)
-                    .SetItem("EncounterCleared", 5)
-                    .SetItem("Seed", 10)
-            )
-        );
+            seed: 4).AddGold(1000L);
+        Dictionary playerStateDict = playerState
+            .Encode()
+            .SetItem("SceneState", playerState.SceneState.Encode()
+                .SetItem("InEncounter", true)
+                .SetItem("EncounterCleared", 5));
+        playerState = new PlayerState(playerStateDict);
+        Address weaponAddress = playerState.WeaponAddress;
+        WeaponState weaponState = new WeaponState(
+            grade: 1,
+            address: playerState.WeaponAddress,
+            price: 10000L);
 
         var action = new UpgradeWeaponAction(
             health: 1,
             attack: 1,
             defense: 1,
-            speed: 0,
-            weaponAddress: weaponState.Address
-        );
+            speed: 0);
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -275,25 +260,10 @@ public class ActionTest
         var playerStateAfterUpgrade = new PlayerState(
             (Dictionary)nextState.GetState(playerAddress)
         );
-        byte[] hashed;
-        using (var hmac = new HMACSHA1(weaponAddress.ToByteArray()))
-        {
-            hashed = hmac.ComputeHash(weaponAddress.ToByteArray());
-        }
-        var upgradedWeaponAddress = new Address(hashed);
         var upgradedWeaponState = new WeaponState(
-            (Dictionary)nextState.GetState(upgradedWeaponAddress)
-        );
+            (Dictionary)nextState.GetState(playerState.WeaponAddress));
 
-        CollectionAssert.DoesNotContain(
-            playerStateAfterUpgrade.Inventory,
-            weaponAddress
-        );
-        CollectionAssert.Contains(
-            playerStateAfterUpgrade.Inventory,
-            upgradedWeaponAddress
-        );
-        Assert.AreEqual(95, playerStateAfterUpgrade.Gold);
+        Assert.AreEqual(995, playerStateAfterUpgrade.Gold);
         Assert.AreEqual(
             weaponState.Health + 10,
             upgradedWeaponState.Health
@@ -324,39 +294,28 @@ public class ActionTest
     public void UpgradeWeaponAction_Execute_NotEnoughGold()
     {
         var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: weaponAddress,
-            price: 10000L
-        );
-        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+        PlayerState playerState = new PlayerState(
             name: "ssg",
             address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState).Encode();
-
-        Bencodex.Types.Dictionary sceneDict =
-            (Dictionary) playerDict["SceneState"];
-
-        var playerState = new PlayerState(
-            playerDict.SetItem(
-                "SceneState",
-                sceneDict
-                    .SetItem("FreeUpgradeWeaponUsed", true)
-                    .SetItem("EncounterCleared", 5)
-                    .SetItem("Seed", 10)
-            )
-        );
+            seed: 4).AddGold(1L);
+        Dictionary playerStateDict = playerState
+            .Encode()
+            .SetItem("SceneState", playerState.SceneState.Encode()
+                .SetItem("InEncounter", true)
+                .SetItem("EncounterCleared", 5));
+        playerState = new PlayerState(playerStateDict);
+        Address weaponAddress = playerState.WeaponAddress;
+        WeaponState weaponState = new WeaponState(
+            grade: 1,
+            address: playerState.WeaponAddress,
+            price: 10000L);
 
         var action = new UpgradeWeaponAction(
             health: 1,
             attack: 1,
             defense: 1,
-            speed: 0,
-            weaponAddress: weaponState.Address
-        );
+            speed: 0);
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -383,39 +342,28 @@ public class ActionTest
     public void UpgradeWeaponAction_Execute_NotInSmith()
     {
         var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: weaponAddress,
-            price: 10000L
-        );
-        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+        PlayerState playerState = new PlayerState(
             name: "ssg",
             address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState).Encode();
-
-        Bencodex.Types.Dictionary sceneDict =
-            (Dictionary) playerDict["SceneState"];
-
-        var playerState = new PlayerState(
-            playerDict.SetItem(
-                "SceneState",
-                sceneDict
-                    .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("EncounterCleared", 1)
-                    .SetItem("Seed", 10)
-            )
-        );
+            seed: 13).AddGold(1000L);
+        Dictionary playerStateDict = playerState
+            .Encode()
+            .SetItem("SceneState", playerState.SceneState.Encode()
+                .SetItem("InEncounter", true)
+                .SetItem("EncounterCleared", 5));
+        playerState = new PlayerState(playerStateDict);
+        Address weaponAddress = playerState.WeaponAddress;
+        WeaponState weaponState = new WeaponState(
+            grade: 1,
+            address: playerState.WeaponAddress,
+            price: 10000L);
 
         var action = new UpgradeWeaponAction(
             health: 1,
             attack: 1,
             defense: 1,
-            speed: 0,
-            weaponAddress: weaponState.Address
-        );
+            speed: 0);
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -442,39 +390,28 @@ public class ActionTest
     public void UpgradeWeaponAction_Execute_MoreThan3Points()
     {
         var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: weaponAddress,
-            price: 10000L
-        );
-        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+        PlayerState playerState = new PlayerState(
             name: "ssg",
             address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState).Encode();
-
-        Bencodex.Types.Dictionary sceneDict =
-            (Dictionary) playerDict["SceneState"];
-
-        var playerState = new PlayerState(
-            playerDict.SetItem(
-                "SceneState",
-                sceneDict
-                    .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("EncounterCleared", 5)
-                    .SetItem("Seed", 10)
-            )
-        ).AddGold(1000L);
+            seed: 4).AddGold(1000L);
+        Dictionary playerStateDict = playerState
+            .Encode()
+            .SetItem("SceneState", playerState.SceneState.Encode()
+                .SetItem("InEncounter", true)
+                .SetItem("EncounterCleared", 5));
+        playerState = new PlayerState(playerStateDict);
+        Address weaponAddress = playerState.WeaponAddress;
+        WeaponState weaponState = new WeaponState(
+            grade: 1,
+            address: playerState.WeaponAddress,
+            price: 10000L);
 
         var action = new UpgradeWeaponAction(
             health: 1,
             attack: 1,
             defense: 1,
-            speed: 1,
-            weaponAddress: weaponState.Address
-        );
+            speed: 1);
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -501,39 +438,28 @@ public class ActionTest
     public void UpgradeWeaponAction_Execute_LessThan1Points()
     {
         var playerKey = new PrivateKey();
-        Address weaponAddress = new PrivateKey().ToAddress();
         Address playerAddress = playerKey.ToAddress();
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: weaponAddress,
-            price: 10000L
-        );
-        Bencodex.Types.Dictionary playerDict = (Dictionary) new PlayerState(
+        PlayerState playerState = new PlayerState(
             name: "ssg",
             address: playerAddress,
-            seed: 13
-        ).AddWeapon(weaponState).Encode();
-
-        Bencodex.Types.Dictionary sceneDict =
-            (Dictionary) playerDict["SceneState"];
-
-        var playerState = new PlayerState(
-            playerDict.SetItem(
-                "SceneState",
-                sceneDict
-                    .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("EncounterCleared", 5)
-                    .SetItem("Seed", 10)
-            )
-        ).AddGold(1000L);
+            seed: 4).AddGold(1000L);
+        Dictionary playerStateDict = playerState
+            .Encode()
+            .SetItem("SceneState", playerState.SceneState.Encode()
+                .SetItem("InEncounter", true)
+                .SetItem("EncounterCleared", 5));
+        playerState = new PlayerState(playerStateDict);
+        Address weaponAddress = playerState.WeaponAddress;
+        WeaponState weaponState = new WeaponState(
+            grade: 1,
+            address: playerState.WeaponAddress,
+            price: 10000L);
 
         var action = new UpgradeWeaponAction(
             health: 0,
             attack: 0,
             defense: 0,
-            speed: 0,
-            weaponAddress: weaponState.Address
-        );
+            speed: 0);
 
         var previousStates = new State(
             new Dictionary<Address, IValue>

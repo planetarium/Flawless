@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.Security.Cryptography;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Flawless.Battle;
@@ -13,7 +14,6 @@ namespace Flawless.States
     /// </summary>
     public class PlayerState : DataModel
     {
-        public static readonly Address Unequipped = default;
         public const long InitialGold = 0;
 
         public Address Address { get; private set; }
@@ -23,7 +23,12 @@ namespace Flawless.States
         public long Gold { get; private set; }
         public BestRecordState BestRecordState { get; private set; }
         public ImmutableList<Address> Inventory { get; private set;}
-        public Address EquippedWeaponAddress { get; private set; }
+
+        /// <summary>
+        /// Player's fixed <see cref="Address"/> for character's <see cref="WeaponState"/> slot.
+        /// </summary>
+        public Address WeaponAddress { get; private set; }
+
         public SkillsState SkillsState { get; private set; }
 
         /// <summary>
@@ -39,7 +44,7 @@ namespace Flawless.States
             Gold = InitialGold;
             BestRecordState = new BestRecordState();
             Inventory = ImmutableList<Address>.Empty;
-            EquippedWeaponAddress = Unequipped;
+            WeaponAddress = new Address(HashDigest<SHA1>.DeriveFrom(address.ByteArray).ByteArray);
             SkillsState = new SkillsState();
         }
 
@@ -51,7 +56,7 @@ namespace Flawless.States
             long gold,
             BestRecordState bestRecordState,
             ImmutableList<Address> inventory,
-            Address equippedWeaponAddress,
+            Address weaponAddress,
             SkillsState skillsState)
         {
             Address = address;
@@ -61,7 +66,7 @@ namespace Flawless.States
             Gold = gold;
             BestRecordState = bestRecordState;
             Inventory = inventory;
-            EquippedWeaponAddress = equippedWeaponAddress;
+            WeaponAddress = weaponAddress;
             SkillsState = skillsState;
         }
 
@@ -86,7 +91,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState
             );
         }
@@ -109,7 +114,7 @@ namespace Flawless.States
                     gold: Gold + gold,
                     bestRecordState: BestRecordState,
                     inventory: Inventory,
-                    equippedWeaponAddress: EquippedWeaponAddress,
+                    weaponAddress: WeaponAddress,
                     skillsState: SkillsState
                 );
             }
@@ -133,7 +138,7 @@ namespace Flawless.States
                     gold: Gold - gold,
                     bestRecordState: BestRecordState,
                     inventory: Inventory,
-                    equippedWeaponAddress: EquippedWeaponAddress,
+                    weaponAddress: WeaponAddress,
                     skillsState: SkillsState
                 );
             }
@@ -150,7 +155,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState
             );
         }
@@ -166,7 +171,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState
             );
         }
@@ -182,7 +187,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: bestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState
             );
         }
@@ -198,7 +203,7 @@ namespace Flawless.States
                 gold: InitialGold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState
             );
         }
@@ -222,7 +227,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory.Add(weaponState.Address),
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState
             );
         }
@@ -238,9 +243,6 @@ namespace Flawless.States
                 );
             }
 
-            ImmutableList<Address> nextInventory =
-                Inventory.Where(a => a != weaponState.Address).ToImmutableList();
-
             return new PlayerState(
                 address: Address,
                 name: Name,
@@ -248,12 +250,9 @@ namespace Flawless.States
                 statsState: new StatsState(),
                 gold: Gold,
                 bestRecordState: BestRecordState,
-                inventory: nextInventory,
-                equippedWeaponAddress: (EquippedWeaponAddress == weaponState.Address)
-                    ? Unequipped
-                    : EquippedWeaponAddress,
-                skillsState: SkillsState
-            );
+                inventory: Inventory,
+                weaponAddress: WeaponAddress,
+                skillsState: SkillsState);
         }
 
         [Pure]
@@ -275,7 +274,7 @@ namespace Flawless.States
                 gold: InitialGold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: weaponState.Address,
+                weaponAddress: weaponState.Address,
                 skillsState: SkillsState
             );
         }
@@ -291,7 +290,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState);
         }
 
@@ -324,7 +323,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState);
         }
 
@@ -342,7 +341,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState);
         }
 
@@ -360,7 +359,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState);
         }
 
@@ -375,7 +374,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState);
         }
 
@@ -390,7 +389,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState.SetOwnedSkills(skills));
         }
 
@@ -405,7 +404,7 @@ namespace Flawless.States
                 gold: Gold,
                 bestRecordState: BestRecordState,
                 inventory: Inventory,
-                equippedWeaponAddress: EquippedWeaponAddress,
+                weaponAddress: WeaponAddress,
                 skillsState: SkillsState.SetEquippedSkills(skills));
         }
 
@@ -424,7 +423,6 @@ namespace Flawless.States
         }
 
         [Pure]
-        private bool HasWeapon(Address weaponAddress) =>
-            Inventory.FirstOrDefault(a => a == weaponAddress) != default;
+        private bool HasWeapon(Address weaponAddress) => (weaponAddress == WeaponAddress);
     }
 }

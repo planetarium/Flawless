@@ -50,12 +50,12 @@ namespace Flawless.Actions
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
 
             var playerCharacter = playerState.GetCharacter();
-            if (playerState.EquippedWeaponAddress != default)
+            if (playerState.WeaponAddress != default)
             {
                 WeaponState weaponState =
-                    states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                    states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
                         ? new WeaponState(weaponStateEncoded)
-                        : throw new ArgumentException($"Can't find weapon state at {playerState.EquippedWeaponAddress}");
+                        : throw new ArgumentException($"Can't find weapon state at {playerState.WeaponAddress}");
                 playerCharacter.Stat.Weapon = weaponState.GetWeapon();
             }
 

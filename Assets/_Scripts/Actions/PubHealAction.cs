@@ -56,13 +56,11 @@ namespace Flawless.Actions
             }
             else
             {
-                Address weaponAddress = playerState.EquippedWeaponAddress;
+                Address weaponAddress = playerState.WeaponAddress;
                 WeaponState weaponState =
-                    weaponAddress == default
-                        ? new WeaponState()
-                        : states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
-                            ? new WeaponState(weaponStateEncoded)
-                            : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
+                    states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                        ? new WeaponState(weaponStateEncoded)
+                        : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
                 long maxHealth = playerState.GetMaxHealth(weaponState);
                 long health = maxHealth - playerState.StatsState.Damages;
                 long healAmount = (maxHealth * pubEncounter.HealPercentage) / 100;
