@@ -4,6 +4,8 @@ namespace Flawless.Models.Encounters
 {
     public class BattleEncounter : Encounter
     {
+        private const long Salt = 3;
+
         public bool Hard { get; private set; }
         public Character Enemy { get; private set; }
 
