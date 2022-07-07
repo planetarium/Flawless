@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Flawless.States;
+using Flawless.Models.Encounters;
 using Libplanet;
 using Libplanet.Action;
 using Libplanet.Unity;
@@ -89,6 +90,10 @@ namespace Flawless.Actions
         {
             // Retrieves the previously stored state.
             IAccountStateDelta states = context.PreviousStates;
+            EnvironmentState environmentState =
+                states.GetState(EnvironmentState.EnvironmentAddress) is Bencodex.Types.Dictionary environmentStateEncoded
+                    ? new EnvironmentState(environmentStateEncoded)
+                    : throw new ArgumentException("No environment found; please run InitalizeStatesAction first.");
             PlayerState playerState =
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
@@ -99,6 +104,12 @@ namespace Flawless.Actions
                     : throw new ArgumentException($"Can't find weapon state at {_weaponAddress}");
             SceneState sceneState = playerState.SceneState;
             long cost = weaponState.Grade * 5;
+
+            Encounter encounter = sceneState.GetEncounter(environmentState);
+            if (!(encounter is SmithEncounter))
+            {
+                throw new Exception($"Not in smith now. actual: {encounter}");
+            }
 
             if (sceneState.FreeUpgradeWeaponUsed && playerState.Gold < cost)
             {

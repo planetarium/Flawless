@@ -1,5 +1,7 @@
 using System.Collections.Generic;
-using Flawless.Battle;
+using System.Collections.Immutable;
+using System.Linq;
+using Libplanet;
 
 namespace Flawless.Models.Encounters
 {
@@ -7,12 +9,19 @@ namespace Flawless.Models.Encounters
     {
         private const long Salt = 4;
 
-        public List<Weapon> Weapons { get; private set; }
+        public List<Address> WeaponAddresses { get; private set; }
 
-        public SmithEncounter(long stage, long encounter, long seed)
+        public SmithEncounter(
+            long stage,
+            long encounter,
+            long seed,
+            ImmutableList<Address> availableWeaponAddresses
+        )
             : base(stage, encounter, seed)
         {
-            Weapons = new List<Weapon>();
+            WeaponAddresses = Utils.Shuffle(seed, Salt, availableWeaponAddresses)
+                .Take(5)
+                .ToList();
         }
     }
 }

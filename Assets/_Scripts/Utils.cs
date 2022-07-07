@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Flawless
 {
@@ -14,6 +16,16 @@ namespace Flawless
         {
             Random random = new Random((int)(seed + salt));
             return random.Next();
+        }
+
+        public static IEnumerable<T> Shuffle<T>(
+            long seed,
+            long salt,
+            IEnumerable<T> collection
+        )
+        {
+            var random = new Random((int)(seed + salt));
+            return collection.OrderBy(i => random.Next());
         }
     }
 }

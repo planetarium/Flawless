@@ -15,6 +15,7 @@ using Libplanet.Crypto;
 
 public class ActionTest
 {
+    private readonly EnvironmentState _environmentState = new EnvironmentState();
     [Test]
     public void SellWeaponAction_Execute()
     {
@@ -36,6 +37,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -93,7 +95,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", true)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -108,6 +111,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -195,7 +199,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -210,6 +215,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -268,7 +274,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", true)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -283,6 +290,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -325,7 +333,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", false)
+                    .SetItem("EncounterCleared", 1)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -340,6 +349,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -382,7 +392,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -397,6 +408,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -439,7 +451,8 @@ public class ActionTest
                 "SceneState",
                 sceneDict
                     .SetItem("FreeUpgradeWeaponUsed", false)
-                    .SetItem("SmithEntered", true)
+                    .SetItem("EncounterCleared", 5)
+                    .SetItem("Seed", 10)
             )
         );
 
@@ -454,6 +467,7 @@ public class ActionTest
         var previousStates = new State(
             new Dictionary<Address, IValue>
             {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
                 [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
@@ -469,5 +483,44 @@ public class ActionTest
                 }
             );
         });
+    }
+
+    
+    [Test]
+    public void InitializeStatesAction_Execute()
+    {
+        var weaponSheetCsv = "id,grade,price,hp,atk,def,spd,lifesteal\r\n1,1,5,1,4,7,10,0\r\n2,2,8,2,6,8,11,10\r\n3,3,10,3,5,9,11,15\r\n";
+        var skillPresetSheetCsv = "TBD";
+        var action = new InitalizeStatesAction(
+            weaponSheetCsv,
+            skillPresetSheetCsv
+        );
+        var previousStates = new State();
+        var nextStates = action.Execute(
+            new ActionContext
+            {
+                PreviousStates = previousStates,
+                Signer = default,
+                BlockIndex = 0,
+            }
+        );
+
+        var environmentState = new EnvironmentState(
+            (Bencodex.Types.Dictionary) nextStates.GetState(
+                EnvironmentState.EnvironmentAddress
+            )
+        );
+
+        Assert.AreEqual(
+            skillPresetSheetCsv,
+            environmentState.SkillPresets
+        );
+
+        foreach (var wsAddress in environmentState.AvailableWeapons)
+        {
+            Assert.True(
+                nextStates.GetState(wsAddress) is Bencodex.Types.Dictionary
+            );
+        }
     }
 }
