@@ -1,6 +1,9 @@
 
+using System;
+
 namespace Flawless.Battle
 {
+    [Serializable]
     public class Weapon
     {
         public int ID { get; private set; }

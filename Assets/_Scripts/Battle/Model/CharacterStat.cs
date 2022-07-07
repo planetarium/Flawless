@@ -1,6 +1,9 @@
 
+using System;
+
 namespace Flawless.Battle
 {
+    [Serializable]
     public class CharacterStat
     {
         public int STR { get; set; }

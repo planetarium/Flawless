@@ -15,8 +15,10 @@ namespace Flawless.Battle.Skill
             public int def;
             public int spd;
             public int lifesteal;
+            public PoseType pose;
 
-            public CharacterStatus(int hp, int baseHp, int atk, int def, int spd, int lifesteal)
+
+            public CharacterStatus(int hp, int baseHp, int atk, int def, int spd, int lifesteal, PoseType pose)
             {
                 this.hp = hp;
                 this.baseHp = baseHp;
@@ -24,6 +26,7 @@ namespace Flawless.Battle.Skill
                 this.def = def;
                 this.spd = spd;
                 this.lifesteal = lifesteal;
+                this.pose = pose;
             }
         }
 

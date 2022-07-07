@@ -5,6 +5,21 @@ namespace Flawless.Util
 {
     public static class LogExtension
     {
+        public static string PoseToString(this PoseType type)
+        {
+            switch (type)
+            {
+                case PoseType.High:
+                    return "높은 자세";
+                case PoseType.Low:
+                    return "낮은 자세";
+                case PoseType.Special:
+                    return "찌르기 자세";
+            }
+
+            return null;
+        }
+
         public static string SkillLogToString(this SkillLog actionLog)
         {
             var sb = new StringBuilder();

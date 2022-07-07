@@ -2,6 +2,7 @@ using Flawless.Battle;
 using Flawless.Battle.Skill;
 using Flawless.Data;
 using Flawless.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -12,9 +13,6 @@ namespace Flawless.UI
 {
     public class BattleUI : MonoBehaviour
     {
-        [SerializeField]
-        private SkillSelection skillSelection = null;
-
         [SerializeField]
         private Text battleLogText = null;
         
@@ -30,47 +28,26 @@ namespace Flawless.UI
         [SerializeField]
         private float _logDelay = 2f;
 
-        public void Awake()
+        [SerializeField]
+        private Action _onClose;
+
+        private Character _player;
+
+        private Character _enemy;
+
+        public void PreviewBattle(
+            Character player,
+            Character enemy,
+            List<string> playerSkills,
+            List<string> enemySkills,
+            Action onClose)
         {
-            var player = new Character(4, 4, 0);
-            player.Skills.Add("UpwardSlash");
-            player.Skills.Add("DownwardSlash");
-            player.Skills.Add("UpwardThrust");
-            player.Skills.Add("DownwardThrust");
-            player.Skills.Add("Heal");
-            player.Skills.Add("SideStep");
-            var enemy = new Character(4, 3, 0);
-            enemy.Skills.Add("UpwardSlash");
-            enemy.Skills.Add("DownwardSlash");
-            enemy.Skills.Add("UpwardThrust");
-            enemy.Skills.Add("DownwardThrust");
-            enemy.Skills.Add("Heal");
-            enemy.Skills.Add("SideStep");
+            _player = player;
+            _enemy = enemy;
+            var clonedPlayer = player.Clone();
+            var clonedEnemy = enemy.Clone();
 
-            var presetTable = Resources.Load<TextAsset>("TableSheets/SkillPresetSheet");
-            var presetSheet = new SkillPresetSheet();
-            presetSheet.Set(presetTable.text);
-
-            var playerSkills = new List<string>()
-            {
-                "DownwardSlash",
-                "UpwardSlash",
-                "DownwardThrust",
-                "SideStep",
-                "UpwardSlash",
-                "DownwardSlash",
-                "UpwardThrust",
-                "SideStep",
-                "UpwardSlash",
-                "DownwardThrust",
-            };
-            var rnd = Random.Range(1, 4);
-            var enemySkills = presetSheet[rnd].Skills;
-            skillSelection.Show(enemy.Stat, enemySkills);
-
-            player.Pose = PoseType.High;
-            enemy.Pose = PoseType.High;
-
+            _onClose = onClose;
             var skillTable = Resources.Load<TextAsset>("TableSheets/SkillSheet");
             var skillSheet = new SkillSheet();
             skillSheet.Set(skillTable.text);
@@ -80,7 +57,12 @@ namespace Flawless.UI
             weaponSheet.Set(weaponTable.text);
 
             var simulator = new BattleSimulator();
-            var (victory, skillLogs) = simulator.Simulate(player, enemy, playerSkills, enemySkills, skillSheet);
+            var (victory, skillLogs) = simulator.Simulate(
+                clonedPlayer,
+                clonedEnemy,
+                playerSkills,
+                enemySkills,
+                skillSheet);
             WriteLogs(skillLogs);
         }
 
@@ -91,10 +73,26 @@ namespace Flawless.UI
 
         public IEnumerator CoWriteLogs(IEnumerable<SkillLog> logs)
         {
+            playerStatView.UpdateView(_player);
+            enemyStatView.UpdateView(_enemy);
+
             var sb = new StringBuilder();
             var turnCount = -1;
             foreach (var log in logs)
             {
+                var elapsed = 0f;
+
+                while (!Input.GetKeyDown(KeyCode.Space))
+                {
+                    if (elapsed >= _logDelay)
+                    {
+                        break;
+                    }
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+                yield return null;
+
                 if (turnCount != log.TurnCount)
                 {
                     turnCount = log.TurnCount;
@@ -118,20 +116,17 @@ namespace Flawless.UI
                 contentRect.localPosition = new Vector2(
                     contentRect.localPosition.x,
                     contentRect.sizeDelta.y);
+            }
 
-                var elapsed = 0f;
-
-                while (!Input.GetKeyDown(KeyCode.Space))
-                {
-                    if (elapsed >= _logDelay)
-                    {
-                        break;
-                    }
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
+            sb.Append("====== Enter 키를 눌러 로그 재결정 ======");
+            battleLogText.text = sb.ToString();
+            while (!Input.GetKeyDown(KeyCode.Return))
+            {
                 yield return null;
             }
+            _onClose?.Invoke();
+            playerStatView.UpdateView(_player);
+            enemyStatView.UpdateView(_enemy);
         }
     }
 }
