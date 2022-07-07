@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Flawless.Battle.Skill
 {
@@ -8,12 +6,13 @@ namespace Flawless.Battle.Skill
     {
         public SideStep(
             int speed,
+            int cooldown,
             double atkCoefficient,
             double dexCoefficient,
             double intCoefficient,
             PoseType finishPose,
             List<PoseType> availablePoses) :
-            base(speed, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
+            base(speed, cooldown, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
 
         }

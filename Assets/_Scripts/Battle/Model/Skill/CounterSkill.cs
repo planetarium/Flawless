@@ -15,12 +15,13 @@ namespace Flawless.Battle.Skill
 
         public CounterSkill(
             int speed,
+            int cooldown,
             double atkCoefficient,
             double dexCoefficient,
             double intCoefficient,
             PoseType finishPose,
             List<PoseType> availablePoses) :
-            base(speed, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
+            base(speed, cooldown, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
         }
 

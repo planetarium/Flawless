@@ -18,10 +18,16 @@ namespace Flawless.Battle
             List<string> enemySkills,
             SkillSheet skillSheet)
         {
+            Player = player;
+            Enemy = enemy;
+
             var turn = 0;
             var actionLogs = new List<SkillLog>();
             while (turn < TurnLimit)
             {
+                player.ReduceCooldowns();
+                enemy.ReduceCooldowns();
+
                 var playerSkillName = turn < playerSkills.Count ? playerSkills[turn] : null;
                 var enemySkillName = turn < enemySkills.Count ? enemySkills[turn] : null;
 
@@ -79,7 +85,6 @@ namespace Flawless.Battle
                         break;
                     }
                 }
-
                 ++turn;
             }
 

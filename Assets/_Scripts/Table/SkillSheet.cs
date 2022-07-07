@@ -10,6 +10,7 @@ namespace Flawless.Data
         public class Row : SheetRow
         {
             public int Speed { get; set; }
+            public int Cooldown { get; set; }
             public double ATKCoefficient { get; set; }
             public double DEXCoefficient { get; set; }
             public double INTCoefficient { get; set; }
@@ -23,14 +24,15 @@ namespace Flawless.Data
             {
                 Id = fields[0],
                 Speed = int.Parse(fields[1]),
-                ATKCoefficient = double.Parse(fields[2]),
-                DEXCoefficient = double.Parse(fields[3]),
-                INTCoefficient = double.Parse(fields[4]),
-                FinishPose = Enum.Parse<PoseType>(fields[5])
+                Cooldown = int.Parse(fields[2]),
+                ATKCoefficient = double.Parse(fields[3]),
+                DEXCoefficient = double.Parse(fields[4]),
+                INTCoefficient = double.Parse(fields[5]),
+                FinishPose = Enum.Parse<PoseType>(fields[6])
             };
 
             row.AvailablePoses = new List<PoseType>();
-            for (var i = 6; i < fields.Length; ++i)
+            for (var i = 7; i < fields.Length; ++i)
             {
                 var type = Enum.Parse<PoseType>(fields[i]);
                 row.AvailablePoses.Add(type); 

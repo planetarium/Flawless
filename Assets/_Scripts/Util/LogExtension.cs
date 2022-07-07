@@ -32,6 +32,11 @@ namespace Flawless.Util
                 sb.AppendLine("스킬 발동을 위한 자세가 맞지 않아 발동할 수 없었다.");
                 return sb.ToString();
             }
+            if (actionLog.BlockedByCooldown)
+            {
+                sb.AppendLine("쿨타임 중이라 발동할 수 없었다.");
+                return sb.ToString();
+            }
             if (actionLog.DamageBlocked)
             {
                 sb.AppendLine("카운터로 인해 데미지를 입히지 못했다.");

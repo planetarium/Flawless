@@ -13,6 +13,7 @@ namespace Flawless.Battle.Skill
         public bool Blocked { get; set; }
         public bool BlockedByPose { get; set; }
         public bool BlockedByCounter { get; set; }
+        public bool BlockedByCooldown { get; set; }
         public int CounteredDamage { get; set; }
         public int DealtDamage { get; set; }
         public bool DamageBlocked { get; set; }
