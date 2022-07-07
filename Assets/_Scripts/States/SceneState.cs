@@ -50,7 +50,8 @@ namespace Flawless.States
             long encounterCleared,
             long seed)
         {
-            if (Convert.ToInt32(inMenu) + Convert.ToInt32(onWorldMap) + Convert.ToInt32(onRoad) + Convert.ToInt32(inEncounter) > 1)
+            if (Convert.ToInt32(inMenu) + Convert.ToInt32(onWorldMap) +
+                Convert.ToInt32(onRoad) + Convert.ToInt32(inEncounter) != 1)
             {
                 throw new ArgumentException(
                     $"Exactly one of {nameof(inMenu)}, {nameof(onWorldMap)}, " +
@@ -121,6 +122,7 @@ namespace Flawless.States
                 encounterCleared += 1;
                 if (encounterCleared == EncountersPerStage)
                 {
+                    encounterCleared = 0;
                     stageCleared += 1;
                     if (stageCleared == StagesPerSession)
                     {
@@ -128,7 +130,6 @@ namespace Flawless.States
                     }
                     else
                     {
-                        encounterCleared = 0;
                         onWorldMap = true;
                     }
                 }
