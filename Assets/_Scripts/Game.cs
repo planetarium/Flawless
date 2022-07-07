@@ -8,6 +8,8 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using Serilog;
 using Serilog.Sinks;
+using Flawless.Actions;
+using Flawless.States;
 
 namespace Flawless
 {
@@ -70,6 +72,18 @@ namespace Flawless
         {
             // Initialize texts.
             BlockInformationText.text = $"Block Hash : 0000 / Index : #{0}";
+            if (_agent.GetState(EnvironmentState.EnvironmentAddress) is null)
+            {
+                _agent.MakeTransaction(
+                    new PolymorphicAction<ActionBase>[]
+                    {
+                        new InitalizeStatesAction(
+                            weaponSheetCsv: Resources.Load<TextAsset>("TableSheets/WeaponSheet").text,
+                            skillPresetSheetCsv: Resources.Load<TextAsset>("TableSheets/SkillPresetSheet").text
+                        ),
+                    }
+                );
+            }
         }
 
         // Updates block texts.
