@@ -5,19 +5,45 @@ using UnityEngine;
 
 namespace Flawless.Util
 {
-    public class LocalizationManager : MonoSingleton<LocalizationManager>
+    public class LocalizationManager : MonoBehaviour
     {
+        public static LocalizationManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindObjectOfType<LocalizationManager>();
+                }
+
+                if (_instance == null)
+                {
+                    var go = new GameObject();
+                    _instance = go.AddComponent<LocalizationManager>();
+                }
+                
+                if (!_instance.Initialized)
+                {
+                    _instance.Initialize();
+                }
+                return _instance;
+            }
+        }
+
+        public static LocalizationManager _instance = null;
+
         [SerializeField]
         private TextAsset skillNameAsset;
 
-        private readonly Dictionary<string, string> _skillNameMap = new Dictionary<string, string>();
+        private Dictionary<string, string> _skillNameMap;
 
-        protected override void Awake()
+        public bool Initialized { get; set; }
+
+        protected void Initialize()
         {
-            base.Awake();
-
             if (skillNameAsset)
             {
+                _skillNameMap = new Dictionary<string, string>();
                 var csv = skillNameAsset.text;
                 var rows = csv.Split(
                     new string[] { Environment.NewLine },
@@ -35,6 +61,8 @@ namespace Flawless.Util
                     _skillNameMap[fields[0]] = fields[1];
                 }
             }
+
+            Initialized = true;
         }
 
         public string GetSkillName(string key)

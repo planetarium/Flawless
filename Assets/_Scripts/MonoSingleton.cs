@@ -15,13 +15,6 @@ namespace Flawless
         {
             get
             {
-                if (_applicationIsQuitting)
-                {
-                    Debug.Log(
-                        $"[MonoSingleton]Instance '{typeof(T)}' already destroyed on application quit. Won't create again - returning null.");
-                    return _instance;
-                }
-
                 lock (Lock)
                 {
                     if (_instance)
