@@ -3,13 +3,15 @@ using Libplanet.Action;
 public class TestRandom : IRandom
 {
     private readonly System.Random _random;
+    private readonly int _seed;
 
     public TestRandom(int seed = default)
     {
+        _seed = seed;
         _random = new System.Random(seed);
     }
 
-    public int Seed => 0;
+    public int Seed => _seed;
 
     public int Next()
     {

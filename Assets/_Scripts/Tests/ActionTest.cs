@@ -16,6 +16,38 @@ using Libplanet.Crypto;
 public class ActionTest
 {
     private readonly EnvironmentState _environmentState = new EnvironmentState();
+
+    [Test]
+    public void CreateAccountAction()
+    {
+        var playerName = "ssg";
+        var playerKey = new PrivateKey();
+        var playerAddress = playerKey.ToAddress();
+        var previousStates = new State(
+            new Dictionary<Address, IValue>
+            {
+                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
+            }.ToImmutableDictionary()
+        );
+        var action = new CreateAccountAction(playerAddress, playerName);
+        var seed = 123;
+        IAccountStateDelta nextState = action.Execute(new ActionContext
+        {
+            PreviousStates = previousStates,
+            Signer = playerAddress,
+            BlockIndex = 23,
+            Random = new TestRandom(seed),
+        });
+        var playerState = new PlayerState((Dictionary)nextState.GetState(playerAddress));
+        var weaponState = new WeaponState();
+
+        Assert.AreEqual(playerAddress, playerState.Address);
+        Assert.AreEqual(playerName, playerState.Name);
+        Assert.AreEqual(default(Address), playerState.EquippedWeaponAddress);
+        Assert.AreEqual(40, playerState.GetMaxHealth(weaponState));
+        Assert.AreEqual(seed, playerState.SceneState.Seed);
+    }
+
     [Test]
     public void SellWeaponAction_Execute()
     {
@@ -485,7 +517,7 @@ public class ActionTest
         });
     }
 
-    
+
     [Test]
     public void InitializeStatesAction_Execute()
     {
