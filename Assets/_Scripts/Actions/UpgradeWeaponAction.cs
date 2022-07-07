@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Flawless.States;
+using Flawless.Models.Encounters;
 using Libplanet;
 using Libplanet.Action;
 using Libplanet.Unity;
@@ -99,6 +100,12 @@ namespace Flawless.Actions
                     : throw new ArgumentException($"Can't find weapon state at {_weaponAddress}");
             SceneState sceneState = playerState.SceneState;
             long cost = weaponState.Grade * 5;
+
+            Encounter encounter = sceneState.GetNextEncounter();
+            if (!(encounter is SmithEncounter))
+            {
+                throw new Exception($"Not in smith now. actual: {encounter}");
+            }
 
             if (sceneState.FreeUpgradeWeaponUsed && playerState.Gold < cost)
             {
