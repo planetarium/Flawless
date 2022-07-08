@@ -2,7 +2,7 @@ namespace Flawless.Models.Encounters
 {
     public class PubEncounter : Encounter
     {
-        private const long Salt = 2;
+        private const long Salt = 3;
 
         public long HealPrice => StageNumber * 10;
         public long HealPercentage => 30;

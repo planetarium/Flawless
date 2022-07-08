@@ -4854,7 +4854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.15566039, b: 0.15566039, a: 1}
+  m_Color: {r: 1, g: 0.43867922, b: 0.43867922, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5960,6 +5960,7 @@ GameObject:
   - component: {fileID: 2041301493}
   - component: {fileID: 2041301494}
   - component: {fileID: 2041301495}
+  - component: {fileID: 2041301496}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -6025,6 +6026,20 @@ MonoBehaviour:
   skillSheet: {fileID: 4900000, guid: c964a929349b75b41b1d7e756b44079d, type: 3}
   skillPresetSheet: {fileID: 4900000, guid: 11f4b5eef98eab34f9136e7e94b01351, type: 3}
   weaponSheet: {fileID: 4900000, guid: 3d6bad758d1521442999331d5d5765fb, type: 3}
+--- !u!114 &2041301496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041301491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f271f9d19de18d14382be073637cdba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleUI: {fileID: 1605227613}
+  encountHadler: {fileID: 2041301494}
 --- !u!1 &2052781389
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,27 +9,25 @@ using UnityEngine.Events;
 using Serilog;
 using Serilog.Sinks;
 using Flawless.Actions;
+using Flawless.Battle;
 using Flawless.States;
+using Flawless.UI;
 
 namespace Flawless
 {
-    // Unity event handler.
-    public class BlockUpdatedEvent : UnityEvent<Block<PolymorphicAction<ActionBase>>>
-    {
-    }
-
-    public class Game : MonoBehaviour
+    public class Game : MonoSingleton<Game>
     {
         [SerializeField]
-        private Text BlockInformationText;
-
-        private BlockUpdatedEvent _blockUpdatedEvent;
+        private BattleUI battleUI = null;
+        [SerializeField]
+        private EncounterHandler encountHadler = null;
         private IEnumerable<IRenderer<PolymorphicAction<ActionBase>>> _renderers;
-        private Agent _agent;
+        public Agent Agent { get; private set; }
 
         // Unity MonoBehaviour Awake().
-        public void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             // General application settings.
             Screen.SetResolution(800, 600, FullScreenMode.Windowed);
             Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.ScriptOnly);
@@ -38,61 +36,76 @@ namespace Flawless
                 .WriteTo.Console()
                 .CreateLogger();
 
-            // Register a listener.
-            _blockUpdatedEvent = new BlockUpdatedEvent();
-            _blockUpdatedEvent.AddListener(UpdateBlockTexts);
-
             // Renderers are called when certain conditions are met.
             // There are different types of renderers called under different conditions.
             // Some are called when a new block is added, some are called when an action is executed.
             _renderers = new List<IRenderer<PolymorphicAction<ActionBase>>>()
             {
-                new AnonymousRenderer<PolymorphicAction<ActionBase>>()
+                new AnonymousActionRenderer<PolymorphicAction<ActionBase>>()
                 {
-                    BlockRenderer = (oldTip, newTip) =>
+                    ActionRenderer = (action, context, nextStates) =>
                     {
-                        // FIXME: For a genesis block, this renderer can get called
-                        // while Libplanet's internal BlockChain object is not
-                        // fully initialized.  This is a haphazard way to bypass
-                        // NullReferenceException getting thrown.
-                        if (newTip.Index > 0)
+                        if (context.Signer != Agent.Address)
                         {
-                            _agent.RunOnMainThread(() => _blockUpdatedEvent.Invoke(newTip));
+                            return;
+                        }
+
+                        switch (((PolymorphicAction<ActionBase>)action).InnerAction)
+                        {
+                            case CreateAccountAction ca:
+                                Agent.RunOnMainThread(
+                                    () => encountHadler.OnCreateAccount()
+                                );
+                                break;
+                            case BattleAction ba:
+                                Agent.RunOnMainThread(
+                                    () => RenderBattleAction(ba, context, nextStates)
+                                );
+                                break;
                         }
                     }
                 }
             };
 
             // Initialize a Libplanet Unity Agent.
-            _agent = Agent.AddComponentTo(gameObject, _renderers);
+            Agent = Agent.AddComponentTo(gameObject, _renderers);
         }
 
         // Unity MonoBehaviour Start().
         public void Start()
         {
-            // Initialize texts.
-            BlockInformationText.text = $"Block Hash : 0000 / Index : #{0}";
-            if (_agent.GetState(EnvironmentState.EnvironmentAddress) is null)
+            if (Agent.GetState(EnvironmentState.EnvironmentAddress) is null)
             {
-                _agent.MakeTransaction(
+                Agent.MakeTransaction(
                     new PolymorphicAction<ActionBase>[]
                     {
                         new InitalizeStatesAction(
-                            weaponSheetCsv: Resources.Load<TextAsset>("TableSheets/WeaponSheet").text,
-                            skillPresetSheetCsv: Resources.Load<TextAsset>("TableSheets/SkillPresetSheet").text
+                            skillPresetSheetCsv: Resources.Load<TextAsset>("TableSheets/SkillPresetSheet").text),
+                    }
+                );
+            }
+
+            if (Agent.GetState(Agent.Address) is null)
+            {
+                Agent.MakeTransaction(
+                    new PolymorphicAction<ActionBase>[]
+                    {
+                        new CreateAccountAction(
+                            account: Agent.Address,
+                            name: Agent.Address.ToString()
                         ),
                     }
                 );
             }
         }
 
-        // Updates block texts.
-        private void UpdateBlockTexts(Block<PolymorphicAction<ActionBase>> tip)
+        private void RenderBattleAction(
+            BattleAction action,
+            IActionContext context,
+            IAccountStateDelta nextStates
+        )
         {
-            var text = string.Format("Block Hash : {0} / Index : #{1}",
-                tip.Hash.ToString()[..4],
-                tip.Index);
-            BlockInformationText.text = text;
+            battleUI.WriteLogs(action.BattleLogs);
         }
     }
 }

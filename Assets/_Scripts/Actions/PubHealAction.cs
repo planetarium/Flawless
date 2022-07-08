@@ -36,16 +36,12 @@ namespace Flawless.Actions
         {
             // Retrieves the previously stored state.
             IAccountStateDelta states = context.PreviousStates;
-            EnvironmentState environmentState =
-                states.GetState(EnvironmentState.EnvironmentAddress) is Bencodex.Types.Dictionary environmentStateEncoded
-                    ? new EnvironmentState(environmentStateEncoded)
-                    : throw new ArgumentException("No environment found; please run InitalizeStatesAction first.");
             PlayerState playerState =
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
 
-            Encounter encounter = playerState.SceneState.GetEncounter(environmentState);
+            Encounter encounter = playerState.SceneState.GetEncounter();
             if (!playerState.SceneState.InEncounter)
             {
                 throw new ArgumentException($"Invalid scene state at {context.Signer}: {playerState.SceneState.Encode()}");
@@ -56,32 +52,23 @@ namespace Flawless.Actions
             }
             else
             {
-                Address weaponAddress = playerState.EquippedWeaponAddress;
+                Address weaponAddress = playerState.WeaponAddress;
                 WeaponState weaponState =
-                    weaponAddress == default
-                        ? new WeaponState()
-                        : states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
-                            ? new WeaponState(weaponStateEncoded)
-                            : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
+                    states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                        ? new WeaponState(weaponStateEncoded)
+                        : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
                 long maxHealth = playerState.GetMaxHealth(weaponState);
                 long health = maxHealth - playerState.StatsState.Damages;
                 long healAmount = (maxHealth * pubEncounter.HealPercentage) / 100;
 
-                if (playerState.SceneState.FreeHealUsed)
+                if (playerState.Gold < pubEncounter.HealPrice)
                 {
-                    if (playerState.Gold < pubEncounter.HealPrice)
-                    {
-                        throw new ArgumentException(
-                            $"Character does not have enough gold to reset points.");
-                    }
-                    else
-                    {
-                        playerState = playerState.Heal(healAmount).SubtractGold(pubEncounter.HealPrice);
-                    }
+                    throw new ArgumentException(
+                        $"Character does not have enough gold to reset points.");
                 }
                 else
                 {
-                    playerState = playerState.Heal(healAmount).UseFreeHeal();
+                    playerState = playerState.Heal(healAmount).SubtractGold(pubEncounter.HealPrice);
                 }
             }
 

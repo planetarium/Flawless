@@ -18,9 +18,6 @@ namespace Flawless.States
         public const long InitialEncounterCleared = 0;
         public const long StagesPerSession = 4;
         public const long EncountersPerStage = 6;
-        public const bool InitialFreeHealUsed = false;
-        public const bool InitialFreeResetPointsUsed = false;
-        public const bool InitialFreeUpgradeWeaponUsed = false;
 
         public bool InMenu { get; private set; }
         public bool OnWorldMap { get; private set; }
@@ -35,10 +32,6 @@ namespace Flawless.States
         /// </summary>
         public long Seed { get; private set; }
 
-        public bool FreeHealUsed { get; private set; }
-        public bool FreeResetPointsUsed { get; private set; }
-        public bool FreeUpgradeWeaponUsed { get; private set; }
-
         /// <summary>
         /// Creates a new <see cref="SceneState"/> instance.
         /// </summary>
@@ -52,9 +45,6 @@ namespace Flawless.States
             StageCleared = InitialStageCleared;
             EncounterCleared = InitialEncounterCleared;
             Seed = seed;
-            FreeHealUsed = InitialFreeHealUsed;
-            FreeResetPointsUsed = InitialFreeResetPointsUsed;
-            FreeUpgradeWeaponUsed = InitialFreeUpgradeWeaponUsed;
         }
 
         private SceneState(
@@ -64,10 +54,7 @@ namespace Flawless.States
             bool inEncounter,
             long stageCleared,
             long encounterCleared,
-            long seed,
-            bool freeHealUsed,
-            bool freeResetPointsUsed,
-            bool freeUpgradeWeaponUsed)
+            long seed)
         {
             if (Convert.ToInt32(inMenu) + Convert.ToInt32(onWorldMap) +
                 Convert.ToInt32(onRoad) + Convert.ToInt32(inEncounter) != 1)
@@ -84,9 +71,6 @@ namespace Flawless.States
             StageCleared = stageCleared;
             EncounterCleared = encounterCleared;
             Seed = seed;
-            FreeHealUsed = freeHealUsed;
-            FreeResetPointsUsed = freeResetPointsUsed;
-            FreeUpgradeWeaponUsed = freeUpgradeWeaponUsed;
         }
 
         /// <summary>
@@ -179,91 +163,16 @@ namespace Flawless.States
                 inEncounter: inEncounter,
                 stageCleared: stageCleared,
                 encounterCleared: encounterCleared,
-                seed: nextSeed,
-                freeHealUsed: FreeHealUsed,
-                freeResetPointsUsed: FreeResetPointsUsed,
-                freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
-        }
-
-        /// <summary>
-        /// Changes <see cref="FreeHealUsed"/> flag to <see langword="true"/>.
-        /// This does not actually heal the character.  Use <see cref="PlayerState.EditHealth"/>
-        /// to actually adjust health.
-        /// </summary>
-        public SceneState UseFreeHeal()
-        {
-            if (FreeHealUsed)
-            {
-                throw new ArgumentException(
-                    $"Free heal already used.");
-            }
-
-            return new SceneState(
-                inMenu: InMenu,
-                onWorldMap: OnWorldMap,
-                onRoad: OnRoad,
-                inEncounter: InEncounter,
-                stageCleared: StageCleared,
-                encounterCleared: EncounterCleared,
-                seed: Seed,
-                freeHealUsed: true,
-                freeResetPointsUsed: FreeResetPointsUsed,
-                freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed);
-        }
-
-        /// <summary>
-        /// Changes <see cref="FreeResetPointsUsed"/> flag to <see langword="true"/>.
-        /// This does not actually reset stats.  Use <see cref="PlayerState.ResetStats"/>
-        /// to actually reset stats.
-        /// </summary>
-        public SceneState UseFreeResetPoints()
-        {
-            if (FreeResetPointsUsed)
-            {
-                throw new ArgumentException(
-                    $"Free reset stats already used.");
-            }
-
-            return new SceneState(
-                inMenu: InMenu,
-                onWorldMap: OnWorldMap,
-                onRoad: OnRoad,
-                inEncounter: InEncounter,
-                stageCleared: StageCleared,
-                encounterCleared: EncounterCleared,
-                seed: Seed,
-                freeHealUsed: FreeHealUsed,
-                freeResetPointsUsed: true,
-                freeUpgradeWeaponUsed: FreeUpgradeWeaponUsed
-            );
+                seed: nextSeed);
         }
 
         [Pure]
-        public SceneState UpgradeWeapon()
-        {
-            return new SceneState(
-                inMenu: InMenu,
-                onWorldMap: OnWorldMap,
-                onRoad: OnRoad,
-                inEncounter: InEncounter,
-                stageCleared: StageCleared,
-                encounterCleared: EncounterCleared,
-                seed: Seed,
-                freeHealUsed: FreeHealUsed,
-                freeResetPointsUsed: FreeResetPointsUsed,
-                freeUpgradeWeaponUsed: true
-            );
-        }
-
-        [Pure]
-        public Encounter GetEncounter(EnvironmentState environmentState)
+        public Encounter GetEncounter()
         {
             return Encounter.GenerateEncounter(
                 StageCleared + 1,
                 EncounterCleared + 1,
-                Seed,
-                environmentState.AvailableWeapons
-            );
+                Seed);
         }
     }
 }

@@ -99,7 +99,7 @@ namespace Flawless.UI
                     contentRect.sizeDelta.y);
             }
 
-            sb.Append("====== Enter Å°¸¦ ´­·¯ ·Î±× Àç°áÁ¤ ======");
+            sb.Append("====== Enter í‚¤ë¥¼ ëˆŒëŸ¬ ë¡œê·¸ ìž¬ê²°ì • ======");
             battleLogText.text = sb.ToString();
             while (!Input.GetKeyDown(KeyCode.Return))
             {

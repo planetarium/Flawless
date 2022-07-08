@@ -44,7 +44,10 @@ namespace Flawless.Actions
             }
 
             playerState = playerState.ResetPlayer(context.Random.Seed);
-            return states.SetState(context.Signer, playerState.Encode());
+            WeaponState weaponState = new WeaponState(playerState.WeaponAddress);
+            return states
+                .SetState(context.Signer, playerState.Encode())
+                .SetState(weaponState.Address, weaponState.Encode());
         }
     }
 }

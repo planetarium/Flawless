@@ -7,10 +7,11 @@ namespace Flawless.Models.Encounters
 {
     public abstract class Encounter : IEncounter
     {
+        private const long Salt = 1;
+
         // These should add up to less than 100
         public const long PubChance = 33;
         public const long SmithChance = 33;
-        private const long Salt = 1;
 
         public long StageNumber { get; private set; }
         public long EncounterNumber { get; private set; }
@@ -38,9 +39,7 @@ namespace Flawless.Models.Encounters
         public static Encounter GenerateEncounter(
             long stageNumber,
             long encounterNumber,
-            long seed,
-            ImmutableList<Address> availableWeaponAddresses
-        )
+            long seed)
         {
             long randomValue = Utils.Random(100, seed, Salt);
 
@@ -65,9 +64,7 @@ namespace Flawless.Models.Encounters
                         return new SmithEncounter(
                             stageNumber,
                             encounterNumber,
-                            seed,
-                            availableWeaponAddresses
-                        );
+                            seed);
                     }
                     else
                     {
