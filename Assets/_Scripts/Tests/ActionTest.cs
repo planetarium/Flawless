@@ -186,11 +186,7 @@ public class ActionTest
             address: playerState.WeaponAddress,
             price: 10000L);
 
-        var action = new UpgradeWeaponAction(
-            health: 1,
-            attack: 1,
-            defense: 1,
-            speed: 0);
+        var action = new UpgradeWeaponAction();
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -217,22 +213,16 @@ public class ActionTest
             (Dictionary)nextState.GetState(playerState.WeaponAddress));
 
         Assert.AreEqual(995, playerStateAfterUpgrade.Gold);
-        Assert.AreEqual(
-            weaponState.Health + 10,
-            upgradedWeaponState.Health
-        );
-        Assert.AreEqual(
-            weaponState.Attack + 2,
-            upgradedWeaponState.Attack
-        );
-        Assert.AreEqual(
-            weaponState.Defense + 1,
-            upgradedWeaponState.Defense
-        );
-        Assert.AreEqual(
-            weaponState.Speed,
-            upgradedWeaponState.Speed
-        );
+        Assert.True(
+            weaponState.Health <= upgradedWeaponState.Health &&
+            weaponState.Attack <= upgradedWeaponState.Attack &&
+            weaponState.Defense <= upgradedWeaponState.Defense &&
+            weaponState.Speed <= upgradedWeaponState.Speed);
+        Assert.True(
+            weaponState.Health < upgradedWeaponState.Health ||
+            weaponState.Attack < upgradedWeaponState.Attack ||
+            weaponState.Defense < upgradedWeaponState.Defense ||
+            weaponState.Speed < upgradedWeaponState.Speed);
         Assert.AreEqual(
             weaponState.Lifesteal,
             upgradedWeaponState.Lifesteal
@@ -264,11 +254,7 @@ public class ActionTest
             address: playerState.WeaponAddress,
             price: 10000L);
 
-        var action = new UpgradeWeaponAction(
-            health: 1,
-            attack: 1,
-            defense: 1,
-            speed: 0);
+        var action = new UpgradeWeaponAction();
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -312,11 +298,7 @@ public class ActionTest
             address: playerState.WeaponAddress,
             price: 10000L);
 
-        var action = new UpgradeWeaponAction(
-            health: 1,
-            attack: 1,
-            defense: 1,
-            speed: 0);
+        var action = new UpgradeWeaponAction();
 
         var previousStates = new State(
             new Dictionary<Address, IValue>
@@ -328,102 +310,6 @@ public class ActionTest
         );
 
         Assert.Throws<Exception>(() => {
-            action.Execute(
-                new ActionContext
-                {
-                    PreviousStates = previousStates,
-                    Signer = playerAddress,
-                    BlockIndex = 0,
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void UpgradeWeaponAction_Execute_MoreThan3Points()
-    {
-        var playerKey = new PrivateKey();
-        Address playerAddress = playerKey.ToAddress();
-        PlayerState playerState = new PlayerState(
-            name: "ssg",
-            address: playerAddress,
-            seed: 4).AddGold(1000L);
-        Dictionary playerStateDict = playerState
-            .Encode()
-            .SetItem("SceneState", playerState.SceneState.Encode()
-                .SetItem("InEncounter", true)
-                .SetItem("EncounterCleared", 5));
-        playerState = new PlayerState(playerStateDict);
-        Address weaponAddress = playerState.WeaponAddress;
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: playerState.WeaponAddress,
-            price: 10000L);
-
-        var action = new UpgradeWeaponAction(
-            health: 1,
-            attack: 1,
-            defense: 1,
-            speed: 1);
-
-        var previousStates = new State(
-            new Dictionary<Address, IValue>
-            {
-                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
-                [playerAddress] = playerState.Encode(),
-                [weaponAddress] = weaponState.Encode(),
-            }.ToImmutableDictionary()
-        );
-
-        Assert.Throws<ArgumentException>(() => {
-            action.Execute(
-                new ActionContext
-                {
-                    PreviousStates = previousStates,
-                    Signer = playerAddress,
-                    BlockIndex = 0,
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void UpgradeWeaponAction_Execute_LessThan1Points()
-    {
-        var playerKey = new PrivateKey();
-        Address playerAddress = playerKey.ToAddress();
-        PlayerState playerState = new PlayerState(
-            name: "ssg",
-            address: playerAddress,
-            seed: 4).AddGold(1000L);
-        Dictionary playerStateDict = playerState
-            .Encode()
-            .SetItem("SceneState", playerState.SceneState.Encode()
-                .SetItem("InEncounter", true)
-                .SetItem("EncounterCleared", 5));
-        playerState = new PlayerState(playerStateDict);
-        Address weaponAddress = playerState.WeaponAddress;
-        WeaponState weaponState = new WeaponState(
-            grade: 1,
-            address: playerState.WeaponAddress,
-            price: 10000L);
-
-        var action = new UpgradeWeaponAction(
-            health: 0,
-            attack: 0,
-            defense: 0,
-            speed: 0);
-
-        var previousStates = new State(
-            new Dictionary<Address, IValue>
-            {
-                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
-                [playerAddress] = playerState.Encode(),
-                [weaponAddress] = weaponState.Encode(),
-            }.ToImmutableDictionary()
-        );
-
-        Assert.Throws<ArgumentException>(() => {
             action.Execute(
                 new ActionContext
                 {
