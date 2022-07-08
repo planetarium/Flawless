@@ -1,7 +1,12 @@
+using Flawless.Actions;
 using Flawless.Data;
 using Flawless.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using Libplanet;
+using Libplanet.Action;
+using Libplanet.Unity;
 using UnityEngine;
 
 namespace Flawless.Battle
@@ -67,8 +72,12 @@ namespace Flawless.Battle
 
         public void Confirm(List<string> playerSkills)
         {
-            // TODO : Do Action
-            battleUI.PreviewBattle(Player, Enemy, playerSkills, _enemySkills, skillSelection.Show);
+            Game.instance.Agent.MakeTransaction(
+                new PolymorphicAction<ActionBase>[]
+                {
+                    new BattleAction(Player.Skills.ToImmutableList()),
+                }
+            );
         }
     }
 }

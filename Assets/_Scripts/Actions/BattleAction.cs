@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Flawless.Battle;
+using Flawless.Battle.Skill;
 using Flawless.Data;
 using Flawless.Models.Encounters;
 using Flawless.States;
@@ -17,6 +18,7 @@ namespace Flawless.Actions
     {
         private const string SkillSheetCsv = "skill_name,speed,cooldown,atk_coeff,dex_coeff,int_coeff,finish_pose,available_poses\r\nDownwardSlash,10,0,1.0,0.25,0,Low,High\r\nUpwardSlash,10,0,1.0,0.25,0,High,Low\r\nDownwardThrust,20,2,1.25,0.5,0,Special,High\r\nUpwardThrust,20,2,1.25,0.5,0,Special,Low\r\nHorizontalSlash,25,2,1.0,0.25,0,High,Low\r\nAnkleCut,25,2,0.75,0.5,0,Low,Low\r\nHeal,0,2,0,0,0.4,Low,High,Low,Low,High,Special\r\nSideStep,999,2,0,0,0,Low,High,Low,Special";
         private ImmutableList<string> _skills;
+        public ImmutableList<SkillLog> BattleLogs;
 
         public BattleAction()
         {
@@ -66,13 +68,14 @@ namespace Flawless.Actions
             var simulator = new BattleSimulator();
             var skillSheet = new SkillSheet();
             skillSheet.Set(SkillSheetCsv);
-            (bool victory, _) = simulator.Simulate(
+            (bool victory, List<SkillLog> logs) = simulator.Simulate(
                 playerCharacter,
                 enemyCharacter,
                 _skills.ToList(),
                 enemySkills,
                 skillSheet
             );
+            BattleLogs = logs.ToImmutableList();
 
             if (victory)
             {
