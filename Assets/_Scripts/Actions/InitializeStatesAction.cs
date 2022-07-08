@@ -22,12 +22,10 @@ namespace Flawless.Actions
 
         // Used for creating a new action.
         public InitalizeStatesAction(
-            string weaponSheetCsv,
             string skillPresetSheetCsv
         )
         {
             _plainValue = new InitializeStatesActionPlainValue(
-                weaponSheetCsv,
                 skillPresetSheetCsv
             );
         }
@@ -55,19 +53,7 @@ namespace Flawless.Actions
 
             // Retrieves the previously stored state.
             IAccountStateDelta states = context.PreviousStates;
-            var weaponSheet = new WeaponSheet();
-            var weaponAddresses = new List<Address>();
-
-            foreach (WeaponState ws in WeaponStateFactory.CreateWeaponStates(weaponSheet))
-            {
-                states = states.SetState(
-                    ws.Address,
-                    ws.Encode()
-                );
-                weaponAddresses.Add(ws.Address);
-            }
             var environmentState = new EnvironmentState(
-                weaponAddresses.ToImmutableList(),
                 _plainValue.SkillPresetSheetCsv
             );
 

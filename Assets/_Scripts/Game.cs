@@ -78,9 +78,7 @@ namespace Flawless
                     new PolymorphicAction<ActionBase>[]
                     {
                         new InitalizeStatesAction(
-                            weaponSheetCsv: Resources.Load<TextAsset>("TableSheets/WeaponSheet").text,
-                            skillPresetSheetCsv: Resources.Load<TextAsset>("TableSheets/SkillPresetSheet").text
-                        ),
+                            skillPresetSheetCsv: Resources.Load<TextAsset>("TableSheets/SkillPresetSheet").text),
                     }
                 );
             }
