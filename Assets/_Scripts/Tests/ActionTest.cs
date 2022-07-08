@@ -39,11 +39,11 @@ public class ActionTest
             Random = new TestRandom(seed),
         });
         var playerState = new PlayerState((Dictionary)nextState.GetState(playerAddress));
-        var weaponState = new WeaponState(playerState.WeaponAddress);
+        var weaponState = new WeaponState((Dictionary)nextState.GetState(playerState.WeaponAddress));
 
         Assert.AreEqual(playerAddress, playerState.Address);
         Assert.AreEqual(playerName, playerState.Name);
-        Assert.AreEqual(default(Address), playerState.WeaponAddress);
+        Assert.AreEqual(playerState.WeaponAddress, weaponState.Address);
         Assert.AreEqual(40, playerState.GetMaxHealth(weaponState));
         Assert.AreEqual(seed, playerState.SceneState.Seed);
     }
@@ -54,12 +54,12 @@ public class ActionTest
         var playerName = "ssg";
         var playerKey = new PrivateKey();
         var playerAddress = playerKey.ToAddress();
-        var weaponAddress = new PrivateKey().ToAddress();
+        var seed = 123;
+        var playerState = new PlayerState(playerAddress, playerName, seed);
+        var weaponAddress = playerState.WeaponAddress;
         var weaponState = new WeaponState(
             address: weaponAddress,
             price: 10000L);
-        var seed = 123;
-        var playerState = new PlayerState(playerAddress, playerName, seed);
         var random = new System.Random();
         playerState = playerState.Proceed(random.Next());
 
@@ -105,14 +105,16 @@ public class ActionTest
             Random = new TestRandom(newSeed),
         });
         var nextPlayerState = new PlayerState((Dictionary)nextState.GetState(playerAddress));
+        var nextWeaponState = new WeaponState((Dictionary)nextState.GetState(weaponAddress));
 
         Assert.AreEqual(playerAddress, nextPlayerState.Address);
         Assert.AreEqual(playerName, nextPlayerState.Name);
-        Assert.AreEqual(default(Address), nextPlayerState.WeaponAddress);
-        Assert.AreEqual(40, nextPlayerState.GetMaxHealth(new WeaponState(playerState.WeaponAddress)));
+        Assert.AreEqual(weaponAddress, nextPlayerState.WeaponAddress);
+        Assert.AreEqual(40, nextPlayerState.GetMaxHealth(nextWeaponState));
         Assert.AreEqual(newSeed, nextPlayerState.SceneState.Seed);
         Assert.AreEqual(0, nextPlayerState.SceneState.StageCleared);
         Assert.AreEqual(0, nextPlayerState.SceneState.EncounterCleared);
+        Assert.AreEqual(0, nextWeaponState.Price);
     }
 
     [Test]
