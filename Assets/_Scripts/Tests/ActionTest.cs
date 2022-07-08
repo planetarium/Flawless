@@ -225,12 +225,13 @@ public class ActionTest
             weaponState.Speed < upgradedWeaponState.Speed);
         Assert.AreEqual(
             weaponState.Lifesteal,
-            upgradedWeaponState.Lifesteal
-        );
+            upgradedWeaponState.Lifesteal);
         Assert.AreEqual(
             weaponState.Price,
-            upgradedWeaponState.Price
-        );
+            upgradedWeaponState.Price);
+        Assert.AreEqual(
+            weaponState.Grade + 1,
+            upgradedWeaponState.Grade);
     }
 
     [Test]
