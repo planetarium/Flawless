@@ -20,6 +20,8 @@ namespace Flawless.Battle
         {
             Player = player;
             Enemy = enemy;
+            Player.Pose = PoseType.High;
+            Enemy.Pose = PoseType.High;
 
             var turn = 0;
             var actionLogs = new List<SkillLog>();

@@ -15,6 +15,7 @@ namespace Flawless.Battle
         public PoseType Pose { get; set; }
 
         private readonly Dictionary<string, int> _skillCooldownMap;
+        public int SkillPresetID { get; set; }
 
         public Character(int str, int dex, int @int)
             : this(str, dex, @int, new List<string>())
@@ -88,15 +89,33 @@ namespace Flawless.Battle
 
         public static Character GenerateEnemy(long stage, long encounter, long seed, bool hard = false)
         {
-            // FIXME: Dummy implementation.
-            int statBonus = hard ? 1 : 0;
-            Character enemy = new Character(3 + statBonus, 2 + statBonus, 0 + statBonus);
+            var stageNumber = (int)stage;
+            if (hard)
+            {
+                ++stageNumber;
+            }
+
+            var rnd = new Random((int)seed);
+            var rndStr = rnd.Next(-stageNumber, stageNumber + 1);
+            var rndDex = rnd.Next(-stageNumber, stageNumber + 1);
+            var presetId = rnd.Next(((int)stage - 1) * 3, (int)stage * 3) + 1;
+
+            Character enemy = new(
+                3 + (stageNumber - 1) * 3 + rndStr,
+                2 + (stageNumber - 1) * 2 + rndDex,
+                (stageNumber - 1) * 2);
             enemy.Skills.Add("UpwardSlash");
             enemy.Skills.Add("DownwardSlash");
             enemy.Skills.Add("UpwardThrust");
             enemy.Skills.Add("DownwardThrust");
+            enemy.Skills.Add("HorizontalSlash");
+            enemy.Skills.Add("AnkleCut");
+            enemy.Skills.Add("SpinningSlash");
+            enemy.Skills.Add("ColossusSmash");
+            enemy.Skills.Add("CounterAttack");
             enemy.Skills.Add("Heal");
             enemy.Skills.Add("SideStep");
+            enemy.SkillPresetID = presetId;
             return enemy;
         }
     }
