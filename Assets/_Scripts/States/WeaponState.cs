@@ -119,6 +119,7 @@ namespace Flawless.States
                     defense: Defense + (defense * 1 * Grade),
                     speed: Speed + (speed * 1 * Grade),
                     lifesteal: Lifesteal,
+                    grade: Grade + 1,
                     price: Price);
             }
         }
