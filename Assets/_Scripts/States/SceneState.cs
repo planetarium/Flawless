@@ -167,13 +167,12 @@ namespace Flawless.States
         }
 
         [Pure]
-        public Encounter GetEncounter(EnvironmentState environmentState)
+        public Encounter GetEncounter()
         {
             return Encounter.GenerateEncounter(
                 StageCleared + 1,
                 EncounterCleared + 1,
-                Seed,
-                environmentState.SkillPresets);
+                Seed);
         }
     }
 }

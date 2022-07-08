@@ -36,16 +36,12 @@ namespace Flawless.Actions
         {
             // Retrieves the previously stored state.
             IAccountStateDelta states = context.PreviousStates;
-            EnvironmentState environmentState =
-                states.GetState(EnvironmentState.EnvironmentAddress) is Bencodex.Types.Dictionary environmentStateEncoded
-                    ? new EnvironmentState(environmentStateEncoded)
-                    : throw new ArgumentException("No environment found; please run InitalizeStatesAction first.");
             PlayerState playerState =
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
 
-            if (!playerState.SceneState.InEncounter || !(playerState.SceneState.GetEncounter(environmentState) is SmithEncounter))
+            if (!playerState.SceneState.InEncounter || !(playerState.SceneState.GetEncounter() is SmithEncounter))
             {
                 throw new ArgumentException($"Invalid scene state at {context.Signer}.");
             }
