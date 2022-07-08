@@ -204,14 +204,8 @@ public class ActionTest
             (Dictionary)nextState.GetState(weaponState.Address)
         );
 
-        Assert.AreEqual(
-            initialGold + weaponState.Price,
-            playerStateAfterSell.Gold
-        );
-        CollectionAssert.DoesNotContain(
-            playerStateAfterSell.Inventory,
-            weaponState.Address
-        );
+        Assert.AreEqual(initialGold + weaponState.Price, playerStateAfterSell.Gold);
+        Assert.AreEqual(0, weaponStateAfterSell.Price);
     }
 
     [Test]
