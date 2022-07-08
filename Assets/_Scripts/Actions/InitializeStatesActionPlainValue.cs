@@ -9,7 +9,7 @@ namespace Flawless.Actions
         public string SkillPresetSheetCsv { get; private set; }
 
         public InitializeStatesActionPlainValue(
-            string weaponSheetCsv, 
+            string weaponSheetCsv,
             string skillPresetSheetCsv
         )
             : base()
