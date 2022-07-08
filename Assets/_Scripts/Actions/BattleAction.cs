@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Flawless.Battle;
+using Flawless.Battle.Skill;
 using Flawless.Data;
 using Flawless.Models.Encounters;
 using Flawless.States;
@@ -17,6 +18,7 @@ namespace Flawless.Actions
     {
         private const string SkillSheetCsv = "skill_name,speed,cooldown,atk_coeff,dex_coeff,int_coeff,finish_pose,available_poses\r\nDownwardSlash,10,0,1.0,0.25,0,Low,High\r\nUpwardSlash,10,0,1.0,0.25,0,High,Low\r\nDownwardThrust,20,2,1.25,0.5,0,Special,High\r\nUpwardThrust,20,2,1.25,0.5,0,Special,Low\r\nHorizontalSlash,25,2,1.0,0.25,0,High,Low\r\nAnkleCut,25,2,0.75,0.5,0,Low,Low\r\nHeal,0,2,0,0,0.4,Low,High,Low,Low,High,Special\r\nSideStep,999,2,0,0,0,Low,High,Low,Special";
         private ImmutableList<string> _skills;
+        public ImmutableList<SkillLog> BattleLogs;
 
         public BattleAction()
         {
@@ -40,26 +42,22 @@ namespace Flawless.Actions
         {
             // Retrieves the previously stored state.
             IAccountStateDelta states = context.PreviousStates;
-            EnvironmentState environmentState =
-                states.GetState(EnvironmentState.EnvironmentAddress) is Bencodex.Types.Dictionary environmentStateEncoded
-                    ? new EnvironmentState(environmentStateEncoded)
-                    : throw new ArgumentException("No environment found; please run InitalizeStatesAction first.");
             PlayerState playerState =
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
 
             var playerCharacter = playerState.GetCharacter();
-            if (playerState.EquippedWeaponAddress != default)
+            if (playerState.WeaponAddress != default)
             {
                 WeaponState weaponState =
-                    states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                    states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
                         ? new WeaponState(weaponStateEncoded)
-                        : throw new ArgumentException($"Can't find weapon state at {playerState.EquippedWeaponAddress}");
+                        : throw new ArgumentException($"Can't find weapon state at {playerState.WeaponAddress}");
                 playerCharacter.Stat.Weapon = weaponState.GetWeapon();
             }
 
-            Encounter encounter = playerState.SceneState.GetEncounter(environmentState);
+            Encounter encounter = playerState.SceneState.GetEncounter();
             if (!(encounter is BattleEncounter))
             {
                 throw new Exception("Not in BattleEncounter.");
@@ -70,13 +68,14 @@ namespace Flawless.Actions
             var simulator = new BattleSimulator();
             var skillSheet = new SkillSheet();
             skillSheet.Set(SkillSheetCsv);
-            (bool victory, _) = simulator.Simulate(
+            (bool victory, List<SkillLog> logs) = simulator.Simulate(
                 playerCharacter,
                 enemyCharacter,
                 _skills.ToList(),
                 enemySkills,
                 skillSheet
             );
+            BattleLogs = logs.ToImmutableList();
 
             if (victory)
             {
@@ -85,13 +84,15 @@ namespace Flawless.Actions
                     .AddGold(25)
                     .Heal((long)(playerCharacter.Stat.BaseHP * 0.1f))
                     .Proceed(context.Random.Seed);
+                return states.SetState(context.Signer, playerState.Encode());
             }
             else
             {
                 playerState = playerState.ResetPlayer(context.Random.Seed);
+                return states
+                    .SetState(context.Signer, playerState.Encode())
+                    .SetState(playerState.WeaponAddress, new WeaponState(playerState.WeaponAddress).Encode());
             }
-
-            return states.SetState(context.Signer, playerState.Encode());
         }
     }
 }

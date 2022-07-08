@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -9,19 +10,14 @@ namespace Flawless.Models.Encounters
     {
         private const long Salt = 4;
 
-        public List<Address> WeaponAddresses { get; private set; }
+        public const long NumOptions = 3;
 
         public SmithEncounter(
             long stage,
             long encounter,
-            long seed,
-            ImmutableList<Address> availableWeaponAddresses
-        )
+            long seed)
             : base(stage, encounter, seed)
         {
-            WeaponAddresses = Utils.Shuffle(seed, Salt, availableWeaponAddresses)
-                .Take(5)
-                .ToList();
         }
     }
 }

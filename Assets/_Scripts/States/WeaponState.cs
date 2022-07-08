@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.Contracts;
-using System.Security.Cryptography;
 using Flawless.Battle;
 using Libplanet;
 using Libplanet.Store;
@@ -21,7 +20,6 @@ namespace Flawless.States
         public const long InitialPrice = 0;
         public const long InitialSpeed = 0;
         public const long InitialLifesteal = 0;
-        public static readonly Address InitialAddress = default;
 
         public Address Address { get; private set; }
         public string Name { get; private set; }
@@ -37,10 +35,10 @@ namespace Flawless.States
         /// <summary>
         /// Creates a new <see cref="WeaponState"/> instance.
         /// </summary>
-        public WeaponState()
+        public WeaponState(Address address)
             : base()
         {
-            Address = InitialAddress;
+            Address = address;
             Name = InitialName;
             Id = InitialId;
             Health = InitialHealth;
@@ -53,7 +51,7 @@ namespace Flawless.States
         }
 
         public WeaponState(
-            Address address = default,
+            Address address,
             string name = InitialName,
             long id = InitialId,
             long health = InitialHealth,
@@ -112,15 +110,8 @@ namespace Flawless.States
             }
             else
             {
-                byte[] hashed;
-                byte[] addressBytes = Address.ToByteArray();
-                using (var hmac = new HMACSHA1(addressBytes))
-                {
-                    hashed = hmac.ComputeHash(addressBytes);
-                }
-
                 return new WeaponState(
-                    address: new Address(hashed),
+                    address: Address,
                     id: Id,
                     name: Name,
                     health: Health + (health * 10 * Grade),
@@ -128,8 +119,8 @@ namespace Flawless.States
                     defense: Defense + (defense * 1 * Grade),
                     speed: Speed + (speed * 1 * Grade),
                     lifesteal: Lifesteal,
-                    price: Price
-                );
+                    grade: Grade + 1,
+                    price: Price);
             }
         }
 
