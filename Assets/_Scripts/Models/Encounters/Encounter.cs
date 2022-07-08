@@ -30,9 +30,7 @@ namespace Flawless.Models.Encounters
             long stageNumber,
             long encounterNumber,
             long seed,
-            ImmutableList<Address> availableWeaponAddresses,
-            string skillPresets
-        )
+            string skillPresets)
         {
             long randomValue = Utils.Random(100, seed, Salt);
 
@@ -57,9 +55,7 @@ namespace Flawless.Models.Encounters
                         return new SmithEncounter(
                             stageNumber,
                             encounterNumber,
-                            seed,
-                            availableWeaponAddresses
-                        );
+                            seed);
                     }
                     else
                     {

@@ -57,7 +57,6 @@ namespace Flawless.Actions
             IAccountStateDelta states = context.PreviousStates;
             var weaponSheet = new WeaponSheet();
             var weaponAddresses = new List<Address>();
-            weaponSheet.Set(_plainValue.WeaponSheetCsv);
 
             foreach (WeaponState ws in WeaponStateFactory.CreateWeaponStates(weaponSheet))
             {
