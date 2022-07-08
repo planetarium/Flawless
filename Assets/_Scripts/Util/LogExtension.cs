@@ -40,6 +40,10 @@ namespace Flawless.Util
 
             var skillName = LocalizationManager.Instance.GetSkillName(actionLog.Skill.GetType().Name);
             sb.AppendLine($"{skillName} 스킬을 사용하였다. (스피드 : {actionLog.Speed})");
+            if (actionLog.CounteredDamage > 0)
+            {
+                sb.AppendLine($"반격당해 {actionLog.CounteredDamage}의 데미지를 입었다.");
+            }
             if (actionLog.Blocked)
             {
                 sb.AppendLine("스킬 사용이 차단되었다.");
@@ -75,10 +79,6 @@ namespace Flawless.Util
             if (actionLog.HealAmount > 0)
             {
                 sb.AppendLine($"{actionLog.HealAmount} HP를 회복했다.");
-            }
-            if (actionLog.CounteredDamage > 0)
-            {
-                sb.AppendLine($"반격당해 {actionLog.HealAmount}의 데미지를 입었다.");
             }
 
             return sb.ToString();

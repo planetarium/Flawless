@@ -1,19 +1,12 @@
-using System.Collections;
+
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Flawless.Battle.Skill
 {
-    public abstract class CounterSkill : SkillBase
+    public class ColossusSmash : AttackSkill
     {
-        public class Result
-        {
-            public bool BlockSkill { get; set; }
-            public double DamageMultiplier { get; set; } = 1.0;
-            public int DealtDamage { get; set; }
-        }
-
-        public CounterSkill(
+        public ColossusSmash(
             int speed,
             int cooldown,
             double atkCoefficient,
@@ -23,8 +16,12 @@ namespace Flawless.Battle.Skill
             List<PoseType> availablePoses) :
             base(speed, cooldown, atkCoefficient, dexCoefficient, intCoefficient, finishPose, availablePoses)
         {
+
         }
 
-        public abstract Result Counter(ICharacter caster, ICharacter target, SkillBase targetSkill);
+        public override SkillLog Use(int turnCount, ICharacter caster, ICharacter target, CounterSkill counter)
+        {
+            return base.Use(turnCount, caster, target, null);
+        }
     }
 }

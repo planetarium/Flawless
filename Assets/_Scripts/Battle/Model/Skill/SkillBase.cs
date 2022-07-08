@@ -47,7 +47,7 @@ namespace Flawless.Battle.Skill
                 return skillLog;
             }
 
-            var counterResult = counter?.Counter(target, this) ?? null;
+            var counterResult = counter?.Counter(target, caster, this) ?? null;
             if (counterResult == null)
             {
                 ProcessEffect(skillLog, caster, target);
