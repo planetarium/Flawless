@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using Flawless.Models.Encounters;
 using Flawless.States;
 using Libplanet;
@@ -48,6 +49,24 @@ namespace Flawless.Actions
                 states.GetState(context.Signer) is null
                     ? new PlayerState(_plainValue.Address, _plainValue.Name, context.Random.Seed)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}");
+
+            var skills = new[]
+            {
+                "AnkleCut",
+                "ColossusSmash",
+                "CounterAttack",
+                "DownwardSlash",
+                "DownwardThrust",
+                "Heal",
+                "HorizontalSlash",
+                "SideStep",
+                "skill_name",
+                "SpinningSlash",
+                "UpwardSlash",
+                "UpwardThrust",
+            }.ToImmutableList();
+            playerState = playerState.SetOwnedSkills(skills);
+
             Address weaponAddress = playerState.WeaponAddress;
             WeaponState weaponState = new WeaponState(weaponAddress);
             if (!(states.GetState(weaponAddress) is null))

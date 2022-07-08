@@ -6039,6 +6039,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUI: {fileID: 1605227613}
+  encountHadler: {fileID: 2041301494}
 --- !u!1 &2052781389
 GameObject:
   m_ObjectHideFlags: 0

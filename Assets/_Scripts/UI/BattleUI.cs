@@ -38,24 +38,12 @@ namespace Flawless.UI
         public void PreviewBattle(
             Character player,
             Character enemy,
-            List<string> playerSkills,
-            List<string> enemySkills,
+            List<SkillLog> skillLogs,
             Action onClose)
         {
             _player = player;
             _enemy = enemy;
-            var clonedPlayer = player.Clone();
-            var clonedEnemy = enemy.Clone();
-
             _onClose = onClose;
-
-            var simulator = new BattleSimulator();
-            var (victory, skillLogs) = simulator.Simulate(
-                clonedPlayer,
-                clonedEnemy,
-                playerSkills,
-                enemySkills,
-                TableManager.Instance.SkillSheet);
             WriteLogs(skillLogs);
         }
 
@@ -118,7 +106,6 @@ namespace Flawless.UI
                 yield return null;
             }
             _onClose?.Invoke();
-            SetStatView(_player, _enemy);
         }
 
         public void SetStatView(Character player, Character enemy)

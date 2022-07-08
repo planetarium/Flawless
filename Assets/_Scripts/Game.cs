@@ -9,6 +9,7 @@ using UnityEngine.Events;
 using Serilog;
 using Serilog.Sinks;
 using Flawless.Actions;
+using Flawless.Battle;
 using Flawless.States;
 using Flawless.UI;
 
@@ -18,6 +19,8 @@ namespace Flawless
     {
         [SerializeField]
         private BattleUI battleUI = null;
+        [SerializeField]
+        private EncounterHandler encountHadler = null;
         private IEnumerable<IRenderer<PolymorphicAction<ActionBase>>> _renderers;
         public Agent Agent { get; private set; }
 
@@ -50,7 +53,9 @@ namespace Flawless
                         switch (((PolymorphicAction<ActionBase>)action).InnerAction)
                         {
                             case CreateAccountAction ca:
-                                UnityEngine.Debug.Log($"CA: {nextStates}");
+                                Agent.RunOnMainThread(
+                                    () => encountHadler.OnCreateAccount()
+                                );
                                 break;
                             case BattleAction ba:
                                 Agent.RunOnMainThread(

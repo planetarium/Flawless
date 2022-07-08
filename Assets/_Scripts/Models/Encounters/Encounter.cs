@@ -27,6 +27,15 @@ namespace Flawless.Models.Encounters
             Seed = seed;
         }
 
+        public static Encounter GenerateBattleOnlyEncounter(
+            long stageNumber,
+            long seed
+        )
+        {
+            long randomValue = Utils.Random(100, seed, Salt);
+            return new BattleEncounter(stageNumber, default, seed);
+        }
+
         public static Encounter GenerateEncounter(
             long stageNumber,
             long encounterNumber,

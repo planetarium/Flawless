@@ -1,4 +1,5 @@
 using Flawless.Battle;
+using System.Collections.Immutable;
 
 namespace Flawless.Models.Encounters
 {

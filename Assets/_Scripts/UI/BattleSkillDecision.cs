@@ -1,3 +1,4 @@
+using Flawless.Battle;
 using Flawless.Data;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Flawless.UI
         [SerializeField]
         private SkillSelectPopup skillSelectPopup;
 
-        private List<string> _decidedSkills;
+        public List<string> DecidedSkills { get; private set; }
 
         Action<List<string>> _onPreview;
 
@@ -38,7 +39,8 @@ namespace Flawless.UI
             Action<List<string>> onPreview,
             Action<List<string>> onConfirm)
         {
-            _decidedSkills = new List<string>();
+            UnityEngine.Debug.Log("@@ Show @@");
+            DecidedSkills = new List<string>();
             _onPreview = onPreview;
             _onConfirm = onConfirm;
 
@@ -53,7 +55,7 @@ namespace Flawless.UI
 
         private void OnEditSkill(int index)
         {
-            if (index > _decidedSkills.Count)
+            if (index > DecidedSkills.Count)
             {
                 return;
             }
@@ -66,9 +68,9 @@ namespace Flawless.UI
             var skillSheet = TableManager.Instance.SkillSheet;
             var prevPose = PoseType.High;
             var prevIndex = index - 1;
-            if (prevIndex >= 0 && _decidedSkills.Count > prevIndex)
+            if (prevIndex >= 0 && DecidedSkills.Count > prevIndex)
             {
-                var skillName = _decidedSkills[prevIndex];
+                var skillName = DecidedSkills[prevIndex];
                 var skill = skillSheet[skillName];
                 prevPose = skill.FinishPose;
             }
@@ -79,13 +81,13 @@ namespace Flawless.UI
                 .ToList();
             skillSelectPopup.Show(availableSkills, skill =>
             {
-                if (index >= _decidedSkills.Count)
+                if (index >= DecidedSkills.Count)
                 {
-                    _decidedSkills.Add(skill);
+                    DecidedSkills.Add(skill);
                 }
                 else
                 {
-                    _decidedSkills[index] = skill;
+                    DecidedSkills[index] = skill;
                 }
                 turnViews[index].SetPlayerSkill(skill);
                 skillSelectPopup.Close();
@@ -100,13 +102,13 @@ namespace Flawless.UI
         private void Preview()
         {
             gameObject.SetActive(false);
-            _onPreview?.Invoke(_decidedSkills);
+            _onPreview?.Invoke(DecidedSkills);
         }
 
         private void Confirm()
         {
             gameObject.SetActive(false);
-            _onConfirm?.Invoke(_decidedSkills);
+            _onConfirm?.Invoke(DecidedSkills);
         }
     }
 }
