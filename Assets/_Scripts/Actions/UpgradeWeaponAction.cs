@@ -13,7 +13,6 @@ namespace Flawless.Actions
     [ActionType("upgrade_weapon_action")]
     public class UpgradeWeaponAction : ActionBase
     {
-        private Address _weaponAddress;
         private long _attack;
         private long _defense;
         private long _health;
@@ -25,14 +24,11 @@ namespace Flawless.Actions
         }
 
         public UpgradeWeaponAction(
-            Address weaponAddress,
             long attack,
             long defense,
             long health,
-            long speed
-        )
+            long speed)
         {
-            _weaponAddress = weaponAddress;
             _attack = attack;
             _defense = defense;
             _health = health;
@@ -46,10 +42,6 @@ namespace Flawless.Actions
             {
                 IEnumerable<KeyValuePair<IKey, IValue>> pairs = new[]
                 {
-                    new KeyValuePair<IKey, IValue>(
-                        (Text) nameof(_weaponAddress),
-                        (Binary) _weaponAddress.ToByteArray()
-                    ),
                     new KeyValuePair<IKey, IValue>(
                         (Text) nameof(_attack),
                         (Integer) _attack
@@ -76,7 +68,6 @@ namespace Flawless.Actions
         {
             var asDict = (Dictionary) plainValue;
 
-            _weaponAddress = new Address((Binary)asDict[nameof(_weaponAddress)]);
             _attack = (Integer) asDict[nameof(_attack)];
             _defense = (Integer) asDict[nameof(_defense)];
             _health = (Integer) asDict[nameof(_health)];
@@ -99,9 +90,9 @@ namespace Flawless.Actions
                     ? new PlayerState(playerStateEncoded)
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
             WeaponState weaponState =
-                states.GetState(_weaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
                     ? new WeaponState(weaponStateEncoded)
-                    : throw new ArgumentException($"Can't find weapon state at {_weaponAddress}");
+                    : throw new ArgumentException($"Can't find weapon state at {playerState.WeaponAddress}");
             SceneState sceneState = playerState.SceneState;
             long cost = weaponState.Grade * 5;
 
@@ -110,25 +101,22 @@ namespace Flawless.Actions
             {
                 throw new Exception($"Not in smith now. actual: {encounter}");
             }
-
-            if (playerState.Gold < cost)
+            else if (playerState.Gold < cost)
             {
                 throw new Exception(
                     $"Not enough gold; balance: {playerState.Gold}, cost: {cost}");
             }
-            WeaponState upgradedWeapon = weaponState.UpgradeWeapon(
+
+            weaponState = weaponState.UpgradeWeapon(
                 health: _health,
                 attack: _attack,
                 defense: _defense,
                 speed: _speed);
-            playerState = playerState.RemoveWeapon(weaponState);
-            playerState = playerState.AddWeapon(upgradedWeapon);
-            playerState = playerState.SubtractGold(weaponState.Grade * 5);
+            playerState = playerState.SubtractGold(cost);
 
             return states
-                .SetState(context.Signer, playerState.Encode())
-                .SetState(weaponState.Address, weaponState.Encode())
-                .SetState(upgradedWeapon.Address, upgradedWeapon.Encode());
+                .SetState(playerState.WeaponAddress, weaponState.Encode())
+                .SetState(context.Signer, playerState.Encode());
         }
     }
 }

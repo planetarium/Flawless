@@ -47,9 +47,17 @@ namespace Flawless.Actions
             PlayerState playerState =
                 states.GetState(context.Signer) is null
                     ? new PlayerState(_plainValue.Address, _plainValue.Name, context.Random.Seed)
-                    : throw new ArgumentException($"Invalid player state at {context.Signer}.");
+                    : throw new ArgumentException($"Invalid player state at {context.Signer}");
+            Address weaponAddress = playerState.WeaponAddress;
+            WeaponState weaponState = new WeaponState(weaponAddress);
+            if (!(states.GetState(weaponAddress) is null))
+            {
+                throw new ArgumentException($"Invalid state at {weaponAddress} found; must be null");
+            }
 
-            return states.SetState(context.Signer, playerState.Encode());
+            return states
+                .SetState(context.Signer, playerState.Encode())
+                .SetState(weaponAddress, weaponState.Encode());
         }
     }
 }

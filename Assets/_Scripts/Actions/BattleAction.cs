@@ -50,12 +50,12 @@ namespace Flawless.Actions
                     : throw new ArgumentException($"Invalid player state at {context.Signer}.");
 
             var playerCharacter = playerState.GetCharacter();
-            if (playerState.EquippedWeaponAddress != default)
+            if (playerState.WeaponAddress != default)
             {
                 WeaponState weaponState =
-                    states.GetState(playerState.EquippedWeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
+                    states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary weaponStateEncoded
                         ? new WeaponState(weaponStateEncoded)
-                        : throw new ArgumentException($"Can't find weapon state at {playerState.EquippedWeaponAddress}");
+                        : throw new ArgumentException($"Can't find weapon state at {playerState.WeaponAddress}");
                 playerCharacter.Stat.Weapon = weaponState.GetWeapon();
             }
 
@@ -85,13 +85,15 @@ namespace Flawless.Actions
                     .AddGold(25)
                     .Heal((long)(playerCharacter.Stat.BaseHP * 0.1f))
                     .Proceed(context.Random.Seed);
+                return states.SetState(context.Signer, playerState.Encode());
             }
             else
             {
                 playerState = playerState.ResetPlayer(context.Random.Seed);
+                return states
+                    .SetState(context.Signer, playerState.Encode())
+                    .SetState(playerState.WeaponAddress, new WeaponState(playerState.WeaponAddress).Encode());
             }
-
-            return states.SetState(context.Signer, playerState.Encode());
         }
     }
 }
