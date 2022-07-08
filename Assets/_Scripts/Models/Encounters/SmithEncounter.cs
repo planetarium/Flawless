@@ -9,6 +9,7 @@ namespace Flawless.Models.Encounters
     public class SmithEncounter : Encounter
     {
         private const long Salt = 4;
+
         public const long NumOptions = 3;
 
         public SmithEncounter(
