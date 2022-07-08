@@ -166,49 +166,6 @@ public class ActionTest
     }
 
     [Test]
-    public void SellWeaponAction_Execute()
-    {
-        var playerKey = new PrivateKey();
-        Address playerAddress = playerKey.ToAddress();
-
-        var playerState = new PlayerState(
-            name: "ssg",
-            address: playerAddress,
-            seed: 13);
-        WeaponState weaponState = new WeaponState(
-            address: playerState.WeaponAddress,
-            price: 10000L);
-
-        long initialGold = playerState.Gold;
-        var previousStates = new State(
-            new Dictionary<Address, IValue>
-            {
-                [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
-                [playerAddress] = playerState.Encode(),
-                [playerState.WeaponAddress] = weaponState.Encode(),
-            }.ToImmutableDictionary()
-        );
-        var action = new SellWeaponAction();
-
-        IAccountStateDelta nextState = action.Execute(new ActionContext
-        {
-            PreviousStates = previousStates,
-            Signer = playerAddress,
-            BlockIndex = 0,
-        });
-
-        var playerStateAfterSell = new PlayerState(
-            (Dictionary)nextState.GetState(playerAddress)
-        );
-        var weaponStateAfterSell = new WeaponState(
-            (Dictionary)nextState.GetState(weaponState.Address)
-        );
-
-        Assert.AreEqual(initialGold + weaponState.Price, playerStateAfterSell.Gold);
-        Assert.AreEqual(0, weaponStateAfterSell.Price);
-    }
-
-    [Test]
     public void UpgradeWeaponAction_Execute_Basic()
     {
         var playerKey = new PrivateKey();
