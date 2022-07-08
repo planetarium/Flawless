@@ -88,7 +88,12 @@ namespace Flawless.Battle
                 playerSkills,
                 _enemySkills,
                 TableManager.Instance.SkillSheet);
-            battleUI.PreviewBattle(clonedPlayer, clonedEnemy, skillLogs, StartBattleEncounter);
+            battleUI.SetStatView(Player, Enemy);
+            battleUI.PreviewBattle(clonedPlayer, clonedEnemy, skillLogs, () =>
+            {
+                skillSelection.Show();
+                battleUI.SetStatView(Player, Enemy);
+            });
         }
 
         public void Confirm(List<string> playerSkills)
