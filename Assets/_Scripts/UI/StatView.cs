@@ -31,10 +31,10 @@ namespace Flawless.UI
             var hp = Mathf.Clamp(stat.hp, 0, stat.baseHp);
             hpBar.value = (float) hp / stat.baseHp;
             hpText.text = $"{hp}/{stat.baseHp} - {stat.pose.PoseToString()}";
-            attackText.text = $"°ø°İ·Â : {stat.atk}";
-            defenseText.text = $"¹æ¾î·Â : {stat.def}";
-            speedText.text = $"½ºÇÇµå : {stat.spd}";
-            lifestealText.text = $"ÈíÇ÷ : {stat.lifesteal}%";
+            attackText.text = $"ê³µê²©ë ¥ : {stat.atk}";
+            defenseText.text = $"ë°©ì–´ë ¥ : {stat.def}";
+            speedText.text = $"ìŠ¤í”¼ë“œ : {stat.spd}";
+            lifestealText.text = $"í¡í˜ˆ : {stat.lifesteal}%";
         }
 
         public void UpdateView(Character character)
@@ -44,10 +44,10 @@ namespace Flawless.UI
             var hp = Mathf.Clamp(stat.HP, 0, stat.BaseHP);
             hpBar.value = (float)hp / stat.BaseHP;
             hpText.text = $"{hp}/{stat.BaseHP} - {character.Pose.PoseToString()}";
-            attackText.text = $"°ø°İ·Â : {stat.ATK}";
-            defenseText.text = $"¹æ¾î·Â : {stat.DEF}";
-            speedText.text = $"½ºÇÇµå : {stat.SPD}";
-            lifestealText.text = $"ÈíÇ÷ : {stat.LifestealPercentage}%";
+            attackText.text = $"ê³µê²©ë ¥ : {stat.ATK}";
+            defenseText.text = $"ë°©ì–´ë ¥ : {stat.DEF}";
+            speedText.text = $"ìŠ¤í”¼ë“œ : {stat.SPD}";
+            lifestealText.text = $"í¡í˜ˆ : {stat.LifestealPercentage}%";
         }
     }
 }

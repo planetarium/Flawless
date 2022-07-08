@@ -21,7 +21,7 @@ namespace Flawless.UI
         public void SetData(int turnCount, string skillName, Action onEdit)
         {
             turnCountText.text = $"Turn\n{turnCount + 1}";
-            playerSkillButton.Set("Å¬¸¯ÇØ¼­ ½ºÅ³ ¼³Á¤ (ÀÌÀü ÅÏ ½ºÅ³ÀÌ ¼³Á¤µÇ¾î¾ß ÇÔ)", onEdit);
+            playerSkillButton.Set("í´ë¦­í•´ì„œ ìŠ¤í‚¬ ì„¤ì • (ì´ì „ í„´ ìŠ¤í‚¬ì´ ì„¤ì •ë˜ì–´ì•¼ í•¨)", onEdit);
             enemySkillDescriptionText.text = LogExtension.GetSkillDescription(skillName);
         }
 
