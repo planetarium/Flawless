@@ -17,11 +17,11 @@ namespace Flawless.Util
             switch (type)
             {
                 case PoseType.High:
-                    return "³ôÀº ÀÚ¼¼";
+                    return "ë†’ì€ ìžì„¸";
                 case PoseType.Low:
-                    return "³·Àº ÀÚ¼¼";
+                    return "ë‚®ì€ ìžì„¸";
                 case PoseType.Special:
-                    return "Âî¸£±â ÀÚ¼¼";
+                    return "ì°Œë¥´ê¸° ìžì„¸";
             }
 
             return null;
@@ -34,51 +34,51 @@ namespace Flawless.Util
 
             if (actionLog.Skill == null)
             {
-                sb.AppendLine("¾Æ¹« Çàµ¿µµ ÇÏÁö ¾Ê¾Ò´Ù.");
+                sb.AppendLine("ì•„ë¬´ í–‰ë™ë„ í•˜ì§€ ì•Šì•˜ë‹¤.");
                 return sb.ToString();
             }
 
             var skillName = LocalizationManager.Instance.GetSkillName(actionLog.Skill.GetType().Name);
-            sb.AppendLine($"{skillName} ½ºÅ³À» »ç¿ëÇÏ¿´´Ù. (½ºÇÇµå : {actionLog.Speed})");
+            sb.AppendLine($"{skillName} ìŠ¤í‚¬ì„ ì‚¬ìš©í•˜ì˜€ë‹¤. (ìŠ¤í”¼ë“œ : {actionLog.Speed})");
             if (actionLog.CounteredDamage > 0)
             {
-                sb.AppendLine($"¹Ý°Ý´çÇØ {actionLog.CounteredDamage}ÀÇ µ¥¹ÌÁö¸¦ ÀÔ¾ú´Ù.");
+                sb.AppendLine($"ë°˜ê²©ë‹¹í•´ {actionLog.CounteredDamage}ì˜ ë°ë¯¸ì§€ë¥¼ ìž…ì—ˆë‹¤.");
             }
             if (actionLog.Blocked)
             {
-                sb.AppendLine("½ºÅ³ »ç¿ëÀÌ Â÷´ÜµÇ¾ú´Ù.");
+                sb.AppendLine("ìŠ¤í‚¬ ì‚¬ìš©ì´ ì°¨ë‹¨ë˜ì—ˆë‹¤.");
                 return sb.ToString();
             }
             if (actionLog.BlockedByCounter)
             {
-                sb.AppendLine("½ºÅ³ »ç¿ëÀÌ Ä«¿îÅÍ·Î ÀÎÇØ Â÷´ÜµÇ¾ú´Ù.");
+                sb.AppendLine("ìŠ¤í‚¬ ì‚¬ìš©ì´ ì¹´ìš´í„°ë¡œ ì¸í•´ ì°¨ë‹¨ë˜ì—ˆë‹¤.");
                 return sb.ToString();
             }
             if (actionLog.BlockedByPose)
             {
-                sb.AppendLine("½ºÅ³ ¹ßµ¿À» À§ÇÑ ÀÚ¼¼°¡ ¸ÂÁö ¾Ê¾Æ ¹ßµ¿ÇÒ ¼ö ¾ø¾ú´Ù.");
+                sb.AppendLine("ìŠ¤í‚¬ ë°œë™ì„ ìœ„í•œ ìžì„¸ê°€ ë§žì§€ ì•Šì•„ ë°œë™í•  ìˆ˜ ì—†ì—ˆë‹¤.");
                 return sb.ToString();
             }
             if (actionLog.BlockedByCooldown)
             {
-                sb.AppendLine("ÄðÅ¸ÀÓ ÁßÀÌ¶ó ¹ßµ¿ÇÒ ¼ö ¾ø¾ú´Ù.");
+                sb.AppendLine("ì¿¨íƒ€ìž„ ì¤‘ì´ë¼ ë°œë™í•  ìˆ˜ ì—†ì—ˆë‹¤.");
                 return sb.ToString();
             }
             if (actionLog.DamageBlocked)
             {
-                sb.AppendLine("Ä«¿îÅÍ·Î ÀÎÇØ µ¥¹ÌÁö¸¦ ÀÔÈ÷Áö ¸øÇß´Ù.");
+                sb.AppendLine("ì¹´ìš´í„°ë¡œ ì¸í•´ ë°ë¯¸ì§€ë¥¼ ìž…ížˆì§€ ëª»í–ˆë‹¤.");
             }
             if (actionLog.DealtDamage > 0)
             {
-                sb.AppendLine($"{actionLog.DealtDamage}ÀÇ µ¥¹ÌÁö¸¦ ÀÔÇû´Ù. [µ¥¹ÌÁö ¹èÀ² : {actionLog.DamageMultiplier}¹è]");
+                sb.AppendLine($"{actionLog.DealtDamage}ì˜ ë°ë¯¸ì§€ë¥¼ ìž…í˜”ë‹¤. [ë°ë¯¸ì§€ ë°°ìœ¨ : {actionLog.DamageMultiplier}ë°°]");
             }
             if (actionLog.LifestealAmount > 0)
             {
-                sb.AppendLine($"{actionLog.LifestealAmount} HP¸¦ Èí¼öÇß´Ù.");
+                sb.AppendLine($"{actionLog.LifestealAmount} HPë¥¼ í¡ìˆ˜í–ˆë‹¤.");
             }
             if (actionLog.HealAmount > 0)
             {
-                sb.AppendLine($"{actionLog.HealAmount} HP¸¦ È¸º¹Çß´Ù.");
+                sb.AppendLine($"{actionLog.HealAmount} HPë¥¼ íšŒë³µí–ˆë‹¤.");
             }
 
             return sb.ToString();
