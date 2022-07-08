@@ -568,6 +568,8 @@ public class ActionTest
                         .SetItem("Strength", 10000)
                 )
         ).SetOwnedSkills(playerSkills);
+        var weaponAddress = playerState.WeaponAddress;
+        var weaponState = new WeaponState(weaponAddress, price: 100L);
 
         var action = new BattleAction(playerSkills);
 
@@ -576,6 +578,7 @@ public class ActionTest
             {
                 [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
+                [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
         );
 
@@ -590,10 +593,12 @@ public class ActionTest
         );
 
         var playerStateAfterBattle = new PlayerState(
-            (Dictionary)nextState.GetState(playerAddress)
-        );
+            (Dictionary)nextState.GetState(playerAddress));
+        var weaponStateAfterBattle = new WeaponState(
+            (Dictionary)nextState.GetState(weaponAddress));
 
         Assert.AreEqual(2, playerStateAfterBattle.SceneState.EncounterCleared);
+        Assert.AreEqual(100, weaponStateAfterBattle.Price);
     }
 
     [Test]
@@ -618,6 +623,8 @@ public class ActionTest
                     .SetItem("Seed", 10)
             )
         );
+        var weaponAddress = playerState.WeaponAddress;
+        var weaponState = new WeaponState(weaponAddress, price: 100L);
 
         var action = new BattleAction(
             new[]
@@ -640,6 +647,7 @@ public class ActionTest
             {
                 [EnvironmentState.EnvironmentAddress] = _environmentState.Encode(),
                 [playerAddress] = playerState.Encode(),
+                [weaponAddress] = weaponState.Encode(),
             }.ToImmutableDictionary()
         );
 
@@ -654,10 +662,12 @@ public class ActionTest
         );
 
         var playerStateAfterBattle = new PlayerState(
-            (Dictionary)nextState.GetState(playerAddress)
-        );
+            (Dictionary)nextState.GetState(playerAddress));
+        var weaponStateAfterBattle = new WeaponState(
+            (Dictionary)nextState.GetState(weaponAddress));
 
         Assert.AreEqual(0, playerStateAfterBattle.SceneState.StageCleared);
         Assert.AreEqual(0, playerStateAfterBattle.SceneState.EncounterCleared);
+        Assert.AreEqual(0, weaponStateAfterBattle.Price);
     }
 }

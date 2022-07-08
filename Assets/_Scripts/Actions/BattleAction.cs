@@ -85,13 +85,15 @@ namespace Flawless.Actions
                     .AddGold(25)
                     .Heal((long)(playerCharacter.Stat.BaseHP * 0.1f))
                     .Proceed(context.Random.Seed);
+                return states.SetState(context.Signer, playerState.Encode());
             }
             else
             {
                 playerState = playerState.ResetPlayer(context.Random.Seed);
+                return states
+                    .SetState(context.Signer, playerState.Encode())
+                    .SetState(playerState.WeaponAddress, new WeaponState(playerState.WeaponAddress).Encode());
             }
-
-            return states.SetState(context.Signer, playerState.Encode());
         }
     }
 }
