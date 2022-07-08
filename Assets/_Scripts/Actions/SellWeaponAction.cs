@@ -47,14 +47,10 @@ namespace Flawless.Actions
                     ? new WeaponState(weaponStateEncoded)
                     : throw new ArgumentException($"Can't find weapon state at {weaponAddress}");
             playerState = playerState
-                .RemoveWeapon(weaponState)
                 .AddGold(weaponState.Price);
 
             // Adjust health.
-            WeaponState newWeaponState =
-                states.GetState(playerState.WeaponAddress) is Bencodex.Types.Dictionary newWeaponStateEncoded
-                    ? new WeaponState(newWeaponStateEncoded)
-                    : throw new ArgumentException($"Invalid weapon state at {weaponAddress}");
+            WeaponState newWeaponState = new WeaponState(weaponAddress);
             long maxHealth = playerState.GetMaxHealth(newWeaponState);
             long diff = playerState.StatsState.Damages - maxHealth;
             if (diff > 0)
