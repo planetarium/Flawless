@@ -40,10 +40,6 @@ namespace Flawless.Actions
         {
             // Retrieves the previously stored state.
             IAccountStateDelta states = context.PreviousStates;
-            EnvironmentState environmentState =
-                states.GetState(EnvironmentState.EnvironmentAddress) is Bencodex.Types.Dictionary environmentStateEncoded
-                    ? new EnvironmentState(environmentStateEncoded)
-                    : throw new ArgumentException("No environment found; please run InitalizeStatesAction first.");
             PlayerState playerState =
                 states.GetState(context.Signer) is Bencodex.Types.Dictionary playerStateEncoded
                     ? new PlayerState(playerStateEncoded)
@@ -59,7 +55,7 @@ namespace Flawless.Actions
                 playerCharacter.Stat.Weapon = weaponState.GetWeapon();
             }
 
-            Encounter encounter = playerState.SceneState.GetEncounter(environmentState);
+            Encounter encounter = playerState.SceneState.GetEncounter();
             if (!(encounter is BattleEncounter))
             {
                 throw new Exception("Not in BattleEncounter.");

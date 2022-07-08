@@ -29,8 +29,7 @@ namespace Flawless.Models.Encounters
         public static Encounter GenerateEncounter(
             long stageNumber,
             long encounterNumber,
-            long seed,
-            string skillPresets)
+            long seed)
         {
             long randomValue = Utils.Random(100, seed, Salt);
 
